@@ -22,3 +22,6 @@ Thumbs.db
 
 # Netlify
 .netlify/
+
+# Notas locales de la cuenta (no se publican)
+*.local.md

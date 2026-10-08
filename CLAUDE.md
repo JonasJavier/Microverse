@@ -22,8 +22,10 @@
 - Verificación visual: con el panel del navegador oculto, la página no anima. Hacer una captura fuerza los frames. En desarrollo, `window.__microverse` expone `glassTuning`, los stores y `three()` para look-dev automatizado.
 
 ## Despliegue (Railway)
-- Seguir **siempre** [docs/railway.md](docs/railway.md). Solo se opera sobre el proyecto `microverse`, con `--project` explícito.
+- Seguir **siempre** [docs/railway.md](docs/railway.md) y, si existe, `CLAUDE.local.md` (reglas de la cuenta, no versionadas). Solo se opera sobre el proyecto `microverse`.
+- Nunca ejecutar `railway variables --json` ni mostrar secretos.
 - Cada push a `main` despliega: no subir a `main` nada que no pase `npm run build`.
+- **El repo es público:** no versionar datos de la cuenta del autor (IDs de otros proyectos, correos, nombres de cuentas). Van en archivos `*.local.md`, ignorados por Git.
 
 ## Reglas técnicas (no negociables sin ADR)
 - Versiones fijadas exactas (sin `^`). Actualizar una dependencia requiere ADR. Ver [docs/03-stack.md](docs/03-stack.md).
