@@ -53,3 +53,8 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 ## ADR-009 · Hosting en Netlify con deploy desde la jornada 0 — Aceptada (2026-10-07)
 **Decisión:** sitio estático en Netlify, con deploy previews por rama. La integración ya está conectada en el entorno de trabajo.
 **Motivo:** publicar desde el primer día elimina el riesgo de dejar "publicada" para el final.
+
+## ADR-010 · Sin `r3f-perf`: `<Stats>` de Drei + panel propio — Aceptada (2026-10-08)
+**Contexto:** al instalar en la jornada 0, `r3f-perf` 7.2.3 (última versión, de noviembre de 2024) depende de `@react-three/drei ^9` y `zustand ~4.5`, incompatibles con nuestro stack (Drei 10, R3F 9, Zustand 5). npm forzaba peers y duplicaba Drei.
+**Decisión:** quitar `r3f-perf`. En desarrollo se usa `<Stats>` de Drei (FPS) y `experience/debug/DevTools.tsx`, que lee `renderer.info` (draw calls, triángulos, geometrías y texturas) y muestra el nivel de calidad. Cero dependencias extra.
+**Consecuencias:** sin gráfica de GPU integrada. Para perfilar la GPU: Spector.js y la pestaña Performance de Chrome.

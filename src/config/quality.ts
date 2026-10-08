@@ -1,0 +1,60 @@
+export type QualityTier = 'alta' | 'media' | 'baja'
+
+export interface QualitySettings {
+  maxDpr: number
+  depthOfField: boolean
+  bloomHalfRes: boolean
+  mossInstances: number
+  fireflies: number
+  raindrops: number
+  shadows: 'suaves' | 'basicas' | 'ninguna'
+}
+
+/** Puntos de partida; se calibran en la jornada 11 (docs/04-arquitectura.md). */
+export const QUALITY: Record<QualityTier, QualitySettings> = {
+  alta: {
+    maxDpr: 2,
+    depthOfField: true,
+    bloomHalfRes: false,
+    mossInstances: 6000,
+    fireflies: 60,
+    raindrops: 1500,
+    shadows: 'suaves',
+  },
+  media: {
+    maxDpr: 1.5,
+    depthOfField: false,
+    bloomHalfRes: true,
+    mossInstances: 3000,
+    fireflies: 40,
+    raindrops: 800,
+    shadows: 'basicas',
+  },
+  baja: {
+    maxDpr: 1,
+    depthOfField: false,
+    bloomHalfRes: true,
+    mossInstances: 1200,
+    fireflies: 24,
+    raindrops: 400,
+    shadows: 'ninguna',
+  },
+}
+
+const ORDER: readonly QualityTier[] = ['baja', 'media', 'alta']
+
+export function lowerTier(tier: QualityTier): QualityTier {
+  return ORDER[Math.max(0, ORDER.indexOf(tier) - 1)] ?? 'baja'
+}
+
+export function raiseTier(tier: QualityTier): QualityTier {
+  return ORDER[Math.min(ORDER.length - 1, ORDER.indexOf(tier) + 1)] ?? 'alta'
+}
+
+/** Táctil o pantalla pequeña → media; escritorio → alta. */
+export function detectInitialTier(): QualityTier {
+  if (typeof window === 'undefined') return 'media'
+  const touch = window.matchMedia('(pointer: coarse)').matches
+  const small = Math.min(window.innerWidth, window.innerHeight) < 600
+  return touch || small ? 'media' : 'alta'
+}

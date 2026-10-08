@@ -42,9 +42,8 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 | `globals` | 17.13.0 | Globales del navegador |
 | `prettier` | 3.9.9 | Formato |
 | `leva` | 0.10.1 | Panel de ajuste en vivo (solo en desarrollo) |
-| `r3f-perf` | 7.2.3 | Monitor de FPS, draw calls y memoria GPU (solo en desarrollo) |
 
-`leva` y `r3f-perf` se cargan con `import()` dinámico dentro de `if (import.meta.env.DEV)`, así que no entran en el build de producción.
+`leva` y las herramientas de depuración (`experience/debug/DevTools.tsx`) se cargan con `import()` dinámico dentro de `if (import.meta.env.DEV)`, así que no entran en el build de producción.
 
 ## Decisiones de versión importantes
 
@@ -71,7 +70,7 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 - **Git + GitHub**, Conventional Commits.
 - **codebase-memory-mcp:** se indexa en la jornada 0, se reindexa tras cambios estructurales y guarda los ADR (`manage_adr`).
 - **Hosting:** Netlify, sitio estático con deploy previews por rama (ADR-009). Se publica desde la jornada 0, no al final.
-- **Depuración GPU:** `r3f-perf` + extensión Spector.js + Chrome DevTools (pestaña Performance).
+- **Depuración:** `<Stats>` de Drei + panel `DevTools` (ADR-010) + extensión Spector.js + Chrome DevTools (pestaña Performance).
 
 ## `package.json` objetivo (jornada 0)
 
@@ -114,7 +113,6 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
     "globals": "17.13.0",
     "leva": "0.10.1",
     "prettier": "3.9.9",
-    "r3f-perf": "7.2.3",
     "typescript": "6.0.3",
     "typescript-eslint": "8.71.1",
     "vite": "8.3.3",

@@ -1,0 +1,28 @@
+:root {
+  --vacio: #080f17;
+  --musgo: #75aa82;
+  --reflejo: #cfe9e4;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--vacio);
+  color: var(--reflejo);
+}
+
+canvas {
+  display: block;
+  touch-action: none;
+}
