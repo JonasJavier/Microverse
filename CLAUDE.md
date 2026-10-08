@@ -10,6 +10,7 @@
 - Si el proyecto no está indexado: `index_repository` antes de nada. Si hubo cambios desde el último índice: `detect_changes` y reindexar.
 - Reindexar después de cada cambio estructural (carpetas nuevas, renombres, módulos nuevos).
 - Los ADR se reflejan también en codebase-memory con `manage_adr` una vez el proyecto esté indexado.
+- ⚠️ `index_repository` **borra** el ADR guardado en codebase-memory. Después de cada reindexado, comprobar con `manage_adr(mode='get')` y volver a guardarlo a partir de `docs/decisiones.md`.
 - `Grep`/`Glob`/`Read` solo para docs, configuración y texto. Siempre `Read` antes de editar.
 
 ## Forma de trabajo
@@ -17,6 +18,8 @@
 - Sin subagentes ni workflows salvo petición explícita del usuario o la palabra "ultracode".
 - Trabajo secuencial; leer solo lo necesario.
 - Commits con Conventional Commits (`feat:`, `fix:`, `docs:`, `perf:`, `refactor:`, `chore:`).
+- Servidor de desarrollo para Claude: `npm run dev:poll` (configurado en `.claude/launch.json`). Sin polling, Vite en Windows pierde cambios y sirve módulos viejos.
+- Verificación visual: con el panel del navegador oculto, la página no anima. Hacer una captura fuerza los frames. En desarrollo, `window.__microverse` expone `glassTuning`, los stores y `three()` para look-dev automatizado.
 
 ## Despliegue (Railway)
 - Seguir **siempre** [docs/railway.md](docs/railway.md). Solo se opera sobre el proyecto `microverse`, con `--project` explícito.
@@ -32,3 +35,5 @@
 - Toda funcionalidad visual respeta el nivel de calidad (`src/config/quality.ts`).
 - Shaders en `src/shaders/**.glsl`, importados con `?raw` (sin plugin).
 - Objetos repetidos (musgo, piedras, gotas, luciérnagas) siempre con instancing.
+- Recursos de Three creados con `useMemo(() => crear(), [])` y mutados desde funciones con nombre fuera del componente (`syncGlassUniforms`, etc.): así lo exige el linter del React Compiler (`react-hooks/immutability`) sin desactivarlo.
+- Lo que reconstruye buffers (MSAA, resolución del post-proceso) depende de `startupTier`; en caliente solo cambia el DPR (ADR-013).

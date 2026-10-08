@@ -6,7 +6,9 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 0 completada: proyecto montado, escena provisional, tests y lint en verde. Siguiente: jornada 1, look-dev del cristal.
+**Estado:** Jornada 1 completada: cristal de pared fina con shader propio, estudio de luz, pedestal, fondo y post-proceso HDR. Siguiente: jornada 2, isla y subsuelo.
+
+![Jornada 1: look-dev del cristal](docs/capturas/jornada-01-cristal.jpg)
 
 ## Desarrollo
 
@@ -14,7 +16,8 @@ Requiere Node 24 (`.nvmrc`).
 
 ```bash
 npm install
-npm run dev        # servidor de desarrollo (FPS y draw calls visibles)
+npm run dev        # servidor de desarrollo (FPS, draw calls y panel Leva de look-dev)
+npm run dev:poll   # igual, con polling: si los cambios no se recargan (Windows)
 npm run test       # tests en modo watch
 npm run lint
 npm run build      # typecheck + build de producción

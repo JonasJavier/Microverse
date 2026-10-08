@@ -3,7 +3,7 @@ import { Canvas } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
 import { palette } from '../config/palette.ts'
 import { QUALITY } from '../config/quality.ts'
-import { CAMERA_DISTANCE, CAMERA_FOV } from '../config/world.ts'
+import { CAMERA_FOV, framingDistance } from '../config/world.ts'
 import { useMicroverseStore } from '../store/useMicroverseStore.ts'
 import { MicroverseScene } from './MicroverseScene.tsx'
 
@@ -19,8 +19,9 @@ export function MicroverseCanvas() {
   return (
     <Canvas
       dpr={[1, QUALITY[tier].maxDpr]}
-      camera={{ fov: CAMERA_FOV, position: [0, 0.6, CAMERA_DISTANCE], near: 0.1, far: 50 }}
-      gl={{ antialias: true, powerPreference: 'high-performance' }}
+      camera={{ fov: CAMERA_FOV, position: [0, 0.4, framingDistance(16 / 9)], near: 0.1, far: 50 }}
+      // El antialiasing lo hace el EffectComposer (MSAA según calidad).
+      gl={{ antialias: false, stencil: false, powerPreference: 'high-performance' }}
     >
       <color attach="background" args={[palette.fondo.vacio]} />
       <PerformanceMonitor

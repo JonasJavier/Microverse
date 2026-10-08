@@ -138,6 +138,7 @@ Lighting ◀── ciclo (lo controla el usuario directamente, no lo decide el m
 
 - **Nivel inicial:** táctil o pantalla pequeña → Media; escritorio → Alta.
 - `PerformanceMonitor` de Drei: `onDecline` baja un nivel, `onIncline` sube uno; si oscila (`onFallback`), se queda fijo en el más bajo.
+- **Qué se adapta en caliente (ADR-013):** solo lo barato, el DPR. Lo que reconstruye recursos (MSAA del post-proceso, resolución del bloom) se fija con el nivel de arranque (`startupTier`): cambiarlo en caliente provocaba un tirón y un fallo de encuadre.
 - Las cifras son puntos de partida: se calibran midiendo en la jornada 11.
 
 ## Interacción

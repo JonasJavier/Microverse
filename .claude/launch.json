@@ -4,7 +4,7 @@
     {
       "name": "microverse-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": ["run", "dev:poll"],
       "port": 5173
     }
   ]

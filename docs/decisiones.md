@@ -28,10 +28,19 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 **Plan B:** si en la jornada 4 el árbol procedural no pasa el listón visual, se modela en Blender y el crecimiento se resuelve por segmentos.
 **Aprobada** por el usuario el 2026-10-07.
 
-## ADR-004 · Cristal de pared fina con shader propio — Aceptada, se valida en la jornada 1
+## ADR-004 · Cristal de pared fina con shader propio — Aceptada y validada (jornada 1, 2026-10-08)
 **Contexto:** `MeshTransmissionMaterial` añade un pase de render completo de la escena. Una esfera de pared fina casi no refracta.
-**Decisión:** shader propio (reflejo de entorno + Fresnel + brillos de softbox + tinte leve) como base en todos los niveles. MTM solo en calidad Alta, si la comparación A/B demuestra que se nota.
-**Consecuencias:** cristal barato y correcto. Hay que cuidar el orden de transparencias.
+**Decisión:** shader propio en **todos** los niveles: reflejo de softboxes analíticos (los mismos que los Lightformers del entorno) × Fresnel de Schlick, más un borde leve y una absorción en ángulo rasante, en una pasada por cara con alpha premultiplicado. MTM descartado y su código eliminado.
+**A/B de la jornada 1** (misma escena, 1280×720):
+
+| Cristal | Draw calls/frame | Triángulos/frame | Aspecto |
+|---|---|---|---|
+| Shader Fresnel | 28 | 43.507 | Interior limpio, media luna superior nítida |
+| MeshTransmissionMaterial | 37 (+32 %) | 54.741 (+26 %) | Oscurece el interior; reflejo fantasma de la semilla |
+
+El sobrecoste de MTM crece con la escena (la vuelve a renderizar entera cada frame); con la isla real sería mucho mayor.
+**Consecuencias:** cristal barato y fiel a la referencia. Hay que cuidar el orden de transparencias (cara trasera `renderOrder` 10, delantera 11, `depthWrite` desactivado).
+**Lecciones técnicas:** con `side: BackSide`, three.js invierte el winding y `gl_FrontFacing` vale `true` también en la cara trasera: la normal se orienta con `faceforward`. La proyección sobre cada softbox se descarta si `dot(r, dir) ≤ 0.01`, porque un NaN en un píxel lo esparce el bloom por toda la pantalla.
 
 ## ADR-005 · Motor de simulación desacoplado a 10 Hz — Aceptada (2026-10-07)
 **Decisión:** `EcosystemEngine` en TS puro (sin React ni Three), con paso fijo de 0.1 s, determinista y con tests. El render suaviza con `easing.damp`.
@@ -65,3 +74,15 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 **Seguridad:** `serve` 14.2.6 fija `compression` 1.8.1 (GHSA-vc2v-76pw-4v95, DoS, severidad alta). Se fuerza `compression` 1.8.2 con `overrides` en `package.json`; `npm audit` queda en 0. Se revisa cuando salga una versión nueva de `serve`.
 **Reglas:** seguir [docs/railway.md](railway.md). Solo se opera sobre el proyecto `microverse`, siempre con `--project` explícito; los demás proyectos de la cuenta no se tocan.
 **Alternativa descartada:** Dockerfile con Caddy. Es más eficiente, pero añade una imagen que mantener; se reconsidera si el rendimiento de servido lo pide.
+**Pendiente (usuario):** la app de Railway en GitHub no tiene acceso al repositorio privado (`connect-service-source` → "User does not have access to the repo"), así que los push no despliegan solos. Mientras tanto se despliega con `railway up --service web` desde esta carpeta.
+
+## ADR-012 · Tone mapping Khronos PBR Neutral — Aceptada (jornada 1, 2026-10-08)
+**Contexto:** la dirección de arte dejaba AgX o ACES para el look-dev. La escena se renderiza en HDR y el tone mapping se aplica al final del post-proceso.
+**Comparación (misma escena):** AgX desatura la paleta (el musgo amarillea, los negros se levantan); ACES Filmic aplasta el *Vacío* casi a negro puro, que la paleta prohíbe. Neutral conserva tono y saturación: el *Vacío* sigue azul y *Sol* sigue cálido.
+**Decisión:** `ToneMappingMode.NEUTRAL`. La paleta está dirigida: el tone mapping no debe reinterpretarla.
+**Consecuencias:** los brillos muy intensos se blanquean menos que con ACES; los softboxes reciben una ganancia de reflejo propia (`reflectionGain`) para leerse como luz.
+
+## ADR-013 · Calidad adaptativa: lo caro se fija al arrancar, el DPR se adapta en caliente — Aceptada (jornada 1, 2026-10-08)
+**Contexto:** al bajar de nivel, el MSAA del post-proceso cambiaba a la vez que el DPR. Cambiar el MSAA reconstruye el EffectComposer antes de que el canvas aplique el DPR nuevo: la imagen salía ampliada ×1,5 y desplazada (reproducido en móvil 390×844).
+**Decisión:** `startupTier` (nivel de arranque) fija lo que cuesta reconstruir: MSAA y resolución del bloom. `qualityTier` (nivel actual) adapta en caliente solo lo barato: el DPR y, más adelante, densidades que no reconstruyan buffers.
+**Consecuencias:** sin tirones al degradar justo cuando el rendimiento ya va mal. Un dispositivo que arranca en Alta y degrada mantiene su MSAA: se compensa con el DPR.

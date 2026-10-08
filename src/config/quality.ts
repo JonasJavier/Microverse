@@ -4,6 +4,8 @@ export interface QualitySettings {
   maxDpr: number
   depthOfField: boolean
   bloomHalfRes: boolean
+  /** Muestras MSAA del EffectComposer (0 = sin antialiasing). */
+  multisampling: number
   mossInstances: number
   fireflies: number
   raindrops: number
@@ -16,6 +18,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     maxDpr: 2,
     depthOfField: true,
     bloomHalfRes: false,
+    multisampling: 4,
     mossInstances: 6000,
     fireflies: 60,
     raindrops: 1500,
@@ -25,6 +28,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     maxDpr: 1.5,
     depthOfField: false,
     bloomHalfRes: true,
+    multisampling: 2,
     mossInstances: 3000,
     fireflies: 40,
     raindrops: 800,
@@ -34,6 +38,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     maxDpr: 1,
     depthOfField: false,
     bloomHalfRes: true,
+    multisampling: 0,
     mossInstances: 1200,
     fireflies: 24,
     raindrops: 400,

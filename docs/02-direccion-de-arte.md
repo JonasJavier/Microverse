@@ -43,7 +43,7 @@ Un único parámetro `ciclo` (0 → 1) controla toda la iluminación. Valores in
 
 ## El cristal (ADR-004)
 
-Una esfera real de pared fina **casi no refracta**: lo que la vende son los reflejos, el borde Fresnel y uno o dos brillos especulares de softbox. Base: shader propio de cristal fino (reflejo de entorno + Fresnel + brillo + tinte interior muy leve). `MeshTransmissionMaterial` solo entra en calidad alta si en el look-dev demuestra que aporta algo visible.
+Una esfera real de pared fina **casi no refracta**: lo que la vende son los reflejos, el borde Fresnel y uno o dos brillos especulares de softbox. Decisión (ADR-004, validada en la jornada 1): shader propio de cristal fino en todos los niveles. El brillo principal es un softbox **cenital y algo trasero**: se refleja en ángulo rasante en el borde superior, donde el Fresnel es alto, y dibuja la media luna de la fotografía de producto. `MeshTransmissionMaterial` quedó descartado en el A/B (más caro y peor aspecto).
 
 Condensación: opcional, estilizada, solo en la parte superior y solo con humedad alta.
 
@@ -78,7 +78,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 | Bloom selectivo | Umbral alto; solo emisivos > 1 con `toneMapped={false}` | Todas (resolución reducida en baja) |
 | Profundidad de campo | Enfoque en el objetivo de la cámara (árbol/semilla) | Solo alta |
 | Viñeta + grano sutil | Aspecto fotográfico | Todas |
-| Tone mapping | AgX o ACES: se decide en look-dev | Todas |
+| Tone mapping | **Khronos PBR Neutral** (ADR-012): respeta tono y saturación de la paleta | Todas |
 
 **Prohibido:** aberración cromática exagerada, destellos de lente, glitch y neón saturado.
 
