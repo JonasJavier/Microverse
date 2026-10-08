@@ -1,0 +1,160 @@
+# 04 · Arquitectura
+
+## Principios
+
+1. **La simulación va separada del render.** `EcosystemEngine` es TypeScript puro, determinista y testeable. No sabe que existe Three.js.
+2. **Flujo unidireccional.** Gesto → acción → motor → parámetros visuales (0..1) → uniforms suavizados.
+3. **Cero re-renders de React por frame.** El render lee el motor por referencia dentro de `useFrame`.
+4. **Procedural y determinista.** Árbol, raíces, isla y distribución de la vegetación salen de generadores con semilla fija: la composición se dirige artísticamente y siempre se ve igual.
+5. **La calidad adaptativa es parte del diseño**, no un parche final.
+
+## Estructura de carpetas
+
+```
+microverse/
+├── CLAUDE.md
+├── README.md
+├── docs/
+├── public/
+│   ├── fonts/
+│   └── audio/                    # ambiente (opcional, jornada 10)
+└── src/
+    ├── main.tsx
+    ├── App.tsx
+    ├── config/
+    │   ├── palette.ts            # tokens de color (única fuente)
+    │   ├── quality.ts            # niveles alto / medio / bajo
+    │   └── world.ts              # semilla del mundo, dimensiones, constantes
+    ├── simulation/               # TS puro: sin react, sin three
+    │   ├── types.ts
+    │   ├── ecosystemConfig.ts
+    │   ├── rules.ts              # funciones puras (bienestar, curvaLuz…)
+    │   ├── EcosystemEngine.ts
+    │   ├── persistence.ts        # serializar / hidratar + recuperación offline
+    │   └── EcosystemEngine.test.ts
+    ├── generators/               # geometría procedural (sin react)
+    │   ├── random.ts             # PRNG con semilla
+    │   ├── spaceColonization.ts  # algoritmo común a árbol y raíces
+    │   ├── treeGenerator.ts
+    │   ├── rootGenerator.ts
+    │   ├── islandGenerator.ts
+    │   ├── scatter.ts            # distribución de musgo, piedras, hongos
+    │   └── *.test.ts
+    ├── store/
+    │   └── useMicroverseStore.ts # instancia del motor, acciones, UI, nivel de calidad
+    ├── experience/
+    │   ├── MicroverseCanvas.tsx  # <Canvas>, PerformanceMonitor, AdaptiveDpr
+    │   ├── MicroverseScene.tsx   # composición de la escena
+    │   ├── SimulationDriver.tsx  # useFrame → engine.step a tick fijo
+    │   ├── camera/CameraRig.tsx
+    │   ├── lighting/Lighting.tsx # ciclo día/noche + Environment con Lightformers
+    │   ├── world/
+    │   │   ├── GlassSphere.tsx
+    │   │   ├── Pedestal.tsx
+    │   │   ├── FloatingIsland.tsx
+    │   │   ├── Seed.tsx
+    │   │   ├── LifeTree.tsx
+    │   │   ├── RootNetwork.tsx
+    │   │   ├── Vegetation.tsx
+    │   │   ├── Mushrooms.tsx
+    │   │   └── HiddenOrganisms.tsx
+    │   ├── effects/
+    │   │   ├── RainSystem.tsx
+    │   │   ├── Puddles.tsx
+    │   │   ├── Fireflies.tsx
+    │   │   ├── InnerMist.tsx
+    │   │   └── PostFX.tsx
+    │   └── interaction/
+    │       ├── SunHandle.tsx     # orbe solar arrastrable
+    │       └── useGestures.ts    # toque / arrastre / pulsación larga
+    ├── shaders/
+    │   ├── common/               # noise.glsl, fresnel.glsl…
+    │   ├── glass/                # glass.vert, glass.frag
+    │   ├── rootPulse/
+    │   ├── growth/               # revelado de ramas por uGrowth
+    │   └── vegetation/           # viento, marchitez, humedad
+    ├── audio/
+    │   └── AmbientAudio.ts       # Web Audio (opcional)
+    └── ui/
+        ├── IntroOverlay.tsx
+        ├── ExperienceControls.tsx
+        ├── ObserverMode.tsx
+        └── AboutPanel.tsx        # "cómo se construyó"
+```
+
+**Cambios respecto a la propuesta original:**
+- `GlassDome` → `GlassSphere` (es una esfera, no una campana).
+- Nuevos: `generators/` (procedural y testeable), `config/`, `SimulationDriver`, `PostFX`, `Seed`, `Mushrooms`, `Pedestal`, `HiddenOrganisms`, `interaction/` y `ObserverMode`.
+- Shaders organizados por efecto, con vertex y fragment separados.
+- Tests junto al código que prueban.
+
+## Flujo de datos
+
+```
+[Gesto / UI] ──acción──▶ useMicroverseStore ──dispatch──▶ EcosystemEngine
+                                                            │ step(0.1 s) a tick fijo
+                                                            ▼
+                                                    VisualParams (0..1)
+                                                            │ lectura por referencia en useFrame
+                                                            ▼
+                         Componentes 3D: easing.damp → uniforms / escalas / intensidades
+
+[UI DOM] ◀── suscripción selectiva (etapa, despertado, nivel de calidad) ── store
+Lighting ◀── ciclo (lo controla el usuario directamente, no lo decide el motor)
+```
+
+## Responsabilidades por capa
+
+| Capa | Puede importar | No puede importar |
+|---|---|---|
+| `simulation/` | nada externo | `react`, `three`, `zustand` |
+| `generators/` | `three` (matemáticas), `simplex-noise` | `react` |
+| `store/` | `simulation/`, `zustand` | `three` |
+| `experience/` | todo lo anterior, R3F, Drei | — |
+| `ui/` | `store/`, `config/` | `three`, `experience/` |
+
+## Patrones R3F obligatorios
+
+- **Nunca** `setState` en `useFrame`. Leer `useMicroverseStore.getState().engine.visuals` y mutar uniforms o refs.
+- **Sin asignaciones de memoria por frame:** `Vector3`, `Color` y `Matrix4` se preasignan a nivel de módulo o con `useMemo`.
+- **Uniforms:** objeto creado una vez con `useMemo`; solo se muta `.value`.
+- **Instancing** para musgo, piedras, hierba, gotas y luciérnagas.
+- **Raycast solo donde hace falta:** semilla, orbe solar y zonas interactivas. El resto con `raycast={() => null}`.
+- **Orden de transparencias:** opacos → partículas → cara trasera del cristal (`BackSide`) → cara delantera (`FrontSide`), con `depthWrite={false}` en el cristal y `renderOrder` explícito.
+- Las geometrías procedurales se generan en `useMemo` a partir de la semilla; R3F las libera al desmontar.
+
+## Calidad adaptativa
+
+| | Alta | Media | Baja |
+|---|---|---|---|
+| DPR máximo | 2 | 1.5 | 1 |
+| Cristal | Fresnel + entorno (MTM si se justifica) | Fresnel + entorno | Fresnel simple |
+| Profundidad de campo | Sí | No | No |
+| Bloom | Completo | Media resolución | Media resolución, menos niveles |
+| Instancias de musgo | ~6000 | ~3000 | ~1200 |
+| Luciérnagas | 60 | 40 | 24 |
+| Gotas de lluvia | 1500 | 800 | 400 |
+| Sombras | 1024, suaves | 1024 | Sin sombras dinámicas (sombra falsa) |
+
+- **Nivel inicial:** táctil o pantalla pequeña → Media; escritorio → Alta.
+- `PerformanceMonitor` de Drei: `onDecline` baja un nivel, `onIncline` sube uno; si oscila (`onFallback`), se queda fijo en el más bajo.
+- Las cifras son puntos de partida: se calibran midiendo en la jornada 11.
+
+## Interacción
+
+- **Cámara:** `CameraControls` de Drei con amortiguación, sin desplazamiento lateral. Ángulo polar de 20° a 150° (se puede mirar desde abajo para ver las raíces colgantes) y distancia mínima y máxima.
+- **Gestos:** toque o clic = interactuar; arrastre = orbitar; pulsación larga (más de 400 ms con menos de 8 px de movimiento) = lluvia. Funciona igual con ratón y en táctil.
+- **Teclado:** mantener `R` = lluvia · `←`/`→` = sol · `O` = modo observador · `M` = silenciar.
+- **Accesibilidad:** con `prefers-reduced-motion` se reducen las partículas y los movimientos automáticos de cámara. Los controles tienen `aria-label`.
+
+## Persistencia
+
+- Clave de `localStorage`: `microverse:v1` → `{ version, estado, guardadoEn }`.
+- Se guarda cada 10 s y cuando la pestaña pasa a segundo plano (`visibilitychange`).
+- Al volver, se simula el tiempo de ausencia (con tope) sin lluvia. El mundo nunca baja del mínimo de vitalidad.
+- Todo el acceso va dentro de `try/catch`: la experiencia funciona igual sin almacenamiento.
+
+## Testing
+
+- **Vitest:** reglas del motor, determinismo, serialización de ida y vuelta, y generadores (misma semilla → misma geometría; número de elementos dentro del presupuesto).
+- **Visual:** checklist manual y capturas por hito en `docs/capturas/`.

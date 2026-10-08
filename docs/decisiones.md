@@ -1,0 +1,55 @@
+# Registro de decisiones (ADR)
+
+Estados: **Propuesta** (pendiente de validar) · **Aceptada** · **Reemplazada** (se indica por cuál).
+Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memory (`manage_adr`).
+
+---
+
+## ADR-001 · WebGL + GLSL, sin WebGPU en v1 — Aceptada (2026-10-07)
+**Contexto:** Three.js avanza hacia WebGPU/TSL y R3F 10 (en alpha) lo integra.
+**Decisión:** `WebGLRenderer` + GLSL sobre R3F 9.
+**Consecuencias:** máxima compatibilidad y herramientas maduras. Migrar a TSL es un tema de v2.
+**Alternativa descartada:** WebGPU desde el inicio, porque supone un riesgo de infraestructura experimental que no aporta a la definición de terminado.
+
+## ADR-002 · Versiones exactas; TypeScript 6.0 — Aceptada (2026-10-07)
+**Contexto:** TS 7.0.2 es `latest`, pero `typescript-eslint` 8.71.1 exige `typescript <6.1.0`. R3F 9.8.1 exige `react <19.4`.
+**Decisión:** fijar todo exacto (ver [03-stack.md](03-stack.md)): TS 6.0.3 y React 19.3.0.
+**Consecuencias:** cualquier actualización pasa por un ADR nuevo.
+
+## ADR-003 · Árbol: silueta estilizada, acabado macro, procedural — Aceptada (2026-10-07)
+**Contexto:** la elección entre un árbol de fantasía estilizado y uno realista de fotografía macro define la identidad visual.
+**Decisión:** **silueta de fantasía estilizada con acabado macro realista** (luz, materiales, profundidad de campo), generada por código con colonización del espacio.
+**Motivos:**
+1. Una silueta reconocible se lee en miniatura, de noche y en un vídeo de 15 s. Un árbol realista a esta escala se convierte en ruido.
+2. El realismo macro exige miles de hojas y texturas de corteza pesadas, que chocan con el objetivo de 30 FPS en móvil.
+3. Hecho por código, el crecimiento sale casi gratis: un uniform `uGrowth` revela las ramas a lo largo de su longitud. Con un modelo de Blender habría que animar a mano.
+4. El mismo generador produce las raíces hacia abajo: árbol y red neuronal comparten lenguaje formal.
+5. Coincide con la referencia 1 (copas de musgo, formas de cuento) sin perder la seriedad de la referencia 2.
+**Plan B:** si en la jornada 4 el árbol procedural no pasa el listón visual, se modela en Blender y el crecimiento se resuelve por segmentos.
+**Aprobada** por el usuario el 2026-10-07.
+
+## ADR-004 · Cristal de pared fina con shader propio — Aceptada, se valida en la jornada 1
+**Contexto:** `MeshTransmissionMaterial` añade un pase de render completo de la escena. Una esfera de pared fina casi no refracta.
+**Decisión:** shader propio (reflejo de entorno + Fresnel + brillos de softbox + tinte leve) como base en todos los niveles. MTM solo en calidad Alta, si la comparación A/B demuestra que se nota.
+**Consecuencias:** cristal barato y correcto. Hay que cuidar el orden de transparencias.
+
+## ADR-005 · Motor de simulación desacoplado a 10 Hz — Aceptada (2026-10-07)
+**Decisión:** `EcosystemEngine` en TS puro (sin React ni Three), con paso fijo de 0.1 s, determinista y con tests. El render suaviza con `easing.damp`.
+**Consecuencias:** las reglas se pueden calibrar y probar sin abrir el navegador, y el rendimiento del render no altera la simulación.
+
+## ADR-006 · Shaders con `?raw`, sin plugin — Aceptada (2026-10-07)
+**Contexto:** `vite-plugin-glsl` necesita `esbuild` como peer y Vite 8 (Rolldown) ya no lo incluye.
+**Decisión:** importaciones `?raw` nativas + helper de composición para fragmentos comunes.
+
+## ADR-007 · "El mundo te recuerda" (persistencia local) — Aceptada (2026-10-07)
+**Decisión:** guardar el estado en `localStorage` y simular la ausencia al volver (seco, nunca muerto).
+**Motivo:** lleva la idea de memoria a su consecuencia natural por menos de una jornada de trabajo.
+**Aprobada** por el usuario el 2026-10-07.
+
+## ADR-008 · Subsuelo como corte de diorama — Aceptada (2026-10-07), se valida en la jornada 2
+**Decisión:** el cuadrante frontal del suelo está cortado en limpio y muestra estratos y raíces luminosas. Además, raíces colgantes bajo la isla.
+**Alternativa:** suelo semitransparente con las raíces vistas a través. Más ambiguo y con más problemas de transparencia.
+
+## ADR-009 · Hosting en Netlify con deploy desde la jornada 0 — Aceptada (2026-10-07)
+**Decisión:** sitio estático en Netlify, con deploy previews por rama. La integración ya está conectada en el entorno de trabajo.
+**Motivo:** publicar desde el primer día elimina el riesgo de dejar "publicada" para el final.
