@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import type { MeshStandardMaterial } from 'three'
 import { palette } from '../../config/palette.ts'
-import { SEED_POSITION } from '../../config/world.ts'
+import { SEED_POSITION, SEED_RADIUS } from './island.ts'
 
 /**
  * La semilla dormida: late con luz Sol. Es el punto de partida del acto 01
@@ -19,8 +19,8 @@ export function Seed() {
   })
 
   return (
-    <mesh position={SEED_POSITION}>
-      <sphereGeometry args={[0.035, 32, 16]} />
+    <mesh position={SEED_POSITION} scale={[1, 0.8, 1]} castShadow>
+      <sphereGeometry args={[SEED_RADIUS, 32, 16]} />
       <meshStandardMaterial
         ref={material}
         color={palette.materia.tierra}

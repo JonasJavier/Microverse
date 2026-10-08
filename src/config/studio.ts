@@ -82,5 +82,16 @@ export const KEY_LIGHT = {
   color: palette.luz.sol,
 }
 
+/**
+ * Relleno frío desde la derecha, opuesto a la luz principal cálida (esquema de
+ * retrato: principal cálida, relleno frío). Abre la cara del corte que mira en
+ * contra de la principal. No proyecta sombras ni se refleja en el cristal.
+ */
+export const FILL_LIGHT = {
+  direction: [0.85, 0.25, 0.6] as const,
+  intensity: 0.75,
+  color: palette.materia.reflejo,
+}
+
 /** Distancia a la que se colocan los Lightformers equivalentes. */
 export const LIGHTFORMER_DISTANCE = 6

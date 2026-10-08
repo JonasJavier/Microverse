@@ -6,9 +6,13 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 1 completada: cristal de pared fina con shader propio, estudio de luz, pedestal, fondo y post-proceso HDR. Siguiente: jornada 2, isla y subsuelo.
+**Estado:** Jornada 2 completada: isla flotante procedural con corte de diorama y estratos, musgo y piedras con instancing, sombras y luz de mañana. Siguiente: jornada 3, árbol y raíces procedurales.
 
-![Jornada 1: look-dev del cristal](docs/capturas/jornada-01-cristal.jpg)
+| Vista | Corte de diorama |
+|---|---|
+| ![Jornada 2: la isla](docs/capturas/jornada-02-isla.jpg) | ![Jornada 2: el corte](docs/capturas/jornada-02-corte.jpg) |
+
+Historial visual en [docs/capturas](docs/capturas).
 
 ## Desarrollo
 

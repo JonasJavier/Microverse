@@ -60,7 +60,9 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 ## Subsuelo (ADR-008)
 
 - **Isla:** disco irregular de tierra con musgo arriba y cono invertido de roca abajo.
-- **Corte de diorama (recomendado):** el cuadrante frontal del suelo está cortado en limpio y muestra estratos (Bosque oscuro → tierra → roca) con la red de raíces brillando dentro. Es la imagen distintiva del proyecto.
+- **Corte de diorama (validado en la jornada 2):** una cuña frontal de 86°, un poco a la derecha, cortada en limpio. Muestra los estratos `palette.estratos` (césped → humus → tierra → arcilla → tierra profunda → roca), con la red de raíces brillando dentro. La semilla queda en el vértice del corte. Es la imagen distintiva del proyecto.
+- **Luz del corte:** la cara que mira a la luz principal se ve cálida; la otra la abre un relleno frío desde la derecha (principal cálida + relleno frío, esquema de retrato).
+- **Musgo:** miles de almohadillas instanciadas en manchas de Bosque a Musgo, más ralas cerca del borde, con claros alrededor de la semilla y del tronco.
 - **Raíces colgantes:** algunas salen por la base de la isla y cuelgan en el vacío con las puntas luminosas. Se descubren al mirar desde abajo.
 - **Pulsos:** viajan desde la semilla hacia fuera mediante un atributo de progreso a lo largo de cada raíz.
 

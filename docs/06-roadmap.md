@@ -17,7 +17,7 @@
 |---|---|---|
 | 0 | Arranque ✅ | Vite + dependencias fijadas, lint/test en verde, Git + GitHub, **indexado en codebase-memory**, `palette.ts`, `quality.ts`, Canvas con herramientas de depuración. Deploy en Railway (ADR-011) |
 | 1 | Look-dev del cristal ✅ | `GlassSphere` (shader Fresnel) comparado con MTM, `Environment` con Lightformers, `Pedestal`, fondo, `PostFX` base (bloom + viñeta). Se cierra ADR-004 |
-| 2 | Isla y subsuelo | `islandGenerator`, corte de diorama con estratos (se cierra ADR-008), musgo instanciado (`scatter`), luz de mañana fija |
+| 2 | Isla y subsuelo ✅ | `islandGenerator`, corte de diorama con estratos (se cierra ADR-008), musgo instanciado (`scatter`), luz de mañana fija |
 | 3 | Generadores | `spaceColonization`, `treeGenerator`, `rootGenerator` con tests; `LifeTree` y `RootNetwork` estáticos |
 | 4 | Composición | Árbol definitivo (se cierra ADR-003), encuadre, `CameraControls`, DOF, versión de noche estática. **H1 · Captura** |
 | 5 | Motor | `EcosystemEngine` + tests, store, `SimulationDriver`, `ObserverMode`, panel Leva para calibrar |

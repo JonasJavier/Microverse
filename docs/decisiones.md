@@ -55,8 +55,10 @@ El sobrecoste de MTM crece con la escena (la vuelve a renderizar entera cada fra
 **Motivo:** lleva la idea de memoria a su consecuencia natural por menos de una jornada de trabajo.
 **Aprobada** por el usuario el 2026-10-07.
 
-## ADR-008 · Subsuelo como corte de diorama — Aceptada (2026-10-07), se valida en la jornada 2
+## ADR-008 · Subsuelo como corte de diorama — Aceptada y validada (jornada 2, 2026-10-08)
 **Decisión:** el cuadrante frontal del suelo está cortado en limpio y muestra estratos y raíces luminosas. Además, raíces colgantes bajo la isla.
+**Implementación (jornada 2):** cuña de 86° (`cutHalfAngle` 0,75 rad) centrada 20° a la derecha de la cámara (`cutCenter` 0,35 rad): el árbol, en el tercio izquierdo, queda sobre suelo intacto. La semilla está justo detrás del vértice del corte, para que las raíces nazcan a la vista. Los estratos (césped → humus → tierra → arcilla → tierra profunda → roca) son colores de vértice según la profundidad, con bordes ondulados por ruido 3D. Una sola forma (`IslandShape`) alimenta la malla, el musgo y las raíces.
+**Validación:** se lee desde el encuadre por defecto y gana en primer plano. La cara del corte que mira en contra de la luz principal quedaba negra; se resolvió con un relleno frío desde la derecha (`FILL_LIGHT`), sin tocar el cristal.
 **Alternativa:** suelo semitransparente con las raíces vistas a través. Más ambiguo y con más problemas de transparencia.
 
 ## ADR-009 · Hosting en Netlify con deploy desde la jornada 0 — Reemplazada por ADR-011 (2026-10-08)

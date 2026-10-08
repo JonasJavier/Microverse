@@ -37,7 +37,7 @@ microverse/
     │   ├── spaceColonization.ts  # algoritmo común a árbol y raíces
     │   ├── treeGenerator.ts
     │   ├── rootGenerator.ts
-    │   ├── islandGenerator.ts
+    │   ├── island.ts             # forma de la isla, malla con corte de diorama y estratos
     │   ├── scatter.ts            # distribución de musgo, piedras, hongos
     │   └── *.test.ts
     ├── store/
@@ -51,7 +51,10 @@ microverse/
     │   ├── world/
     │   │   ├── GlassSphere.tsx
     │   │   ├── Pedestal.tsx
+    │   │   ├── island.ts         # ISLAND: forma compartida, SEED_POSITION, TREE_BASE, claros
+    │   │   ├── geometry.ts       # datos de generador → BufferGeometry / InstancedMesh
     │   │   ├── FloatingIsland.tsx
+    │   │   ├── GroundCover.tsx   # musgo y piedras (instancing)
     │   │   ├── Seed.tsx
     │   │   ├── LifeTree.tsx
     │   │   ├── RootNetwork.tsx

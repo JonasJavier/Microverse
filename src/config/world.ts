@@ -7,8 +7,15 @@ export const SPHERE_RADIUS = 1
 /** Pedestal flotante: altura de su cara superior, con un hueco bajo la esfera. */
 export const PEDESTAL_TOP_Y = -SPHERE_RADIUS - 0.16
 
-/** Posición provisional de la semilla (se fija con la isla definitiva, jornada 2). */
-export const SEED_POSITION: [number, number, number] = [0.16, -0.02, 0.24]
+/**
+ * Posición de la semilla en el plano xz: justo detrás del vértice del corte de
+ * diorama, sobre suelo intacto. Las raíces nacen de aquí y se ven en el corte.
+ * La altura sale de la superficie de la isla (experience/world/island.ts).
+ */
+export const SEED_XZ: readonly [number, number] = [-0.024, -0.066]
+
+/** Base del árbol: tercio izquierdo, sobre suelo intacto. */
+export const TREE_XZ: readonly [number, number] = [-0.27, -0.12]
 
 /** Óptica de teleobjetivo (docs/02-direccion-de-arte.md · Composición). */
 export const CAMERA_FOV = 30
@@ -21,7 +28,7 @@ export const FRAMING = {
   /** El objetivo queda algo por debajo del centro: la esfera sube en el encuadre. */
   targetY: -0.15,
   /** Altura de la cámara respecto al objetivo, en proporción a la distancia. */
-  elevation: 0.09,
+  elevation: 0.22,
 } as const
 
 /** Distancia de cámara para que la esfera llene el encuadre según el aspecto. */

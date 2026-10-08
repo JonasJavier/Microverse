@@ -16,7 +16,7 @@ export function Pedestal() {
 
   return (
     <group position={[0, PEDESTAL_TOP_Y - DISC_HEIGHT / 2, 0]}>
-      <mesh raycast={noRaycast}>
+      <mesh receiveShadow raycast={noRaycast}>
         <cylinderGeometry args={[0.56, 0.6, DISC_HEIGHT, 96]} />
         <meshPhysicalMaterial
           color={palette.fondo.vacio}

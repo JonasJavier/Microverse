@@ -12,6 +12,7 @@ const DevTools = import.meta.env.DEV ? lazy(() => import('./debug/DevTools.tsx')
 
 export function MicroverseCanvas() {
   const tier = useMicroverseStore((s) => s.qualityTier)
+  const startupTier = useMicroverseStore((s) => s.startupTier)
   const declineQuality = useMicroverseStore((s) => s.declineQuality)
   const inclineQuality = useMicroverseStore((s) => s.inclineQuality)
   const lockQuality = useMicroverseStore((s) => s.lockQuality)
@@ -19,6 +20,8 @@ export function MicroverseCanvas() {
   return (
     <Canvas
       dpr={[1, QUALITY[tier].maxDpr]}
+      // PCF: three r186 eliminó PCFSoftShadowMap. Se decide al arrancar (ADR-013).
+      shadows={QUALITY[startupTier].shadows === 'ninguna' ? false : 'percentage'}
       camera={{ fov: CAMERA_FOV, position: [0, 0.4, framingDistance(16 / 9)], near: 0.1, far: 50 }}
       // El antialiasing lo hace el EffectComposer (MSAA según calidad).
       gl={{ antialias: false, stencil: false, powerPreference: 'high-performance' }}
