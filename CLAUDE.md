@@ -10,7 +10,7 @@
 - Si el proyecto no está indexado: `index_repository` antes de nada. Si hubo cambios desde el último índice: `detect_changes` y reindexar.
 - Reindexar después de cada cambio estructural (carpetas nuevas, renombres, módulos nuevos).
 - Los ADR se reflejan también en codebase-memory con `manage_adr` una vez el proyecto esté indexado.
-- ⚠️ `index_repository` **borra** el ADR guardado en codebase-memory. Después de cada reindexado, comprobar con `manage_adr(mode='get')` y volver a guardarlo a partir de `docs/decisiones.md`.
+- ⚠️ `index_repository` **a veces borra** el ADR guardado en codebase-memory (pasó una vez de dos). Después de cada reindexado, comprobar con `manage_adr(mode='get')` y, si falta, volver a guardarlo a partir de `docs/decisiones.md`.
 - `Grep`/`Glob`/`Read` solo para docs, configuración y texto. Siempre `Read` antes de editar.
 
 ## Forma de trabajo
