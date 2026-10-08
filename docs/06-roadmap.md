@@ -15,7 +15,7 @@
 
 | # | Foco | Entregable |
 |---|---|---|
-| 0 | Arranque | Vite + dependencias fijadas, lint/test en verde, Git + GitHub, **indexado en codebase-memory**, `palette.ts`, `quality.ts`, Canvas con herramientas de depuración, **primer deploy** en Netlify |
+| 0 | Arranque ✅ | Vite + dependencias fijadas, lint/test en verde, Git + GitHub, **indexado en codebase-memory**, `palette.ts`, `quality.ts`, Canvas con herramientas de depuración. *Deploy pospuesto por el usuario: se hará al inicio de la jornada 1* |
 | 1 | Look-dev del cristal | `GlassSphere` (shader Fresnel) comparado con MTM, `Environment` con Lightformers, `Pedestal`, fondo, `PostFX` base (bloom + viñeta). Se cierra ADR-004 |
 | 2 | Isla y subsuelo | `islandGenerator`, corte de diorama con estratos (se cierra ADR-008), musgo instanciado (`scatter`), luz de mañana fija |
 | 3 | Generadores | `spaceColonization`, `treeGenerator`, `rootGenerator` con tests; `LifeTree` y `RootNetwork` estáticos |
