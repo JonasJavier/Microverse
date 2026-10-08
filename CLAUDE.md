@@ -18,6 +18,10 @@
 - Trabajo secuencial; leer solo lo necesario.
 - Commits con Conventional Commits (`feat:`, `fix:`, `docs:`, `perf:`, `refactor:`, `chore:`).
 
+## Despliegue (Railway)
+- Seguir **siempre** [docs/railway.md](docs/railway.md). Solo se opera sobre el proyecto `microverse`, con `--project` explícito.
+- Cada push a `main` despliega: no subir a `main` nada que no pase `npm run build`.
+
 ## Reglas técnicas (no negociables sin ADR)
 - Versiones fijadas exactas (sin `^`). Actualizar una dependencia requiere ADR. Ver [docs/03-stack.md](docs/03-stack.md).
 - `src/simulation/` es TypeScript puro: **sin** imports de `react` ni `three`. Determinista y con tests.

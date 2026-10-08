@@ -22,6 +22,7 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 | `zustand` | 5.0.15 | Estado de UI y puente con el motor |
 | `maath` | 0.10.8 | `easing.damp` (transiciones suaves), utilidades aleatorias |
 | `simplex-noise` | 4.0.3 | Ruido en CPU para los generadores (terreno, distribución) |
+| `serve` | 14.2.6 | Servidor estático en producción (Railway, ADR-011). `compression` forzada a 1.8.2 con `overrides` |
 
 ## Desarrollo
 
@@ -69,7 +70,7 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 
 - **Git + GitHub**, Conventional Commits.
 - **codebase-memory-mcp:** se indexa en la jornada 0, se reindexa tras cambios estructurales y guarda los ADR (`manage_adr`).
-- **Hosting:** Netlify, sitio estático con deploy previews por rama (ADR-009). Se publica desde la jornada 0, no al final.
+- **Hosting:** Railway, servicio `web` desplegado desde GitHub en cada push a `main`, servido con `serve` (ADR-011). Guía obligatoria: [railway.md](railway.md).
 - **Depuración:** `<Stats>` de Drei + panel `DevTools` (ADR-010) + extensión Spector.js + Chrome DevTools (pestaña Performance).
 
 ## `package.json` objetivo (jornada 0)
@@ -84,6 +85,7 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "start": "serve dist --single --no-clipboard",
     "test": "vitest",
     "lint": "eslint .",
     "format": "prettier --write ."
@@ -96,6 +98,7 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
     "postprocessing": "6.39.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "serve": "14.2.6",
     "simplex-noise": "4.0.3",
     "three": "0.186.1",
     "zustand": "5.0.15"

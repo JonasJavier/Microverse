@@ -50,7 +50,7 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 **Decisión:** el cuadrante frontal del suelo está cortado en limpio y muestra estratos y raíces luminosas. Además, raíces colgantes bajo la isla.
 **Alternativa:** suelo semitransparente con las raíces vistas a través. Más ambiguo y con más problemas de transparencia.
 
-## ADR-009 · Hosting en Netlify con deploy desde la jornada 0 — Aceptada (2026-10-07)
+## ADR-009 · Hosting en Netlify con deploy desde la jornada 0 — Reemplazada por ADR-011 (2026-10-08)
 **Decisión:** sitio estático en Netlify, con deploy previews por rama. La integración ya está conectada en el entorno de trabajo.
 **Motivo:** publicar desde el primer día elimina el riesgo de dejar "publicada" para el final.
 
@@ -58,3 +58,10 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 **Contexto:** al instalar en la jornada 0, `r3f-perf` 7.2.3 (última versión, de noviembre de 2024) depende de `@react-three/drei ^9` y `zustand ~4.5`, incompatibles con nuestro stack (Drei 10, R3F 9, Zustand 5). npm forzaba peers y duplicaba Drei.
 **Decisión:** quitar `r3f-perf`. En desarrollo se usa `<Stats>` de Drei (FPS) y `experience/debug/DevTools.tsx`, que lee `renderer.info` (draw calls, triángulos, geometrías y texturas) y muestra el nivel de calidad. Cero dependencias extra.
 **Consecuencias:** sin gráfica de GPU integrada. Para perfilar la GPU: Spector.js y la pestaña Performance de Chrome.
+
+## ADR-011 · Hosting en Railway, desplegado desde GitHub — Aceptada (2026-10-08)
+**Contexto:** el usuario prefiere Railway, donde ya tiene su cuenta y otros proyectos. Reemplaza a ADR-009.
+**Decisión:** proyecto propio `microverse` en Railway con un servicio `web` conectado a `JonasJavier/Microverse` (rama `main`): cada push despliega. Build con Railpack (`npm run build`). Arranque con `serve` 14.2.6 (`npm start`), que lee `PORT` y escucha en todas las interfaces. `railway.json` fija build, arranque y healthcheck en `/`. Caché de un año para `/assets/*` (nombres con hash) y `no-cache` para el HTML, vía `public/serve.json`.
+**Seguridad:** `serve` 14.2.6 fija `compression` 1.8.1 (GHSA-vc2v-76pw-4v95, DoS, severidad alta). Se fuerza `compression` 1.8.2 con `overrides` en `package.json`; `npm audit` queda en 0. Se revisa cuando salga una versión nueva de `serve`.
+**Reglas:** seguir [docs/railway.md](railway.md). Solo se opera sobre el proyecto `microverse`, siempre con `--project` explícito; los demás proyectos de la cuenta no se tocan.
+**Alternativa descartada:** Dockerfile con Caddy. Es más eficiente, pero añade una imagen que mantener; se reconsidera si el rendimiento de servido lo pide.
