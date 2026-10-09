@@ -19,9 +19,21 @@ describe('generateRootNetwork', () => {
     expect(graph.junctions().length).toBeGreaterThan(100)
   })
 
-  it('la red se propaga por todo el suelo (no se queda a medias)', () => {
-    expect(roots.unreached).toBeLessThan(0.05)
-  })
+  // Varias semillas: los parámetros deben propagar la red siempre, no por suerte.
+  it.each(['raices', 'raices-b', 'raices-c'])(
+    'la red se propaga por todo el suelo (semilla %s)',
+    (label) => {
+      const net =
+        label === 'raices' ? roots : generateRootNetwork(shape, createRandom(label), SEED, TREE)
+      const { reached, blocked, remaining } = net.growth
+      const total = reached + blocked + remaining
+      // Contabilidad del algoritmo: los bloqueados no cuentan como alcanzados.
+      expect(reached / total).toBeGreaterThan(0.85)
+      expect(blocked / total).toBeLessThan(0.1)
+      // Comprobación geométrica independiente sobre la red terminada.
+      expect(net.coverage).toBeGreaterThan(0.95)
+    },
+  )
 
   it('nace en la semilla y garantiza el camino hasta el tronco', () => {
     expect(graph.node(0).position.toArray()).toEqual(SEED.toArray())
@@ -84,6 +96,14 @@ describe('generateRootNetwork', () => {
     // También en profundidad, no solo bajo el musgo.
     const deep = onFace.filter((n) => shape.topY(n.position.x, n.position.z) - n.position.y > 0.15)
     expect(deep.length).toBeGreaterThan(50)
+  })
+
+  it('marca como visibles el nervio y lo que aflora en el corte, nada más', () => {
+    for (const id of roots.nerve) expect(roots.exposed[id]).toBe(1)
+    const visible = roots.exposed.reduce((n, v) => n + v, 0)
+    expect(visible).toBeGreaterThan(200)
+    // La mayor parte de la red está dentro del suelo macizo: no genera malla.
+    expect(visible / graph.size).toBeLessThan(0.5)
   })
 
   it('el nervio asoma entre el musgo y se hunde', () => {

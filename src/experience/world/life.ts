@@ -35,4 +35,9 @@ export const CLEARINGS: readonly Clearing[] = [
     const { x, z } = ROOT_NETWORK.graph.node(id).position
     return { x, z, radius: 0.02 }
   }),
+  // Nebari: despejado cerca del tronco; hacia la punta, el musgo las va tapando.
+  ...[...TREE.nebari].map((id) => {
+    const { x, z } = TREE.graph.node(id).position
+    return { x, z, radius: TREE.graph.node(id).radius * 1.6 + 0.008 }
+  }),
 ]

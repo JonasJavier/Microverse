@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import { describe, expect, it } from 'vitest'
 import { BranchGraph, validateGraph } from './graph.ts'
 import { createRandom } from './random.ts'
-import { colonize, type ColonizationOptions } from './spaceColonization.ts'
+import { colonize, measureCoverage, type ColonizationOptions } from './spaceColonization.ts'
 
 const OPTIONS: ColonizationOptions = {
   influenceRadius: 0.3,
@@ -73,5 +73,29 @@ describe('colonize', () => {
     const { result } = grow({ ...OPTIONS, constrain: () => false })
     expect(result.added).toBe(0)
     expect(result.iterations).toBeLessThanOrEqual(1)
+  })
+
+  it('distingue atractores alcanzados, bloqueados y pendientes', () => {
+    const attractors = cloud('nube')
+    const blocked = grow({ ...OPTIONS, constrain: () => false }, attractors).result
+    // Bloqueados: nunca cuentan como alcanzados.
+    expect(blocked.reached).toBe(0)
+    expect(blocked.blocked).toBeGreaterThan(0)
+    expect(blocked.reached + blocked.blocked + blocked.remaining).toBe(attractors.length)
+
+    const free = grow(OPTIONS, attractors).result
+    expect(free.reached + free.blocked + free.remaining).toBe(attractors.length)
+    expect(free.reached).toBeGreaterThan(free.blocked)
+  })
+})
+
+describe('measureCoverage', () => {
+  it('mide la cercanía real de la red a los atractores', () => {
+    const attractors = cloud('nube')
+    const { graph } = grow(OPTIONS, attractors)
+    expect(measureCoverage(graph, attractors, 0.1)).toBeGreaterThan(0.9)
+    // Una red que no crece solo cubre lo que ya tocaba el tronco inicial.
+    const { graph: stub } = grow({ ...OPTIONS, constrain: () => false }, attractors)
+    expect(measureCoverage(stub, attractors, 0.1)).toBeLessThan(0.1)
   })
 })

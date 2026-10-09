@@ -1,19 +1,28 @@
-import { useMemo } from 'react'
-import { Color } from 'three'
+import { useEffect, useMemo } from 'react'
+import { useFrame } from '@react-three/fiber'
+import { MeshBasicMaterial } from 'three'
 import { palette } from '../../config/palette.ts'
 import { PEDESTAL_TOP_Y } from '../../config/world.ts'
+import { currentLook } from '../lighting/timeOfDay.ts'
 import { noRaycast } from '../utils.ts'
 
 const DISC_HEIGHT = 0.04
 
 /**
- * Pedestal casi invisible: un disco de cristal negro que flota bajo la esfera,
- * con un anillo de luz tenue (Sol de día; Vida de noche a partir de la jornada 8).
+ * Color del anillo según el ciclo: Sol de día, Vida de noche. Valor HDR algo > 1:
+ * lo justo para que el bloom dibuje un halo fino, por debajo del pulso de la
+ * semilla (la mirada va primero a la semilla y al árbol).
  */
+function syncRing(material: MeshBasicMaterial) {
+  const look = currentLook()
+  material.color.copy(look.ringColor).multiplyScalar(look.ringGain)
+}
+
+/** Pedestal casi invisible: un disco de cristal negro que flota bajo la esfera, con un anillo de luz tenue. */
 export function Pedestal() {
-  // Valor HDR > 1: lo justo para que el bloom dibuje un halo fino. Por debajo del
-  // pulso de la semilla: la mirada va primero a la semilla y al árbol.
-  const ringColor = useMemo(() => new Color(palette.luz.sol).multiplyScalar(1.4), [])
+  const ring = useMemo(() => new MeshBasicMaterial(), [])
+  useEffect(() => () => ring.dispose(), [ring])
+  useFrame(() => syncRing(ring))
 
   return (
     <group position={[0, PEDESTAL_TOP_Y - DISC_HEIGHT / 2, 0]}>
@@ -33,7 +42,7 @@ export function Pedestal() {
         raycast={noRaycast}
       >
         <torusGeometry args={[0.48, 0.004, 12, 160]} />
-        <meshBasicMaterial color={ringColor} />
+        <primitive object={ring} attach="material" />
       </mesh>
     </group>
   )

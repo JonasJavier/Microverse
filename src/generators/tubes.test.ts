@@ -50,6 +50,14 @@ describe('buildTubes', () => {
     }
   })
 
+  it('solo genera malla para los tramos visibles', () => {
+    expect(buildTubes(fork(), S, { visible: () => false }).indices.length).toBe(0)
+    // Solo la rama lateral (nodos 3 y 4): un tramo con un anillo de margen.
+    const partial = buildTubes(fork(), S, { visible: (id) => id >= 3 })
+    expect(partial.indices.length).toBeGreaterThan(0)
+    expect(partial.indices.length).toBeLessThan(mesh.indices.length)
+  })
+
   it('lleva la distancia acumulada de cada nodo', () => {
     expect(mesh.distances[0]).toBe(0)
     expect(Math.max(...mesh.distances)).toBeGreaterThan(0.2)

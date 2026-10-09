@@ -29,8 +29,10 @@ export const SOFTBOXES: readonly Softbox[] = [
     // Ventana cenital, algo por detrás: se refleja en ángulo rasante en el borde
     // superior (Fresnel alto) y dibuja la media luna de luz de la fotografía de producto.
     name: 'principal',
-    direction: [-0.12, 1, -0.22],
-    halfSize: [0.62, 0.13],
+    // Jornada 4: más hacia atrás, para que la media luna suba hasta el borde
+    // superior y no caiga sobre la copa del árbol.
+    direction: [0.06, 1, -0.6],
+    halfSize: [0.58, 0.12],
     cornerRadius: 0.1,
     softness: 0.035,
     color: palette.luz.sol,

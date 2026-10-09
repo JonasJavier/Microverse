@@ -17,7 +17,7 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 **Decisión:** fijar todo exacto (ver [03-stack.md](03-stack.md)): TS 6.0.3 y React 19.3.0.
 **Consecuencias:** cualquier actualización pasa por un ADR nuevo.
 
-## ADR-003 · Árbol: silueta estilizada, acabado macro, procedural — Aceptada (2026-10-07)
+## ADR-003 · Árbol: silueta estilizada, acabado macro, procedural — Aceptada y validada (jornada 4, 2026-10-08)
 **Contexto:** la elección entre un árbol de fantasía estilizado y uno realista de fotografía macro define la identidad visual.
 **Decisión:** **silueta de fantasía estilizada con acabado macro realista** (luz, materiales, profundidad de campo), generada por código con colonización del espacio.
 **Motivos:**
@@ -28,7 +28,8 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 5. Coincide con la referencia 1 (copas de musgo, formas de cuento) sin perder la seriedad de la referencia 2.
 **Plan B:** si en la jornada 4 el árbol procedural no pasa el listón visual, se modela en Blender y el crecimiento se resuelve por segmentos.
 **Aprobada** por el usuario el 2026-10-07.
-**Jornada 3:** generadores hechos y probados. Árbol y raíces comparten `BranchGraph` y `colonize`; en ambos, el camino principal (tronco, nervio semilla → tronco) se traza a mano y la colonización solo ramifica. Se cierra en la jornada 4 con la rúbrica del H1 ([06-roadmap.md](06-roadmap.md)).
+**Jornada 3:** generadores hechos y probados. Árbol y raíces comparten `BranchGraph` y `colonize`; en ambos, el camino principal (tronco, nervio semilla → tronco) se traza a mano y la colonización solo ramifica.
+**Jornada 4 (validación):** el lenguaje del bonsái (nubes por capas diseñadas, tronco en "S" con grosor propio, nebari) pasa la rúbrica del H1: la silueta se reconoce como mancha negra a 160 px. Lección: la colonización da estructura, pero la silueta tiene que estar **diseñada** (forma de las nubes, curva del tronco); el algoritmo solo la sostiene. Plan B (Blender) no activado.
 
 ## ADR-004 · Cristal de pared fina con shader propio — Aceptada y validada (jornada 1, 2026-10-08)
 **Contexto:** `MeshTransmissionMaterial` añade un pase de render completo de la escena. Una esfera de pared fina casi no refracta.

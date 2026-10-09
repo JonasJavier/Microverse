@@ -14,7 +14,8 @@ export const palette = {
     tierra: '#14110D',
     piedra: '#2A2E2B',
     reflejo: '#CFE9E4',
-    corteza: '#2E2620',
+    // Pardo cálido: lo bastante claro para que se lean las estrías del tronco.
+    corteza: '#4A3B2E',
     // Raíz viva: pálida, para leerse sobre los estratos oscuros (brilla con Vida).
     raiz: '#7A6E60',
   },

@@ -49,7 +49,12 @@ microverse/
     │   ├── MicroverseScene.tsx   # composición de la escena
     │   ├── SimulationDriver.tsx  # useFrame → engine.step a tick fijo
     │   ├── camera/CameraRig.tsx
-    │   ├── lighting/Lighting.tsx # ciclo día/noche + Environment con Lightformers
+    │   ├── lighting/
+    │   │   ├── Studio.tsx        # Environment con Lightformers, luz principal y relleno
+    │   │   └── timeOfDay.ts      # `ciclo` → look resuelto (luces, reflejos, raíces, anillo, fondo)
+    │   ├── debug/
+    │   │   ├── DevTools.tsx      # FPS, contadores, Leva (solo desarrollo)
+    │   │   └── lookdevTools.ts   # vistas fijas, modo captura, prueba de silueta
     │   ├── world/
     │   │   ├── GlassSphere.tsx
     │   │   ├── Pedestal.tsx
@@ -142,7 +147,13 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 - **Camino garantizado:** el nervio semilla → tronco se traza a mano antes de la colonización, que por sí sola no asegura la conexión.
 - **Ids estables:** coinciden con el índice y el padre siempre es anterior al hijo: no hay ciclos posibles.
 - **`distance`** es la longitud acumulada **por las conexiones** desde la semilla, no la distancia en línea recta. El árbol continúa la de las raíces. Va como atributo de vértice en los tubos: los pulsos (jornada 6) y el crecimiento `uGrowth` (jornada 7) la usan sin recalcular nada.
-- **`toTree`** (raíces): lo que le falta a cada nodo para llegar al tronco. **`temperament`**: carácter de cada nodo (respuesta breve y viva o lenta y tenue) para que la red no parezca un circuito.
+- **`toTree`** (raíces): lo que le falta a cada nodo para llegar al tronco. **`temperament`**: carácter de cada nodo (respuesta breve y viva o lenta y tenue) para que la red no parezca un circuito. Para la jornada 6 queda decidir cómo llega al shader (atributo por vértice o función determinista por nodo).
+- **`exposed`** (raíces, jornada 4): solo el nervio y lo que aflora en las caras del corte genera malla. El resto de la red vive en el grafo (los pulsos la recorren) sin coste de triángulos: −79 % de la malla de raíces (36k → 7,6k triángulos en nivel medio).
+- **Cobertura de la colonización:** `colonize` distingue atractores alcanzados, bloqueados y pendientes; `measureCoverage` comprueba aparte, con geometría, qué fracción queda cerca de la red terminada. Los tests lo exigen con tres semillas.
+
+## Look-dev automatizado (solo desarrollo)
+
+`window.__microverse` expone `view(nombre)` (vistas de cámara fijas para comparar con la misma cámara), `capture(true)` (oculta los paneles), `silhouette(true)` (el árbol en negro sobre blanco: prueba de la mancha negra del H1) y el store de look-dev (`ciclo`).
 
 ## Calidad adaptativa
 
@@ -150,10 +161,11 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 |---|---|---|---|
 | DPR máximo | 2 | 1.5 | 1 |
 | Cristal | Fresnel + entorno (MTM si se justifica) | Fresnel + entorno | Fresnel simple |
-| Profundidad de campo | Sí | No | No |
 | Bloom | Completo | Media resolución | Media resolución, menos niveles |
-| Instancias de musgo | ~6000 | ~3000 | ~1200 |
+| Instancias de musgo | ~6000 | ~2400 | ~1200 |
 | Lados de los tubos (árbol y raíces) | 8 | 6 | 5 |
+| Mechones de follaje | 4500 | 2800 | 1600 |
+| Segmentos del cristal | 128×64 | 64×32 | 56×28 |
 | Luciérnagas | 60 | 40 | 24 |
 | Gotas de lluvia | 1500 | 800 | 400 |
 | Sombras | 1024, suaves | 1024 | Sin sombras dinámicas (sombra falsa) |

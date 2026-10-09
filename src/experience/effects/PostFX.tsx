@@ -14,7 +14,8 @@ const TONE_MAPPING: Record<ToneMappingName, ToneMappingMode> = {
 /**
  * Aspecto macro (docs/02-direccion-de-arte.md · Post-proceso). La escena se
  * renderiza en HDR: el bloom actúa sobre la luz real (solo emisivos > 1) y el
- * tone mapping se aplica al final. La profundidad de campo llega en la jornada 4.
+ * tone mapping se aplica al final. Sin profundidad de campo: en el A/B de la
+ * jornada 4 no aportaba nada visible en el encuadre por defecto (ver roadmap).
  */
 export function PostFX() {
   // Nivel de arranque, no el actual: MSAA y resolución del bloom reconstruyen el

@@ -33,9 +33,20 @@ export interface ColonizationOptions {
 export interface ColonizationResult {
   iterations: number
   added: number
-  /** Atractores que no llegó a alcanzar ninguna rama. */
+  /** Atractores consumidos porque una rama llegó a `killDistance`. */
+  reached: number
+  /**
+   * Atractores retirados porque solo tiraban de un nodo bloqueado. No cuentan
+   * como alcanzados: para medir cobertura real, ver `measureCoverage`.
+   */
+  blocked: number
+  /** Atractores que siguen pendientes al terminar (fuera de alcance o sin iteraciones). */
   remaining: number
 }
+
+const ALIVE = 0
+const REACHED = 1
+const BLOCKED = 2
 
 /** Rejilla espacial de nodos: búsquedas de vecinos en O(1) por celda. */
 class NodeGrid {
@@ -101,7 +112,7 @@ export function colonize(
   const grid = new NodeGrid(influenceRadius, graph)
   for (const node of graph.nodes) grid.insert(node)
 
-  const alive = attractors.map(() => true)
+  const state = new Uint8Array(attractors.length).fill(ALIVE)
   const pull = new Map<number, Vector3>()
   /** Atractores que tiran de cada nodo en esta iteración. */
   const pullers = new Map<number, number[]>()
@@ -114,11 +125,11 @@ export function colonize(
     pull.clear()
     pullers.clear()
     for (const [i, attractor] of attractors.entries()) {
-      if (!alive[i]) continue
+      if (state[i] !== ALIVE) continue
       const { id, distance } = grid.nearest(attractor, influenceRadius)
       if (id < 0) continue
       if (distance < killDistance) {
-        alive[i] = false
+        state[i] = REACHED
         continue
       }
       const node = graph.node(id)
@@ -157,10 +168,34 @@ export function colonize(
       } else {
         // Nodo bloqueado: sus atractores no los puede alcanzar nadie más cerca;
         // se retiran para que no lo bloqueen en cada iteración.
-        for (const i of pullers.get(id)!) alive[i] = false
+        for (const i of pullers.get(id)!) state[i] = BLOCKED
       }
     }
   }
 
-  return { iterations, added, remaining: alive.filter(Boolean).length }
+  const count = (s: number) => state.reduce((n, v) => n + (v === s ? 1 : 0), 0)
+  return {
+    iterations,
+    added,
+    reached: count(REACHED),
+    blocked: count(BLOCKED),
+    remaining: count(ALIVE),
+  }
+}
+
+/**
+ * Cobertura geométrica, independiente de la contabilidad del algoritmo: fracción
+ * de atractores que tienen algún nodo del grafo terminado a menos de `radius`.
+ */
+export function measureCoverage(
+  graph: BranchGraph,
+  attractors: readonly Vector3[],
+  radius: number,
+): number {
+  if (attractors.length === 0) return 1
+  const grid = new NodeGrid(radius, graph)
+  for (const node of graph.nodes) grid.insert(node)
+  let covered = 0
+  for (const attractor of attractors) if (grid.nearest(attractor, radius).id >= 0) covered++
+  return covered / attractors.length
 }

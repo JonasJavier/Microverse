@@ -23,14 +23,17 @@ export function toGeometry(data: MeshData) {
 /**
  * Tubos del árbol o de las raíces. Las normales vienen del generador (exactas);
  * `distance` es la longitud por las conexiones desde la semilla, para los pulsos
- * y el crecimiento.
+ * y el crecimiento, y `thickness` el radio del tubo.
  */
-export function toTubeGeometry(data: TubeMeshData) {
+export function toTubeGeometry(data: TubeMeshData, recomputeNormals = false) {
   const geometry = new BufferGeometry()
   geometry.setAttribute('position', new BufferAttribute(data.positions, 3))
   geometry.setAttribute('normal', new BufferAttribute(data.normals, 3))
   geometry.setAttribute('distance', new BufferAttribute(data.distances, 1))
+  geometry.setAttribute('thickness', new BufferAttribute(data.thicknesses, 1))
   geometry.setIndex(new BufferAttribute(data.indices, 1))
+  // Con estrías en la corteza, las normales radiales del generador no valen.
+  if (recomputeNormals) geometry.computeVertexNormals()
   geometry.computeBoundingSphere()
   return geometry
 }

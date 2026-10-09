@@ -1,22 +1,52 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
 import { Environment, Lightformer } from '@react-three/drei'
-import { Vector3 } from 'three'
+import { Vector3, type AmbientLight, type DirectionalLight, type Scene } from 'three'
 import { palette } from '../../config/palette.ts'
 import { QUALITY } from '../../config/quality.ts'
 import { FILL_LIGHT, KEY_LIGHT, LIGHTFORMER_DISTANCE, SOFTBOXES } from '../../config/studio.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
+import { currentLook } from './timeOfDay.ts'
 
 /** Resolución del mapa de sombras según el nivel de arranque (ADR-013). */
 const SHADOW_MAP_SIZE = { suaves: 2048, basicas: 1024, ninguna: 0 } as const
+
+interface StudioLights {
+  key: DirectionalLight | null
+  fill: DirectionalLight | null
+  ambient: AmbientLight | null
+}
+
+/** Aplica el momento del ciclo a las luces y al entorno (cada frame, sin asignar memoria). */
+function applyLook(lights: StudioLights, scene: Scene) {
+  const look = currentLook()
+  if (lights.key) {
+    lights.key.intensity = look.keyIntensity
+    lights.key.color.copy(look.keyColor)
+  }
+  if (lights.fill) {
+    lights.fill.intensity = look.fillIntensity
+    lights.fill.color.copy(look.fillColor)
+  }
+  if (lights.ambient) lights.ambient.intensity = look.ambientIntensity
+  scene.environmentIntensity = look.environment
+}
 
 /**
  * Iluminación de estudio: los mismos softboxes que refleja el cristal, convertidos
  * en Lightformers para iluminar con PBR la isla, la semilla y el pedestal; una luz
  * principal cálida con sombras y un relleno frío. Sin HDRI: 0 KB descargados.
- * El ciclo día/noche llegará en la jornada 8.
+ * El momento del día sale de `ciclo` (config/timeOfDay.ts).
  */
 export function Studio() {
   const tier = useMicroverseStore((s) => s.startupTier)
+  const scene = useThree((s) => s.scene)
+  const key = useRef<DirectionalLight>(null)
+  const fill = useRef<DirectionalLight>(null)
+  const ambient = useRef<AmbientLight>(null)
+  useFrame(() =>
+    applyLook({ key: key.current, fill: fill.current, ambient: ambient.current }, scene),
+  )
   const shadowMapSize = SHADOW_MAP_SIZE[QUALITY[tier].shadows]
   const formers = useMemo(
     () =>
@@ -60,16 +90,17 @@ export function Studio() {
         ))}
       </Environment>
       <directionalLight
+        ref={key}
         position={keyPosition}
         intensity={KEY_LIGHT.intensity}
         color={KEY_LIGHT.color}
         castShadow={shadowMapSize > 0}
         shadow-mapSize={[shadowMapSize, shadowMapSize]}
-        // Cámara de sombras ajustada a la isla: más resolución donde importa.
-        shadow-camera-left={-0.8}
-        shadow-camera-right={0.8}
-        shadow-camera-top={0.8}
-        shadow-camera-bottom={-0.8}
+        // Cámara de sombras ajustada a la isla y al árbol: más resolución donde importa.
+        shadow-camera-left={-1}
+        shadow-camera-right={1}
+        shadow-camera-top={1}
+        shadow-camera-bottom={-1}
         shadow-camera-near={2}
         shadow-camera-far={8}
         shadow-bias={-0.0004}
@@ -77,11 +108,12 @@ export function Studio() {
         shadow-radius={3}
       />
       <directionalLight
+        ref={fill}
         position={fillPosition}
         intensity={FILL_LIGHT.intensity}
         color={FILL_LIGHT.color}
       />
-      <ambientLight intensity={0.04} color={palette.materia.bosque} />
+      <ambientLight ref={ambient} intensity={0.04} color={palette.materia.bosque} />
     </>
   )
 }

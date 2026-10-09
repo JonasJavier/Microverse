@@ -2,7 +2,7 @@ import { Vector3 } from 'three'
 import { BranchGraph, computeDistances, computeRadii, smoothGraph } from './graph.ts'
 import { angleDelta, type IslandShape } from './island.ts'
 import type { Random } from './random.ts'
-import { colonize } from './spaceColonization.ts'
+import { colonize, measureCoverage, type ColonizationResult } from './spaceColonization.ts'
 
 /**
  * Red de raíces: el sistema nervioso del ecosistema (docs/02-direccion-de-arte.md
@@ -66,7 +66,7 @@ export const ROOT_PARAMS: RootParams = {
   depthFalloff: 0.3,
   segmentLength: 0.011,
   // Con atractores más separados que este radio, la red no se propaga y se queda
-  // a medias: `unreached` lo vigila en los tests.
+  // a medias: `coverage` lo vigila en los tests.
   influenceRadius: 0.11,
   killDistance: 0.02,
   gravity: 0.22,
@@ -92,12 +92,22 @@ export interface RootNetwork {
    */
   temperament: Float32Array
   /**
-   * Fracción de atractores que la red no alcanzó. Alta significa que los
-   * atractores están demasiado separados para el radio de influencia y la red
-   * se queda a medias (diagnóstico para calibrar).
+   * Nodos que se ven (1) u ocultos en el suelo macizo (0): el nervio y lo que
+   * aflora en las caras del corte. Solo los visibles generan malla.
    */
-  unreached: number
+  exposed: Uint8Array
+  /** Contabilidad de la colonización: alcanzados, bloqueados y pendientes. */
+  growth: ColonizationResult
+  /**
+   * Cobertura geométrica: fracción de atractores con un nodo de la red terminada
+   * a menos de `COVERAGE_RADIUS`. Baja significa que la red se quedó a medias
+   * (atractores demasiado separados para el radio de influencia).
+   */
+  coverage: number
 }
+
+/** Distancia a la que un atractor cuenta como cubierto por la red terminada. */
+export const COVERAGE_RADIUS = 0.04
 
 const smoothstep = (a: number, b: number, x: number) => {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
@@ -270,12 +280,27 @@ export function generateRootNetwork(
   const temperament = new Float32Array(graph.size)
   for (let i = 0; i < graph.size; i++) temperament[i] = character.next()
 
+  // Aflora si el tubo atraviesa una cara del corte (distancia al plano < radio).
+  const [low, high] = shape.cutAngles
+  const exposed = new Uint8Array(graph.size)
+  for (const node of graph.nodes) {
+    const { x, z } = node.position
+    const onFace = [low, high].some(
+      (f) =>
+        Math.abs(x * Math.cos(f) - z * Math.sin(f)) < node.radius &&
+        x * Math.sin(f) + z * Math.cos(f) > -node.radius,
+    )
+    exposed[node.id] = node.main || onFace ? 1 : 0
+  }
+
   return {
     graph,
     treeNode,
     nerve,
     toTree,
     temperament,
-    unreached: growth.remaining / Math.max(1, attractors.length),
+    exposed,
+    growth,
+    coverage: measureCoverage(graph, attractors, COVERAGE_RADIUS),
   }
 }

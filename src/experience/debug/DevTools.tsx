@@ -6,6 +6,7 @@ import { glassTuning } from '../../config/lookdev.ts'
 import { useLookdevStore, type ToneMappingName } from '../../store/useLookdevStore.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import type { WebGLRenderer } from 'three'
+import { setCaptureMode, setSilhouette, setView, type ViewName } from './lookdevTools.ts'
 
 /** El post-proceso renderiza varias pasadas por frame: se acumulan y se reinician a mano. */
 function setManualInfoReset(gl: WebGLRenderer, manual: boolean) {
@@ -41,6 +42,9 @@ export default function DevTools() {
         quality: useMicroverseStore,
         gl,
         three: getThree,
+        view: (name: ViewName) => setView(getThree(), name),
+        capture: setCaptureMode,
+        silhouette: (on: boolean) => setSilhouette(getThree(), on),
       },
     })
     return () => {
@@ -105,6 +109,16 @@ export default function DevTools() {
       max: 1,
       step: 0.01,
       onChange: (v: number) => void (glassTuning.backFace = v),
+    },
+  })
+
+  useControls('Ciclo', {
+    ciclo: {
+      value: useLookdevStore.getState().ciclo,
+      min: 0,
+      max: 1,
+      step: 0.01,
+      onChange: (v: number) => useLookdevStore.setState({ ciclo: v }),
     },
   })
 

@@ -15,8 +15,11 @@ import {
 } from 'three'
 import { glassTuning } from '../../config/lookdev.ts'
 import { palette } from '../../config/palette.ts'
+import { QUALITY } from '../../config/quality.ts'
 import { SOFTBOXES } from '../../config/studio.ts'
 import { SPHERE_RADIUS } from '../../config/world.ts'
+import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
+import { currentLook } from '../lighting/timeOfDay.ts'
 import { noRaycast } from '../utils.ts'
 import vertexShader from '../../shaders/glass/glass.vert?raw'
 import fragmentShader from '../../shaders/glass/glass.frag?raw'
@@ -99,10 +102,13 @@ function createGlass() {
 
 type Glass = ReturnType<typeof createGlass>
 
-/** Vuelca `glassTuning` en los uniforms (se llama cada frame; no asigna memoria). */
+/**
+ * Vuelca `glassTuning` y el momento del ciclo en los uniforms (se llama cada
+ * frame; no asigna memoria). De noche, el estudio se apaga y los reflejos bajan.
+ */
 function syncGlassUniforms({ shared, back }: Glass) {
   shared.uF0.value = glassTuning.f0
-  shared.uReflection.value = glassTuning.reflection
+  shared.uReflection.value = glassTuning.reflection * currentLook().reflection
   shared.uRimStrength.value = glassTuning.rimStrength
   shared.uRimPower.value = glassTuning.rimPower
   shared.uAbsorption.value = glassTuning.absorption
@@ -120,7 +126,12 @@ function disposeGlass({ back, front }: Glass) {
  * (ADR-004): más barato y más fiel a la referencia.
  */
 export function GlassSphere() {
-  const geometry = useMemo(() => new SphereGeometry(SPHERE_RADIUS, 128, 64), [])
+  const tier = useMicroverseStore((s) => s.startupTier)
+  const [widthSegments, heightSegments] = QUALITY[tier].glassSegments
+  const geometry = useMemo(
+    () => new SphereGeometry(SPHERE_RADIUS, widthSegments, heightSegments),
+    [widthSegments, heightSegments],
+  )
   const glass = useMemo(() => createGlass(), [])
   useEffect(() => () => geometry.dispose(), [geometry])
   useEffect(() => () => disposeGlass(glass), [glass])

@@ -13,8 +13,12 @@ export const glassTuning = {
   rimPower: 3.2,
   /** Cuánto oscurece el cristal lo que hay detrás en ángulos rasantes. */
   absorption: 0.55,
-  /** Intensidad relativa de la cara interior (pared trasera). */
-  backFace: 0.12,
+  /**
+   * Intensidad relativa de la cara interior (pared trasera). Jornada 4: 0,12 → 0,06;
+   * con el softbox cenital más atrás, su reflejo interior dibujaba un arco grande
+   * bajo la isla.
+   */
+  backFace: 0.06,
 }
 
 export type GlassTuning = typeof glassTuning

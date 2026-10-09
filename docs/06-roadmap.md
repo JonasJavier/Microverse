@@ -5,7 +5,7 @@
 | Hito | Cuándo | Criterio |
 |---|---|---|
 | **H0 · Fundaciones** | Hoy | Documentación, stack y decisiones cerradas ✅ |
-| **H1 · Captura** | Jornada 4 | Una escena estática que merece una captura, de mañana y de noche |
+| **H1 · Captura** | Jornada 4 | Una escena estática que merece una captura, de mañana y de noche ✅ (propuesto; ver evaluación) |
 | **H2 · Vivo** | Jornada 9 | Los cuatro actos funcionan sobre el motor; el mundo parece vivo |
 | **H3 · Publicado** | Jornada 12 | v1 en una URL pública, con presentación y "cómo se construyó" |
 
@@ -19,12 +19,12 @@
 | 1 | Look-dev del cristal ✅ | `GlassSphere` (shader Fresnel) comparado con MTM, `Environment` con Lightformers, `Pedestal`, fondo, `PostFX` base (bloom + viñeta). Se cierra ADR-004 |
 | 2 | Isla y subsuelo ✅ | `islandGenerator`, corte de diorama con estratos (se cierra ADR-008), musgo instanciado (`scatter`), luz de mañana fija |
 | 3 | Generadores ✅ | Pulido A/B (reflejos, pedestal, estratos por valor). `spaceColonization`, `tree`, `roots`, `tubes` con tests; `LifeTree` y `RootNetwork` estáticos; nervio semilla → tronco garantizado; grafo con `distance` por las conexiones |
-| 4 | Composición | Árbol definitivo (se cierra ADR-003, ver rúbrica), encuadre, `CameraControls`, DOF, versión de noche estática. **H1 · Captura** |
+| 4 | Composición ✅ | Árbol bonsái (nubes, tronco en "S", nebari; se cierra ADR-003), métrica de cobertura corregida, material de raíces por grosor, `ciclo` mañana/noche, media luna del cristal recolocada, presupuesto móvil recuperado. DOF descartada en A/B. **H1 · Captura** |
 | 5 | Motor | `EcosystemEngine` + tests, store, `SimulationDriver`, `ObserverMode`, panel Leva para calibrar |
 | 6 | 01 · Awakening | `Seed`, shader `rootPulse` (señales de la semilla al árbol por `distance`; cada nodo responde según su `temperament`: unos con un destello breve, otros lentos y tenues), encendido por ramas, `IntroOverlay` |
 | 7 | 02 · Nourish | `RainSystem`, `Puddles`, shader `growth` (`uGrowth`), shader de vegetación (humedad/marchitez), gestos |
 | 8 | 03 · Transform | `SunHandle` + `ExperienceControls`, ciclo de iluminación, `Mushrooms` con brillo, `Fireflies` |
-| 9 | 04 · Discover | Límites de cámara, raíces colgantes, `HiddenOrganisms`. **H2 · Vivo** |
+| 9 | 04 · Discover | Límites de cámara, raíces colgantes, `HiddenOrganisms`; reconsiderar DOF solo para primeros planos. **H2 · Vivo** |
 | 10 | 05 · Sincronía | Final, calibración del motor con 3 personas, audio ambiente, persistencia |
 | 11 | Rendimiento | Niveles de calidad medidos en dispositivos reales, táctil, accesibilidad, pérdida de contexto WebGL |
 | 12 | Publicación | `AboutPanel`, imagen OG, vídeo de 15 s de la Sincronía, deploy final. **H3 · Publicado** |
@@ -44,6 +44,22 @@ El árbol no está terminado porque el algoritmo funcione: la colonización da e
 Si el árbol procedural no pasa, se activa el plan B de ADR-003 (Blender). No es un fracaso: el objetivo es una escena extraordinaria, no que todo salga de una fórmula.
 
 **Punto de partida tras la jornada 3** (capturas `jornada-03-*`): la silueta ya tiene tronco en "S", bifurcación y tres masas con huecos, pero en el encuadre por defecto el árbol se ve pequeño y la copa, fina; el follaje de esferas se lee como brócoli de cerca. A trabajar en la jornada 4: escala del árbol, volumen de la copa, follaje de tarjetas u hojas y cuello del tronco con raíces expuestas.
+
+### Evaluación del H1 (jornada 4)
+
+Capturas con la misma cámara (`__microverse.view('general')`): `jornada-04-manana.jpg` y `jornada-04-noche.jpg`; silueta antes y después en `jornada-04-silueta-*.png`.
+
+| Criterio | Resultado |
+|---|---|
+| Silueta | ✅ A 160 px se reconoce un bonsái sin dudar (antes: un árbol genérico y pequeño). Nubes por capas, tronco en "S" y nebari al pie |
+| Composición | ✅ Árbol (mitad superior), semilla (centro) y corte (abajo) se leen a la primera, de día y de noche |
+| Iluminación | ✅ de día. ⚠️ De noche los estratos solo se intuyen en la cara que mira al relleno; la otra la sostienen las raíces. Aceptado: es una noche |
+| Cristal | ✅ La media luna sube al borde superior y enmarca la copa; tira derecha y arco inferior discretos |
+| Día/noche | ✅ Mañana cálida y vegetal; noche fría donde la red de raíces es la protagonista |
+
+**Profundidad de campo: descartada** tras el A/B. Con un rango que no desenfoque las raíces, en el encuadre por defecto no hay diferencia visible; cuesta varias pasadas y, además, el efecto de `postprocessing` desencuadra la imagen (×DPR) tras ciertos cambios de cámara. Se reconsidera solo para primeros planos (jornada 9).
+
+**Queda para más adelante** (no bloquea el H1): el follaje de octaedros se lee como mechones a distancia, pero de cerca aún es facetado (hojas o tarjetas con viento en la jornada 7); las estrías de la corteza apenas se ven con la luz actual.
 
 ## Orden de recorte
 

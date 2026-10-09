@@ -6,11 +6,15 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 3 completada: árbol y red de raíces generados por colonización del espacio, con un nervio que une la semilla con el tronco; pulido del cristal y de los estratos. Siguiente: jornada 4, composición y primera captura de mañana y de noche (H1).
+**Estado:** Jornada 4 completada, **hito H1 (captura)**: un bonsái procedural con copa en nubes y raíces que abrazan el suelo, una red de raíces que de noche se enciende como un sistema nervioso, y el ciclo de mañana a noche. Siguiente: jornada 5, el motor del ecosistema.
 
-| Vista | El árbol | El sistema nervioso |
-|---|---|---|
-| ![Jornada 3: vista general](docs/capturas/jornada-03-general.jpg) | ![Jornada 3: el árbol](docs/capturas/jornada-03-arbol.jpg) | ![Jornada 3: raíces en el corte](docs/capturas/jornada-03-raices.jpg) |
+| Mañana | Noche |
+|---|---|
+| ![H1: mañana](docs/capturas/jornada-04-manana.jpg) | ![H1: noche](docs/capturas/jornada-04-noche.jpg) |
+
+| El árbol | El sistema nervioso, de noche |
+|---|---|
+| ![El árbol](docs/capturas/jornada-04-arbol.jpg) | ![Raíces de noche](docs/capturas/jornada-04-raices-noche.jpg) |
 
 Historial visual en [docs/capturas](docs/capturas).
 

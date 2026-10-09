@@ -30,7 +30,7 @@
 
 ## Iluminación: ciclo día/noche
 
-Un único parámetro `ciclo` (0 → 1) controla toda la iluminación. Valores iniciales, se ajustan en look-dev:
+Un único parámetro `ciclo` (0 → 1) controla toda la iluminación (`config/timeOfDay.ts`, fotogramas clave interpolados). Mañana y noche están hechas desde la jornada 4; mediodía y atardecer llegan en la 8. De noche: luna teñida de Vida que recorta la cima de las nubes, relleno que sostiene los estratos, raíces a pleno brillo (el bloom las recoge), anillo del pedestal en Vida y reflejos del cristal al 30 %. Valores iniciales:
 
 | `ciclo` | Momento | Luz principal | Ambiente / fondo | Emisivos |
 |---|---|---|---|---|
@@ -45,7 +45,7 @@ Un único parámetro `ciclo` (0 → 1) controla toda la iluminación. Valores in
 
 Una esfera real de pared fina **casi no refracta**: lo que la vende son los reflejos, el borde Fresnel y uno o dos brillos especulares de softbox. Decisión (ADR-004, validada en la jornada 1): shader propio de cristal fino en todos los niveles. El brillo principal es un softbox **cenital y algo trasero**: se refleja en ángulo rasante en el borde superior, donde el Fresnel es alto, y dibuja la media luna de la fotografía de producto. `MeshTransmissionMaterial` quedó descartado en el A/B (más caro y peor aspecto).
 
-**El cristal enmarca, no protagoniza** (pulido de la jornada 3): la media luna superior bajó un 20 % (es lo que vende el cristal) y la tira de contraluz derecha un 37 % y un 30 % más fina. El anillo del pedestal queda por debajo del pulso de la semilla. Los reflejos se ajustan con `reflectionGain`, que no cambia cuánto iluminan la escena.
+**El cristal enmarca, no protagoniza** (pulido de la jornada 3): la media luna superior bajó un 20 % (es lo que vende el cristal) y la tira de contraluz derecha un 37 % y un 30 % más fina. El anillo del pedestal queda por debajo del pulso de la semilla. Los reflejos se ajustan con `reflectionGain`, que no cambia cuánto iluminan la escena. En la jornada 4, con el árbol más grande, el softbox cenital se llevó hacia atrás: la media luna sube al borde superior y abraza la copa en vez de caer sobre ella. La cara interior del cristal bajó a la mitad para que su reflejo no dibuje un arco bajo la isla.
 
 Condensación: opcional, estilizada, solo en la parte superior y solo con humedad alta.
 
@@ -53,9 +53,9 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 
 **Silueta estilizada, acabado macro realista.** Formas de fantasía reconocibles, renderizadas con luz, materiales y profundidad de campo de fotografía.
 
-- **Silueta:** tronco inclinado, raíz superficial expuesta y 2 o 3 masas de copa de aspecto musgoso (como en la referencia 1), asimétricas. Tiene que leerse en miniatura y como silueta de noche.
+- **Silueta (jornada 4): bonsái.** Tronco grueso en "S" (moyogi), copa en **nubes** horizontales por capas (seis: ápice, dos altas, dos bajas que se abren a los lados y una trasera) y **nebari**: raíces superficiales que abrazan el suelo antes de hundirse. Pasa la prueba de la mancha negra a 160 px. Referencia: bonsái sobre roca con raíces expuestas.
 - **Construcción:** procedural (colonización del espacio → tubos) con semilla fija y parámetros ajustados a mano. El mismo generador produce las raíces hacia abajo. El tronco se traza a mano (curva por puntos de control, en "S" suave): su inclinación es una decisión de composición. La colonización solo pone las ramas hacia las masas de copa, que tienen huecos para que la copa respire.
-- **Copa:** grupos de instancias (tarjetas u hojas) con viento por shader.
+- **Copa:** mechones instanciados repartidos por cada nube, más densos en la piel; claros arriba (les da la luz) y oscuros abajo, así la nube tiene volumen sin texturas. Con menos mechones (calidad baja), cada uno es mayor y la silueta no cambia. Hojas o tarjetas con viento por shader en la jornada 7.
 - **Crecimiento:** un uniform `uGrowth` revela las ramas a lo largo de su longitud; la copa aparece cuando la rama llega a su punto.
 - **Floración (Sincronía):** pequeñas flores emisivas *Sol*.
 
@@ -64,6 +64,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Isla:** disco irregular de tierra con musgo arriba y cono invertido de roca abajo.
 - **Corte de diorama (validado en la jornada 2):** una cuña frontal de 86°, un poco a la derecha, cortada en limpio. Muestra los estratos `palette.estratos` (césped → humus → tierra → arcilla → tierra profunda → roca), con la red de raíces brillando dentro. La semilla queda en el vértice del corte. Es la imagen distintiva del proyecto.
 - **Estratos legibles por valor** (jornada 3): oscuro, medio, claro, oscuro y gris frío. En penumbra el ojo separa luminosidades, no matices; la banda clara de arcilla ordena el corte. Las raíces complementan los estratos, no son lo único que los distingue.
+- **Material de las raíces** (jornada 4, referencia de raíces luminosas en un corte de tierra): las raíces maestras tienen cuerpo oscuro y **borde luminoso** (se leen como volumen, no como cable); los filamentos, un brillo uniforme y más tenue, como si siguieran hacia el interior. El grosor llega como atributo de vértice.
 - **Raíces como sistema nervioso** (jornada 3): la red nace en la semilla y se abre por las caras del corte, gruesa arriba y fina en profundidad, como dendritas. Un **nervio principal** une la semilla con la base del tronco: asoma entre el musgo en arcos y se vuelve a hundir. Cuando la semilla despierte (jornada 6), las señales viajarán por ese camino hacia el árbol; cada nodo responde a su manera (destello breve o respuesta lenta y tenue), para que se sienta orgánico y no un circuito.
 - **Luz del corte:** la cara que mira a la luz principal se ve cálida; la otra la abre un relleno frío desde la derecha (principal cálida + relleno frío, esquema de retrato).
 - **Musgo:** miles de almohadillas instanciadas en manchas de Bosque a Musgo, más ralas cerca del borde, con claros alrededor de la semilla y del tronco.
@@ -82,7 +83,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 | Efecto | Uso | Calidad |
 |---|---|---|
 | Bloom selectivo | Umbral alto; solo emisivos > 1 con `toneMapped={false}` | Todas (resolución reducida en baja) |
-| Profundidad de campo | Enfoque en el objetivo de la cámara (árbol/semilla) | Solo alta |
+| Profundidad de campo | Descartada en el A/B de la jornada 4 (sin diferencia visible en el encuadre por defecto); se reconsidera para primeros planos | — |
 | Viñeta + grano sutil | Aspecto fotográfico | Todas |
 | Tone mapping | **Khronos PBR Neutral** (ADR-012): respeta tono y saturación de la paleta | Todas |
 

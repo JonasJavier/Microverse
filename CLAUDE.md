@@ -21,7 +21,7 @@
 - Trabajo secuencial; leer solo lo necesario.
 - Commits con Conventional Commits (`feat:`, `fix:`, `docs:`, `perf:`, `refactor:`, `chore:`).
 - Servidor de desarrollo para Claude: `npm run dev:poll` (configurado en `.claude/launch.json`). Sin polling, Vite en Windows pierde cambios y sirve módulos viejos.
-- Verificación visual: con el panel del navegador oculto, la página no anima. Hacer una captura fuerza los frames. En desarrollo, `window.__microverse` expone `glassTuning`, los stores y `three()` para look-dev automatizado.
+- Verificación visual: con el panel del navegador oculto, la página no anima. Hacer una captura fuerza los frames. En desarrollo, `window.__microverse` expone `glassTuning`, los stores, `three()`, `view(nombre)` (vistas de cámara fijas: comparar siempre con la misma), `capture(true)` (oculta los paneles) y `silhouette(true)` (prueba de la mancha negra). Los paneles cargan en diferido y Leva reinicia `ciclo` al montarse: aplicar el ciclo después.
 
 ## Despliegue (Railway)
 - Seguir **siempre** [docs/railway.md](docs/railway.md) y, si existe, `CLAUDE.local.md` (reglas de la cuenta, no versionadas). Solo se opera sobre el proyecto `microverse`.
