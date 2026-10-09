@@ -21,7 +21,7 @@
 | 3 | Generadores ✅ | Pulido A/B (reflejos, pedestal, estratos por valor). `spaceColonization`, `tree`, `roots`, `tubes` con tests; `LifeTree` y `RootNetwork` estáticos; nervio semilla → tronco garantizado; grafo con `distance` por las conexiones |
 | 4 | Composición ✅ | Árbol bonsái (nubes, tronco en "S", nebari; se cierra ADR-003), métrica de cobertura corregida, material de raíces por grosor, `ciclo` mañana/noche, media luna del cristal recolocada, presupuesto móvil recuperado. DOF descartada en A/B. **H1 · Captura** |
 | 5 | Motor ✅ | `EcosystemEngine` (8 escenarios + calibración con un visitante simulado), store con el motor, `SimulationDriver`, `ObserverMode` (tecla O), panel Leva para calibrar (acciones, velocidad ×1/×5/×20, constantes). El ciclo pasa a vivir en el motor; `?noche` en la URL |
-| 6 | 01 · Awakening | `Seed`, shader `rootPulse` (señales de la semilla al árbol por `distance`; cada nodo responde según su `temperament`: unos con un destello breve, otros lentos y tenues), encendido por ramas, `IntroOverlay` |
+| 6 | 01 · Awakening ✅ | Tocar la semilla (área de toque de ~45 px en móvil, botón para teclado), encendido por la red con chispa Sol, pulsos con `temperament` como atributo por vértice, luz bajo la corteza, la copa se enciende nube a nube, cartela de entrada |
 | 7 | 02 · Nourish | `RainSystem`, `Puddles`, shader `growth` (`uGrowth`), shader de vegetación (humedad/marchitez), gestos |
 | 8 | 03 · Transform | `SunHandle` + `ExperienceControls`, ciclo de iluminación, `Mushrooms` con brillo, `Fireflies` |
 | 9 | 04 · Discover | Límites de cámara, raíces colgantes, `HiddenOrganisms`; reconsiderar DOF solo para primeros planos. **H2 · Vivo** |

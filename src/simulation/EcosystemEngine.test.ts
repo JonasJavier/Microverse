@@ -194,6 +194,7 @@ describe('EcosystemEngine · comportamiento', () => {
     engine.dispatch({ type: 'despertar' }) // idempotente
     attentiveVisitor(engine, 90)
     expect(counts.despertar).toBe(1)
+    expect(engine.state.despertadoEn).toBe(0)
     expect(counts.primerBrote).toBe(1)
     expect(etapas.slice(0, 3)).toEqual(['despertando', 'creciendo', 'floreciendo'])
   })

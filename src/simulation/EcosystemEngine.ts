@@ -12,6 +12,7 @@ import type {
 export function initialState(): EcosystemState {
   return {
     despertado: false,
+    despertadoEn: null,
     ciclo: 0.15,
     lluviaObjetivo: 0,
     lluvia: 0,
@@ -72,6 +73,7 @@ function isValidState(s: unknown): s is EcosystemState {
     }) &&
     typeof state.tiempo === 'number' &&
     Number.isFinite(state.tiempo) &&
+    (state.despertadoEn === null || typeof state.despertadoEn === 'number') &&
     typeof state.equilibrio === 'number' &&
     Number.isFinite(state.equilibrio) &&
     typeof state.sincronia === 'object' &&
@@ -133,6 +135,7 @@ export class EcosystemEngine {
       case 'despertar':
         if (s.despertado) return
         s.despertado = true
+        s.despertadoEn = s.tiempo
         s.vitalidad = Math.max(s.vitalidad, this.config.VITALIDAD_MIN)
         this.emit('despertar')
         this.updateEtapa()

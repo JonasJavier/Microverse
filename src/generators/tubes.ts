@@ -6,7 +6,7 @@ import type { BranchGraph } from './graph.ts'
  * cadenas: cada cadena sigue al hijo más grueso; los demás hijos abren cadenas
  * nuevas que nacen dentro del tubo del padre, así las uniones no tienen huecos.
  *
- * Cada vértice lleva la distancia acumulada de su nodo (atributo `distance`):
+ * Cada vértice lleva la distancia acumulada de su nodo (atributo `pathDistance`):
  * con ella se revela el crecimiento (`uGrowth`, jornada 7) y viajan los pulsos
  * (jornada 6). También lleva el grosor del tubo (`thickness`): el material de
  * las raíces lo usa para distinguir raíces maestras de filamentos.
@@ -16,6 +16,8 @@ export interface TubeMeshData {
   normals: Float32Array
   distances: Float32Array
   thicknesses: Float32Array
+  /** Valor por nodo (`TubeOptions.nodeValue`; en las raíces, su carácter). 0 si no hay. */
+  nodeValues: Float32Array
   indices: Uint32Array
 }
 
@@ -39,6 +41,8 @@ export interface TubeOptions {
    * tramo visible se alarga un anillo por cada lado para entrar en lo que lo tapa.
    */
   visible?: (id: number) => boolean
+  /** Valor por nodo que viaja a cada vértice (p. ej. el carácter de cada raíz). */
+  nodeValue?: (id: number) => number
 }
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -110,12 +114,13 @@ function visibleRuns(chain: Ring[], visible?: (id: number) => boolean) {
 export function buildTubes(
   graph: BranchGraph,
   radialSegments: number,
-  { flutes, visible }: TubeOptions = {},
+  { flutes, visible, nodeValue }: TubeOptions = {},
 ): TubeMeshData {
   const positions: number[] = []
   const normals: number[] = []
   const distances: number[] = []
   const thicknesses: number[] = []
+  const nodeValues: number[] = []
   const indices: number[] = []
 
   const tangent = new Vector3()
@@ -185,6 +190,7 @@ export function buildTubes(
         normals.push(radial.x, radial.y, radial.z)
         distances.push(ring.distance)
         thicknesses.push(ring.radius)
+        nodeValues.push(nodeValue ? nodeValue(ring.id) : 0)
       }
     }
 
@@ -205,6 +211,7 @@ export function buildTubes(
     normals: new Float32Array(normals),
     distances: new Float32Array(distances),
     thicknesses: new Float32Array(thicknesses),
+    nodeValues: new Float32Array(nodeValues),
     indices: new Uint32Array(indices),
   }
 }

@@ -120,6 +120,17 @@ Lighting ◀── engine.state.ciclo (acción `sol`: lo controla el visitante, 
 - Los eventos del motor (`etapa`, `primerBrote`, `sincronia:*`) se reflejan en el store **aplazando** el `setState` a una tarea aparte: el motor emite dentro de `useFrame` y ahí nunca se hace setState.
 - `ui/ObserverMode` (tecla O) lee el motor por referencia en su propio bucle de `requestAnimationFrame` y escribe en el DOM: sin renders de React por frame.
 
+**Señales (jornada 6):** `experience/signals.ts` traduce el motor a uniforms **compartidos** (los mismos objetos en raíces, corteza y follaje), una vez por frame, justo después de `engine.step`:
+
+| Uniform | Origen | Uso |
+|---|---|---|
+| `uIgnition` | `(tiempo − despertadoEn) · 0,4` | Frente de encendido (distancia alcanzada); < 0 dormido |
+| `uPhase` | Integral de `frecuenciaPulso` en tiempo del mundo | Tren de pulsos (`fract(uPhase − d / λ)`) |
+| `uLife` | `brilloRaices`, suavizado con `easing.damp` | Brillo de la red según la salud |
+| `uFlash` | Exponencial desde el despertar | Estallido de la semilla |
+
+Los parches GLSL viven en `shaders/life/` y `shaders/roots/`; `experience/world/materialPatch.ts` los inserta en `MeshStandardMaterial` por secciones (`//#color`, `//#emissive`…). Atributos por vértice: `pathDistance` (no `distance`: es una función de GLSL), `thickness` y `nodeValue` (en las raíces, el **carácter** de cada nodo; en el follaje, cada mechón hereda la distancia de su rama más cercana). El reloj del despertar sale del motor (`despertadoEn`): es determinista y un mundo recuperado no se vuelve a encender.
+
 ## Responsabilidades por capa
 
 | Capa | Puede importar | No puede importar |

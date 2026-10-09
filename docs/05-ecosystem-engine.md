@@ -11,6 +11,7 @@ Todos los valores numéricos de este documento son **puntos de partida** y viven
 | Variable | Rango | Origen | Descripción |
 |---|---|---|---|
 | `despertado` | bool | Acción | La semilla fue tocada |
+| `despertadoEn` | segundos o null | Acción | `tiempo` del mundo al despertar: el render mide desde aquí el encendido (jornada 6) |
 | `ciclo` | 0..1 | Acción (sol) | 0 mañana · 0.35 mediodía · 0.65 atardecer · 1 noche |
 | `lluviaObjetivo` | 0..1 | Acción | Intensidad pedida por el usuario |
 | `lluvia` | 0..1 | Interna | Sigue a `lluviaObjetivo` con suavizado (arranca y se detiene poco a poco) |

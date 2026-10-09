@@ -108,6 +108,19 @@ describe('scatterTreeFoliage', () => {
     expect(foliage.colors.every((c) => Number.isFinite(c) && c >= 0 && c <= 1)).toBe(true)
   })
 
+  it('cada mechón hereda la distancia de su rama: la copa se enciende después del tronco', () => {
+    expect(foliage.distances.length).toBe(foliage.count)
+    const trunkTop = Math.max(...graph.nodes.filter((n) => n.main).map((n) => n.distance))
+    const max = Math.max(...graph.nodes.map((n) => n.distance))
+    for (const d of foliage.distances) {
+      expect(d).toBeGreaterThan(START)
+      expect(d).toBeLessThanOrEqual(Math.fround(max) + 1e-6)
+    }
+    // La mayoría de la copa está más lejos de la semilla que la mitad del tronco.
+    const beyond = [...foliage.distances].filter((d) => d > (START + trunkTop) / 2)
+    expect(beyond.length / foliage.count).toBeGreaterThan(0.9)
+  })
+
   it('con menos mechones, cada uno es mayor', () => {
     const scaleOf = (m: Float32Array) => {
       let sum = 0

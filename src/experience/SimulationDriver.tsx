@@ -1,11 +1,16 @@
 import { useFrame } from '@react-three/fiber'
 import { useLookdevStore } from '../store/useLookdevStore.ts'
 import { useMicroverseStore } from '../store/useMicroverseStore.ts'
+import { updateSignals } from './signals.ts'
 
-/** Avanza el motor con el tiempo del frame (la velocidad solo cambia al calibrar). */
+/**
+ * Avanza el motor con el tiempo del frame (la velocidad solo cambia al calibrar)
+ * y traduce su estado a las señales que leen los materiales.
+ */
 function advanceWorld(delta: number) {
   const { engine } = useMicroverseStore.getState()
   engine.step(delta * useLookdevStore.getState().velocidad)
+  updateSignals(delta)
 }
 
 /**

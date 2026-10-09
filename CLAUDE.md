@@ -12,7 +12,7 @@
 - Si el proyecto no está indexado: `index_repository` antes de nada. Si hubo cambios desde el último índice: `detect_changes` y reindexar.
 - Reindexar después de cada cambio estructural (carpetas nuevas, renombres, módulos nuevos).
 - Los ADR se reflejan también en codebase-memory con `manage_adr` una vez el proyecto esté indexado.
-- ⚠️ `index_repository` **a veces borra** el ADR guardado en codebase-memory (pasó una vez de dos). Después de cada reindexado, comprobar con `manage_adr(mode='get')` y, si falta, volver a guardarlo a partir de `docs/decisiones.md`.
+- ⚠️ `index_repository` **borra casi siempre** el ADR guardado en codebase-memory (4 de 5 veces). Después de cada reindexado, comprobar con `manage_adr(mode='get')` y volver a guardarlo a partir de `docs/decisiones.md`.
 - `Grep`/`Glob`/`Read` solo para docs, configuración y texto. Siempre `Read` antes de editar.
 
 ## Forma de trabajo
@@ -20,7 +20,7 @@
 - Sin subagentes ni workflows salvo petición explícita del usuario o la palabra "ultracode".
 - Trabajo secuencial; leer solo lo necesario.
 - Commits con Conventional Commits (`feat:`, `fix:`, `docs:`, `perf:`, `refactor:`, `chore:`).
-- Servidor de desarrollo para Claude: `npm run dev:poll` (configurado en `.claude/launch.json`). Sin polling, Vite en Windows pierde cambios y sirve módulos viejos.
+- Servidor de desarrollo para Claude: `npm run dev:poll` (configurado en `.claude/launch.json`, con `autoPort`: si 5173 está ocupado, Vite usa el `PORT` asignado). Sin polling, Vite en Windows pierde cambios y sirve módulos viejos.
 - Verificación visual: con el panel del navegador oculto, la página no anima. Hacer una captura fuerza los frames. En desarrollo, `window.__microverse` expone `glassTuning`, los stores, `three()`, `view(nombre)` (vistas de cámara fijas: comparar siempre con la misma), `capture(true)` (oculta los paneles) y `silhouette(true)` (prueba de la mancha negra). Los paneles cargan en diferido y Leva reinicia `ciclo` al montarse: aplicar el ciclo después.
 
 ## Despliegue (Railway)

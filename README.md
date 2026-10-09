@@ -6,9 +6,13 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 5 completada: el motor del ecosistema (luz, humedad, vitalidad y memoria) funciona y está probado; todavía no mueve lo que se ve. Hito H1 (captura) en la jornada 4. Siguiente: jornada 6, el despertar de la semilla y los pulsos por las raíces.
+**Estado:** Jornada 6 completada, **acto 01 · Awakening**: toca la semilla y una chispa de luz recorre las raíces, sube por el tronco y enciende la copa nube a nube; después, pulsos de vida laten por toda la red al ritmo del motor. Siguiente: jornada 7, la lluvia y el crecimiento (acto 02).
 
-**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana; añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
+| Dormido | El despertar | La red, despierta |
+|---|---|---|
+| ![Dormido](docs/capturas/jornada-06-dormido.jpg) | ![El despertar](docs/capturas/jornada-06-despertar-1.jpg) | ![Despierto](docs/capturas/jornada-06-despierto.jpg) |
+
+**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
 
 | Mañana | Noche |
 |---|---|

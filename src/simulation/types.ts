@@ -8,6 +8,12 @@ export type Etapa = 'dormido' | 'despertando' | 'creciendo' | 'floreciendo'
 export interface EcosystemState {
   /** La semilla fue tocada. */
   despertado: boolean
+  /**
+   * `tiempo` del mundo al despertar (null: dormido). El render mide desde aquí
+   * el encendido de la red: es determinista y un mundo recuperado no se vuelve
+   * a encender.
+   */
+  despertadoEn: number | null
   /** 0 mañana · 0.35 mediodía · 0.65 atardecer · 1 noche. Lo controla el visitante. */
   ciclo: number
   /** Intensidad de lluvia pedida (0..1). */

@@ -71,6 +71,14 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Raíces colgantes:** algunas salen por la base de la isla y cuelgan en el vacío con las puntas luminosas. Se descubren al mirar desde abajo.
 - **Pulsos:** viajan desde la semilla hacia fuera mediante un atributo de progreso a lo largo de cada raíz.
 
+## Acto 01 · Awakening (jornada 6)
+
+- **Dormido:** la red apenas se intuye; la semilla late sola, lenta y fuerte, y su luz cálida (Sol) calienta el musgo de alrededor. Arriba a la izquierda, la cartela; abajo, una sola indicación: *Toca la semilla*.
+- **El toque:** un estallido de luz Sol en la semilla. Desde ahí avanza un **frente de encendido** por las conexiones, con una chispa cálida en la punta: recorre las raíces del corte, cruza el nervio, **trepa por el tronco** y, al llegar a cada nube, la copa destella. Como cada nube está a otra distancia de la semilla, se enciende **nube a nube**. Unos 4 s de la semilla a la copa.
+- **Después:** pulsos de luz Vida salen de la semilla al ritmo que marca el motor (más rápido cuanta más vitalidad), y cada destello de la semilla coincide con la salida de un pulso. Cada nodo responde con su **carácter**: destello breve y vivo, o respuesta lenta y tenue. En el tronco, los pulsos suben como luz bajo la corteza, más visible en los bordes.
+- **Color:** la señal del despertar es cálida (Sol, la semilla); la red es fría (Vida). Las dos se cruzan en el encendido.
+- **El brillo de la red sigue a la salud del mundo** (`brilloRaices`): recién despierta es tenue y crece al cuidarla. De noche se ve mucho más.
+
 ## Vegetación y organismos
 
 - **Hongos lámpara** (altos y finos, referencia 1) y **racimos pequeños** sobre raíces y troncos. Brillan con *Vida* de noche.

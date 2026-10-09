@@ -58,6 +58,14 @@ describe('buildTubes', () => {
     expect(partial.indices.length).toBeLessThan(mesh.indices.length)
   })
 
+  it('lleva un valor por nodo a cada vértice', () => {
+    const tagged = buildTubes(fork(), S, { nodeValue: (id) => id / 10 })
+    expect(tagged.nodeValues.length).toBe(tagged.positions.length / 3)
+    // Float32: se compara con la misma precisión.
+    expect(new Set(tagged.nodeValues)).toEqual(new Set([0, 0.1, 0.2, 0.3, 0.4].map(Math.fround)))
+    expect(mesh.nodeValues.every((v) => v === 0)).toBe(true)
+  })
+
   it('lleva la distancia acumulada de cada nodo', () => {
     expect(mesh.distances[0]).toBe(0)
     expect(Math.max(...mesh.distances)).toBeGreaterThan(0.2)

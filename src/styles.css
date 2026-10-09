@@ -60,3 +60,120 @@ canvas {
   font: inherit;
   white-space: pre;
 }
+
+/*
+ * Entrada (acto 01): cartela de museo. Título serif display con tracking amplio
+ * y una indicación en monoespaciada pequeña. Fuentes del sistema hasta que se
+ * alojen Instrument Serif y Geist Mono (jornada 12).
+ */
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  transition: opacity 2.4s ease;
+}
+
+.intro[data-gone='true'] {
+  opacity: 0;
+}
+
+.intro__label {
+  /* Cartela de museo: arriba a la izquierda, fuera de la esfera. */
+  position: absolute;
+  top: max(28px, env(safe-area-inset-top));
+  left: max(32px, env(safe-area-inset-left));
+  animation: intro-in 3s ease both;
+}
+
+.intro__title {
+  margin: 0;
+  font:
+    400 clamp(20px, 2.4vw, 30px) / 1 'Iowan Old Style',
+    'Palatino Linotype',
+    Palatino,
+    Georgia,
+    serif;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.intro__subtitle {
+  margin: 9px 0 0;
+  font:
+    11px/1 ui-monospace,
+    'SFMono-Regular',
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.intro__hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(32px, env(safe-area-inset-bottom));
+  margin: 0;
+  text-align: center;
+  font:
+    11px/1 ui-monospace,
+    'SFMono-Regular',
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  animation:
+    intro-in 2s ease 2.5s both,
+    intro-breathe 4s ease-in-out 4.5s infinite;
+}
+
+/* Visible solo al recibir el foco (teclado): despierta la semilla con Intro. */
+.intro__keyboard {
+  position: absolute;
+  left: 50%;
+  bottom: max(64px, calc(env(safe-area-inset-bottom) + 32px));
+  transform: translateX(-50%);
+  padding: 8px 14px;
+  border: 1px solid color-mix(in srgb, var(--reflejo) 40%, transparent);
+  background: color-mix(in srgb, var(--vacio) 80%, transparent);
+  color: var(--reflejo);
+  font:
+    11px/1 ui-monospace,
+    'SFMono-Regular',
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: auto;
+}
+
+.intro__keyboard:focus-visible {
+  opacity: 1;
+  outline: 1px solid var(--reflejo);
+  outline-offset: 3px;
+}
+
+@keyframes intro-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-breathe {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro__label,
+  .intro__hint {
+    animation: none;
+  }
+}

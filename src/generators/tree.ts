@@ -268,11 +268,17 @@ export const FOLIAGE_OPTIONS: Omit<FoliageOptions, 'count'> = {
   maxReach: TREE_PARAMS.maxReach,
 }
 
+/** Follaje instanciado; `distances` es la del nodo de rama más cercano a cada mechón. */
+export type TreeFoliage = ScatterResult & { distances: Float32Array }
+
 /**
  * Follaje: mechones pequeños repartidos por las nubes, más densos en la piel que
  * en el interior (lo de dentro no se ve). Arriba, claros (les da la luz); abajo,
  * oscuros: así la nube tiene volumen sin texturas. Con menos mechones (calidad
  * baja), cada uno es mayor y la silueta no cambia.
+ *
+ * Cada mechón hereda la distancia (por las conexiones desde la semilla) de la
+ * rama más cercana: así la copa se enciende rama a rama cuando llega la señal.
  */
 export function scatterTreeFoliage(
   tree: Tree,
@@ -280,10 +286,11 @@ export function scatterTreeFoliage(
   count: number,
   reference = 4500,
   options: Omit<FoliageOptions, 'count'> = FOLIAGE_OPTIONS,
-): ScatterResult {
+): TreeFoliage {
   const lumps = createNoise3D(random.fork('bultos').next)
   const matrices = new Float32Array(count * 16)
   const colors = new Float32Array(count * 3)
+  const distances = new Float32Array(count)
   const bosque = new Color(palette.materia.bosque)
   const musgo = new Color(palette.materia.musgo)
   const color = new Color()
@@ -302,6 +309,11 @@ export function scatterTreeFoliage(
 
   let placed = 0
   for (const [i, pad] of tree.pads.entries()) {
+    // Candidatas para la distancia: las ramas dentro (o cerca) de esta nube.
+    const near = tree.graph.nodes.filter(
+      (n) => n.position.clone().sub(pad.center).divide(pad.radii).length() < 1.6,
+    )
+    const candidates = near.length > 0 ? near : tree.graph.nodes
     const share =
       i === tree.pads.length - 1 ? count - placed : Math.round((count * volumes[i]!) / total)
     for (let k = 0; k < share && placed < count; k++) {
@@ -328,6 +340,15 @@ export function scatterTreeFoliage(
       colors[placed * 3] = color.r
       colors[placed * 3 + 1] = color.g
       colors[placed * 3 + 2] = color.b
+
+      let best = Infinity
+      for (const node of candidates) {
+        const d = node.position.distanceToSquared(position)
+        if (d < best) {
+          best = d
+          distances[placed] = node.distance
+        }
+      }
       placed++
     }
   }
@@ -335,5 +356,6 @@ export function scatterTreeFoliage(
     count: placed,
     matrices: placed === count ? matrices : matrices.slice(0, placed * 16),
     colors: placed === count ? colors : colors.slice(0, placed * 3),
+    distances: placed === count ? distances : distances.slice(0, placed),
   }
 }
