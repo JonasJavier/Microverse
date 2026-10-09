@@ -18,16 +18,42 @@
 | 0 | Arranque ✅ | Vite + dependencias fijadas, lint/test en verde, Git + GitHub, **indexado en codebase-memory**, `palette.ts`, `quality.ts`, Canvas con herramientas de depuración. Deploy en Railway (ADR-011) |
 | 1 | Look-dev del cristal ✅ | `GlassSphere` (shader Fresnel) comparado con MTM, `Environment` con Lightformers, `Pedestal`, fondo, `PostFX` base (bloom + viñeta). Se cierra ADR-004 |
 | 2 | Isla y subsuelo ✅ | `islandGenerator`, corte de diorama con estratos (se cierra ADR-008), musgo instanciado (`scatter`), luz de mañana fija |
-| 3 | Generadores | `spaceColonization`, `treeGenerator`, `rootGenerator` con tests; `LifeTree` y `RootNetwork` estáticos |
-| 4 | Composición | Árbol definitivo (se cierra ADR-003), encuadre, `CameraControls`, DOF, versión de noche estática. **H1 · Captura** |
+| 3 | Generadores ✅ | Pulido A/B (reflejos, pedestal, estratos por valor). `spaceColonization`, `tree`, `roots`, `tubes` con tests; `LifeTree` y `RootNetwork` estáticos; nervio semilla → tronco garantizado; grafo con `distance` por las conexiones |
+| 4 | Composición | Árbol definitivo (se cierra ADR-003, ver rúbrica), encuadre, `CameraControls`, DOF, versión de noche estática. **H1 · Captura** |
 | 5 | Motor | `EcosystemEngine` + tests, store, `SimulationDriver`, `ObserverMode`, panel Leva para calibrar |
-| 6 | 01 · Awakening | `Seed`, shader `rootPulse`, encendido por ramas, `IntroOverlay` |
+| 6 | 01 · Awakening | `Seed`, shader `rootPulse` (señales de la semilla al árbol por `distance`; cada nodo responde según su `temperament`: unos con un destello breve, otros lentos y tenues), encendido por ramas, `IntroOverlay` |
 | 7 | 02 · Nourish | `RainSystem`, `Puddles`, shader `growth` (`uGrowth`), shader de vegetación (humedad/marchitez), gestos |
 | 8 | 03 · Transform | `SunHandle` + `ExperienceControls`, ciclo de iluminación, `Mushrooms` con brillo, `Fireflies` |
 | 9 | 04 · Discover | Límites de cámara, raíces colgantes, `HiddenOrganisms`. **H2 · Vivo** |
 | 10 | 05 · Sincronía | Final, calibración del motor con 3 personas, audio ambiente, persistencia |
 | 11 | Rendimiento | Niveles de calidad medidos en dispositivos reales, táctil, accesibilidad, pérdida de contexto WebGL |
 | 12 | Publicación | `AboutPanel`, imagen OG, vídeo de 15 s de la Sincronía, deploy final. **H3 · Publicado** |
+
+## Rúbrica del H1 (jornada 4)
+
+El árbol no está terminado porque el algoritmo funcione: la colonización da estructuras orgánicas, pero no garantiza una buena composición. El H1 se aprueba con capturas de mañana y de noche, **misma cámara**, contra esta tabla:
+
+| Criterio | Qué se comprueba |
+|---|---|
+| Silueta | El árbol se reconoce **como mancha negra** a tamaño miniatura (si funciona en negro, funciona siempre) |
+| Composición | Se distinguen a la primera el árbol, la semilla y el corte |
+| Iluminación | La tierra conserva volumen incluso en las zonas oscuras |
+| Cristal | Los reflejos enmarcan, no distraen de los elementos principales |
+| Día/noche | Las dos versiones tienen personalidad propia |
+
+Si el árbol procedural no pasa, se activa el plan B de ADR-003 (Blender). No es un fracaso: el objetivo es una escena extraordinaria, no que todo salga de una fórmula.
+
+**Punto de partida tras la jornada 3** (capturas `jornada-03-*`): la silueta ya tiene tronco en "S", bifurcación y tres masas con huecos, pero en el encuadre por defecto el árbol se ve pequeño y la copa, fina; el follaje de esferas se lee como brócoli de cerca. A trabajar en la jornada 4: escala del árbol, volumen de la copa, follaje de tarjetas u hojas y cuello del tronco con raíces expuestas.
+
+## Orden de recorte
+
+Si hay retraso, se recorta en este orden (lo primero, lo primero que cae):
+
+1. Organismos ocultos (como mucho se mantiene la criatura bajo la isla).
+2. Audio ambiente.
+3. Condensación del cristal.
+
+**No se recorta:** lluvia, crecimiento, ciclo día/noche, la red de raíces y la Sincronía. Son el ecosistema principal.
 
 ## Definición de terminado (v1)
 

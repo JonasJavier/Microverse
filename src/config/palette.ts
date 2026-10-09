@@ -14,18 +14,22 @@ export const palette = {
     tierra: '#14110D',
     piedra: '#2A2E2B',
     reflejo: '#CFE9E4',
+    corteza: '#2E2620',
+    // Raíz viva: pálida, para leerse sobre los estratos oscuros (brilla con Vida).
+    raiz: '#7A6E60',
   },
   /**
-   * Estratos del corte de diorama (ADR-008), de arriba abajo. Oscuros y poco
-   * saturados: la luz de la escena (y más tarde las raíces) pone el color.
+   * Estratos del corte de diorama (ADR-008), de arriba abajo. Poco saturados, y
+   * separados por **valor** (oscuro, medio, claro, oscuro, gris frío), no solo por
+   * tono: en penumbra el ojo distingue luminosidad, no matiz (jornada 3).
    */
   estratos: {
     cesped: '#183E33', // capa de raíces del musgo (= bosque)
-    humus: '#1E1A13',
-    tierra: '#2B2117',
-    arcilla: '#3B2F22',
-    tierraProfunda: '#211A13',
-    roca: '#2A2E2B', // = piedra
+    humus: '#17130E', // el más oscuro: materia orgánica
+    tierra: '#3A2A1C',
+    arcilla: '#5E4733', // banda clara: la línea que ordena el corte
+    tierraProfunda: '#2A2119',
+    roca: '#3B413E', // gris frío: cambia de familia, no solo de valor
   },
   luz: {
     vida: '#73E2D7',

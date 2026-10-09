@@ -3,6 +3,8 @@
 ## Rol: Claude es el responsable (lead) del proyecto
 - El usuario aporta la idea y la visión. **Claude es el encargado del proyecto**: toma y documenta las decisiones técnicas y de producción, propone mejoras y correcciones por iniciativa propia, y defiende la definición de terminado frente al aumento de alcance.
 - Las decisiones importantes se registran como ADR en [docs/decisiones.md](docs/decisiones.md). Si el usuario veta una, se actualiza el ADR (no se borra: se marca como "Reemplazada").
+- **Un ADR solo para decisiones estructurales o difíciles de revertir** (stack, arquitectura, hosting, formato de datos compartido). Los ajustes artísticos (intensidades, colores derivados, parámetros de generadores) van a la configuración de look-dev, con comentario del porqué, y al historial de capturas A/B en `docs/capturas/`. Sin ADR.
+- **Pulido acotado:** cada pasada de ajuste visual tiene tiempo fijo y se compara con capturas de misma cámara antes y después. Si no hay mejora clara, se para.
 - Antes de cerrar una tarea, comprobar que sigue alineada con [docs/06-roadmap.md](docs/06-roadmap.md).
 
 ## Codebase Memory — OBLIGATORIO

@@ -17,7 +17,7 @@
 
 **Narrativa del color:** la vida empieza cálida (la semilla, *Sol*) y de noche se vuelve fría (*Vida*). En la Sincronía, las dos conviven por primera vez.
 
-**Tonos derivados (a validar en look-dev):** tierra `#14110D`, piedra `#2A2E2B`, reflejo del cristal `#CFE9E4`. Todos se definen en `src/config/palette.ts`; ningún color se escribe directamente en un componente.
+**Tonos derivados (a validar en look-dev):** tierra `#14110D`, piedra `#2A2E2B`, reflejo del cristal `#CFE9E4`, corteza `#2E2620`, raíz viva `#7A6E60` (pálida: se lee sobre los estratos oscuros). Todos se definen en `src/config/palette.ts`; ningún color se escribe directamente en un componente.
 
 ## Composición
 
@@ -45,6 +45,8 @@ Un único parámetro `ciclo` (0 → 1) controla toda la iluminación. Valores in
 
 Una esfera real de pared fina **casi no refracta**: lo que la vende son los reflejos, el borde Fresnel y uno o dos brillos especulares de softbox. Decisión (ADR-004, validada en la jornada 1): shader propio de cristal fino en todos los niveles. El brillo principal es un softbox **cenital y algo trasero**: se refleja en ángulo rasante en el borde superior, donde el Fresnel es alto, y dibuja la media luna de la fotografía de producto. `MeshTransmissionMaterial` quedó descartado en el A/B (más caro y peor aspecto).
 
+**El cristal enmarca, no protagoniza** (pulido de la jornada 3): la media luna superior bajó un 20 % (es lo que vende el cristal) y la tira de contraluz derecha un 37 % y un 30 % más fina. El anillo del pedestal queda por debajo del pulso de la semilla. Los reflejos se ajustan con `reflectionGain`, que no cambia cuánto iluminan la escena.
+
 Condensación: opcional, estilizada, solo en la parte superior y solo con humedad alta.
 
 ## Árbol protagonista (ADR-003)
@@ -52,7 +54,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 **Silueta estilizada, acabado macro realista.** Formas de fantasía reconocibles, renderizadas con luz, materiales y profundidad de campo de fotografía.
 
 - **Silueta:** tronco inclinado, raíz superficial expuesta y 2 o 3 masas de copa de aspecto musgoso (como en la referencia 1), asimétricas. Tiene que leerse en miniatura y como silueta de noche.
-- **Construcción:** procedural (colonización del espacio → tubos) con semilla fija y parámetros ajustados a mano. El mismo generador produce las raíces hacia abajo.
+- **Construcción:** procedural (colonización del espacio → tubos) con semilla fija y parámetros ajustados a mano. El mismo generador produce las raíces hacia abajo. El tronco se traza a mano (curva por puntos de control, en "S" suave): su inclinación es una decisión de composición. La colonización solo pone las ramas hacia las masas de copa, que tienen huecos para que la copa respire.
 - **Copa:** grupos de instancias (tarjetas u hojas) con viento por shader.
 - **Crecimiento:** un uniform `uGrowth` revela las ramas a lo largo de su longitud; la copa aparece cuando la rama llega a su punto.
 - **Floración (Sincronía):** pequeñas flores emisivas *Sol*.
@@ -61,6 +63,8 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 
 - **Isla:** disco irregular de tierra con musgo arriba y cono invertido de roca abajo.
 - **Corte de diorama (validado en la jornada 2):** una cuña frontal de 86°, un poco a la derecha, cortada en limpio. Muestra los estratos `palette.estratos` (césped → humus → tierra → arcilla → tierra profunda → roca), con la red de raíces brillando dentro. La semilla queda en el vértice del corte. Es la imagen distintiva del proyecto.
+- **Estratos legibles por valor** (jornada 3): oscuro, medio, claro, oscuro y gris frío. En penumbra el ojo separa luminosidades, no matices; la banda clara de arcilla ordena el corte. Las raíces complementan los estratos, no son lo único que los distingue.
+- **Raíces como sistema nervioso** (jornada 3): la red nace en la semilla y se abre por las caras del corte, gruesa arriba y fina en profundidad, como dendritas. Un **nervio principal** une la semilla con la base del tronco: asoma entre el musgo en arcos y se vuelve a hundir. Cuando la semilla despierte (jornada 6), las señales viajarán por ese camino hacia el árbol; cada nodo responde a su manera (destello breve o respuesta lenta y tenue), para que se sienta orgánico y no un circuito.
 - **Luz del corte:** la cara que mira a la luz principal se ve cálida; la otra la abre un relleno frío desde la derecha (principal cálida + relleno frío, esquema de retrato).
 - **Musgo:** miles de almohadillas instanciadas en manchas de Bosque a Musgo, más ralas cerca del borde, con claros alrededor de la semilla y del tronco.
 - **Raíces colgantes:** algunas salen por la base de la isla y cuelgan en el vacío con las puntas luminosas. Se descubren al mirar desde abajo.

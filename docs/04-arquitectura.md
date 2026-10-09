@@ -34,9 +34,11 @@ microverse/
     │   └── EcosystemEngine.test.ts
     ├── generators/               # geometría procedural (sin react)
     │   ├── random.ts             # PRNG con semilla
+    │   ├── graph.ts              # grafo de ramificación: ids estables, distancias, radios
     │   ├── spaceColonization.ts  # algoritmo común a árbol y raíces
-    │   ├── treeGenerator.ts
-    │   ├── rootGenerator.ts
+    │   ├── tree.ts               # tronco trazado + copa por colonización + follaje
+    │   ├── roots.ts              # nervio semilla → tronco + red por colonización
+    │   ├── tubes.ts              # grafo → malla de tubos (atributo `distance`)
     │   ├── island.ts             # forma de la isla, malla con corte de diorama y estratos
     │   ├── scatter.ts            # distribución de musgo, piedras, hongos
     │   └── *.test.ts
@@ -51,8 +53,9 @@ microverse/
     │   ├── world/
     │   │   ├── GlassSphere.tsx
     │   │   ├── Pedestal.tsx
-    │   │   ├── island.ts         # ISLAND: forma compartida, SEED_POSITION, TREE_BASE, claros
-    │   │   ├── geometry.ts       # datos de generador → BufferGeometry / InstancedMesh
+    │   │   ├── island.ts         # ISLAND: forma compartida, SEED_POSITION, TREE_BASE
+    │   │   ├── life.ts           # ROOT_NETWORK, TREE y claros del musgo (generados al cargar)
+    │   │   ├── geometry.ts       # datos de generador → BufferGeometry / InstancedMesh / tubos
     │   │   ├── FloatingIsland.tsx
     │   │   ├── GroundCover.tsx   # musgo y piedras (instancing)
     │   │   ├── Seed.tsx
@@ -126,6 +129,21 @@ Lighting ◀── ciclo (lo controla el usuario directamente, no lo decide el m
 - **Orden de transparencias:** opacos → partículas → cara trasera del cristal (`BackSide`) → cara delantera (`FrontSide`), con `depthWrite={false}` en el cristal y `renderOrder` explícito.
 - Las geometrías procedurales se generan en `useMemo` a partir de la semilla; R3F las libera al desmontar.
 
+## La red de vida como grafo (jornada 3)
+
+Árbol y raíces son **un solo sistema nervioso** en dos grafos encadenados:
+
+```
+semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronco ──▶ ramas ──▶ follaje
+                │                                         (nodo 0 del árbol)
+                └── ramificación por colonización (suelo y caras del corte)
+```
+
+- **Camino garantizado:** el nervio semilla → tronco se traza a mano antes de la colonización, que por sí sola no asegura la conexión.
+- **Ids estables:** coinciden con el índice y el padre siempre es anterior al hijo: no hay ciclos posibles.
+- **`distance`** es la longitud acumulada **por las conexiones** desde la semilla, no la distancia en línea recta. El árbol continúa la de las raíces. Va como atributo de vértice en los tubos: los pulsos (jornada 6) y el crecimiento `uGrowth` (jornada 7) la usan sin recalcular nada.
+- **`toTree`** (raíces): lo que le falta a cada nodo para llegar al tronco. **`temperament`**: carácter de cada nodo (respuesta breve y viva o lenta y tenue) para que la red no parezca un circuito.
+
 ## Calidad adaptativa
 
 | | Alta | Media | Baja |
@@ -135,6 +153,7 @@ Lighting ◀── ciclo (lo controla el usuario directamente, no lo decide el m
 | Profundidad de campo | Sí | No | No |
 | Bloom | Completo | Media resolución | Media resolución, menos niveles |
 | Instancias de musgo | ~6000 | ~3000 | ~1200 |
+| Lados de los tubos (árbol y raíces) | 8 | 6 | 5 |
 | Luciérnagas | 60 | 40 | 24 |
 | Gotas de lluvia | 1500 | 800 | 400 |
 | Sombras | 1024, suaves | 1024 | Sin sombras dinámicas (sombra falsa) |

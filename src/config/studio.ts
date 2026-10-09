@@ -35,18 +35,21 @@ export const SOFTBOXES: readonly Softbox[] = [
     softness: 0.035,
     color: palette.luz.sol,
     intensity: 2.2,
-    reflectionGain: 2.5,
+    // Jornada 3: −20 %. La media luna enmarca; no debe competir con el árbol.
+    reflectionGain: 2,
   },
   {
-    // Tira vertical de contraluz: dibuja el borde derecho.
+    // Tira vertical de contraluz: dibuja el borde derecho. Jornada 3: un 30 % más
+    // fina y su reflejo un 37 % más tenue (1,6 → 1,0); la intensidad sube para que
+    // la luz que aporta a la escena (área × intensidad) no cambie.
     name: 'contra',
     direction: [1, 0.15, -0.35],
-    halfSize: [0.07, 0.95],
-    cornerRadius: 0.05,
+    halfSize: [0.05, 0.95],
+    cornerRadius: 0.04,
     softness: 0.03,
     color: palette.materia.reflejo,
-    intensity: 1.6,
-    reflectionGain: 1,
+    intensity: 2.25,
+    reflectionGain: 0.45,
   },
   {
     // Relleno frío muy tenue a la izquierda.

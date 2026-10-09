@@ -7,6 +7,8 @@ export interface QualitySettings {
   /** Muestras MSAA del EffectComposer (0 = sin antialiasing). */
   multisampling: number
   mossInstances: number
+  /** Lados de los tubos del árbol y las raíces. */
+  tubeSegments: number
   fireflies: number
   raindrops: number
   shadows: 'suaves' | 'basicas' | 'ninguna'
@@ -20,6 +22,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     bloomHalfRes: false,
     multisampling: 4,
     mossInstances: 6000,
+    tubeSegments: 8,
     fireflies: 60,
     raindrops: 1500,
     shadows: 'suaves',
@@ -30,6 +33,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     bloomHalfRes: true,
     multisampling: 2,
     mossInstances: 3000,
+    tubeSegments: 6,
     fireflies: 40,
     raindrops: 800,
     shadows: 'basicas',
@@ -40,6 +44,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     bloomHalfRes: true,
     multisampling: 0,
     mossInstances: 1200,
+    tubeSegments: 5,
     fireflies: 24,
     raindrops: 400,
     shadows: 'ninguna',

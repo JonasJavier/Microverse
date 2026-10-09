@@ -11,8 +11,9 @@ const DISC_HEIGHT = 0.04
  * con un anillo de luz tenue (Sol de día; Vida de noche a partir de la jornada 8).
  */
 export function Pedestal() {
-  // Valor HDR > 1: lo justo para que el bloom dibuje un halo fino.
-  const ringColor = useMemo(() => new Color(palette.luz.sol).multiplyScalar(2.2), [])
+  // Valor HDR > 1: lo justo para que el bloom dibuje un halo fino. Por debajo del
+  // pulso de la semilla: la mirada va primero a la semilla y al árbol.
+  const ringColor = useMemo(() => new Color(palette.luz.sol).multiplyScalar(1.4), [])
 
   return (
     <group position={[0, PEDESTAL_TOP_Y - DISC_HEIGHT / 2, 0]}>

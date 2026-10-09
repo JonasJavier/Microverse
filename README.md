@@ -6,11 +6,11 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 2 completada: isla flotante procedural con corte de diorama y estratos, musgo y piedras con instancing, sombras y luz de mañana. Siguiente: jornada 3, árbol y raíces procedurales.
+**Estado:** Jornada 3 completada: árbol y red de raíces generados por colonización del espacio, con un nervio que une la semilla con el tronco; pulido del cristal y de los estratos. Siguiente: jornada 4, composición y primera captura de mañana y de noche (H1).
 
-| Vista | Corte de diorama |
-|---|---|
-| ![Jornada 2: la isla](docs/capturas/jornada-02-isla.jpg) | ![Jornada 2: el corte](docs/capturas/jornada-02-corte.jpg) |
+| Vista | El árbol | El sistema nervioso |
+|---|---|---|
+| ![Jornada 3: vista general](docs/capturas/jornada-03-general.jpg) | ![Jornada 3: el árbol](docs/capturas/jornada-03-arbol.jpg) | ![Jornada 3: raíces en el corte](docs/capturas/jornada-03-raices.jpg) |
 
 Historial visual en [docs/capturas](docs/capturas).
 

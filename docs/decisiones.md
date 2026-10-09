@@ -1,6 +1,7 @@
 # Registro de decisiones (ADR)
 
 Estados: **Propuesta** (pendiente de validar) · **Aceptada** · **Reemplazada** (se indica por cuál).
+Solo decisiones estructurales o difíciles de revertir. Los ajustes artísticos viven en la configuración de look-dev y en las capturas A/B de `docs/capturas/`.
 Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memory (`manage_adr`).
 
 ---
@@ -27,6 +28,7 @@ Cuando el proyecto esté indexado, cada ADR se refleja también en codebase-memo
 5. Coincide con la referencia 1 (copas de musgo, formas de cuento) sin perder la seriedad de la referencia 2.
 **Plan B:** si en la jornada 4 el árbol procedural no pasa el listón visual, se modela en Blender y el crecimiento se resuelve por segmentos.
 **Aprobada** por el usuario el 2026-10-07.
+**Jornada 3:** generadores hechos y probados. Árbol y raíces comparten `BranchGraph` y `colonize`; en ambos, el camino principal (tronco, nervio semilla → tronco) se traza a mano y la colonización solo ramifica. Se cierra en la jornada 4 con la rúbrica del H1 ([06-roadmap.md](06-roadmap.md)).
 
 ## ADR-004 · Cristal de pared fina con shader propio — Aceptada y validada (jornada 1, 2026-10-08)
 **Contexto:** `MeshTransmissionMaterial` añade un pase de render completo de la escena. Una esfera de pared fina casi no refracta.
@@ -59,6 +61,7 @@ El sobrecoste de MTM crece con la escena (la vuelve a renderizar entera cada fra
 **Decisión:** el cuadrante frontal del suelo está cortado en limpio y muestra estratos y raíces luminosas. Además, raíces colgantes bajo la isla.
 **Implementación (jornada 2):** cuña de 86° (`cutHalfAngle` 0,75 rad) centrada 20° a la derecha de la cámara (`cutCenter` 0,35 rad): el árbol, en el tercio izquierdo, queda sobre suelo intacto. La semilla está justo detrás del vértice del corte, para que las raíces nazcan a la vista. Los estratos (césped → humus → tierra → arcilla → tierra profunda → roca) son colores de vértice según la profundidad, con bordes ondulados por ruido 3D. Una sola forma (`IslandShape`) alimenta la malla, el musgo y las raíces.
 **Validación:** se lee desde el encuadre por defecto y gana en primer plano. La cara del corte que mira en contra de la luz principal quedaba negra; se resolvió con un relleno frío desde la derecha (`FILL_LIGHT`), sin tocar el cristal.
+**Raíces en el corte (jornada 3):** la ramificación no entra en la cuña: lo que crecería dentro se proyecta sobre la cara más cercana, hundido menos que su propio radio, y se ve en relieve. Atractores extra junto a las caras llevan la red hasta la roca.
 **Alternativa:** suelo semitransparente con las raíces vistas a través. Más ambiguo y con más problemas de transparencia.
 
 ## ADR-009 · Hosting en Netlify con deploy desde la jornada 0 — Reemplazada por ADR-011 (2026-10-08)

@@ -4,7 +4,8 @@ import { QUALITY } from '../../config/quality.ts'
 import { scatterMoss, scatterPebbles } from '../../generators/scatter.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { disposeMesh, toInstancedMesh } from './geometry.ts'
-import { CLEARINGS, ISLAND, worldRandom } from './island.ts'
+import { ISLAND, worldRandom } from './island.ts'
+import { CLEARINGS } from './life.ts'
 
 const PEBBLES = 28
 
