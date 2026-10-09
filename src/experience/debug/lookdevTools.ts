@@ -13,6 +13,9 @@ export const VIEWS = {
   arbol: [0.15, 0.3, 2.3, -0.2, 0.15, -0.1],
   suelo: [0.05, 0.25, 0.75, -0.15, -0.1, -0.1],
   abajo: [1.2, -1.4, 2.4, 0, -0.35, 0],
+  /** Jornada 8: el cristal tiene que aguantar la exploración, no solo el encuadre frontal. */
+  lateral: [4.6, 0.9, 1.6, 0, -0.15, 0],
+  superior: [0.6, 4.4, 2.4, 0, -0.15, 0],
 } as const satisfies Record<string, readonly number[]>
 
 export type ViewName = keyof typeof VIEWS

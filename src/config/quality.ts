@@ -20,6 +20,8 @@ export interface QualitySettings {
   /** Segmentos de la esfera de cristal (horizontal, vertical). */
   glassSegments: readonly [number, number]
   fireflies: number
+  /** Racimos de hongos (los de lámpara son siempre 6). */
+  mushroomClusters: number
   raindrops: number
   shadows: 'suaves' | 'basicas' | 'ninguna'
 }
@@ -37,6 +39,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     tubeSegments: 8,
     glassSegments: [128, 64],
     fireflies: 60,
+    mushroomClusters: 36,
     raindrops: 1500,
     shadows: 'suaves',
   },
@@ -51,6 +54,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     tubeSegments: 6,
     glassSegments: [64, 32],
     fireflies: 40,
+    mushroomClusters: 28,
     raindrops: 800,
     shadows: 'basicas',
   },
@@ -65,6 +69,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     tubeSegments: 5,
     glassSegments: [56, 28],
     fireflies: 24,
+    mushroomClusters: 20,
     raindrops: 400,
     shadows: 'ninguna',
   },

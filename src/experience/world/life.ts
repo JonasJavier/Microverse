@@ -2,6 +2,7 @@ import { Vector3 } from 'three'
 import { generateRootNetwork } from '../../generators/roots.ts'
 import type { Clearing } from '../../generators/scatter.ts'
 import { generateTree } from '../../generators/tree.ts'
+import { findPuddles } from '../../generators/vegetation.ts'
 import { ISLAND, SEED_POSITION, TREE_BASE, worldRandom } from './island.ts'
 
 /**
@@ -41,3 +42,6 @@ export const CLEARINGS: readonly Clearing[] = [
     return { x, z, radius: TREE.graph.node(id).radius * 1.6 + 0.008 }
   }),
 ]
+
+/** Hondonadas donde se encharca: charcos (Vegetation) y racimos de hongos (Mushrooms). */
+export const PUDDLES = findPuddles(ISLAND, worldRandom.fork('charcos'), 7, CLEARINGS)

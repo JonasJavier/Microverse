@@ -1,29 +1,37 @@
-import { Color } from 'three'
+import { Color, Vector3 } from 'three'
 import { TIME_KEYFRAMES, type TimeOfDayLook } from '../../config/timeOfDay.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 
 type ColorKey = 'keyColor' | 'fillColor' | 'ringColor'
-type NumberKey = Exclude<keyof TimeOfDayLook, ColorKey>
+type VectorKey = 'keyDirection'
+type NumberKey = Exclude<keyof TimeOfDayLook, ColorKey | VectorKey>
 
-/** Look resuelto para un valor de `ciclo`: números y colores (lineales) listos para usar. */
-export type ResolvedLook = Record<NumberKey, number> & Record<ColorKey, Color>
+/** Look resuelto para un valor de `ciclo`: números, colores (lineales) y direcciones listos para usar. */
+export type ResolvedLook = Record<NumberKey, number> &
+  Record<ColorKey, Color> &
+  Record<VectorKey, Vector3>
 
 const COLOR_KEYS: readonly ColorKey[] = ['keyColor', 'fillColor', 'ringColor']
+const VECTOR_KEYS: readonly VectorKey[] = ['keyDirection']
 const NUMBER_KEYS = Object.keys(TIME_KEYFRAMES[0]!.look).filter(
-  (k) => !COLOR_KEYS.includes(k as ColorKey),
+  (k) => !COLOR_KEYS.includes(k as ColorKey) && !VECTOR_KEYS.includes(k as VectorKey),
 ) as NumberKey[]
 
-// Colores de cada fotograma clave, convertidos una sola vez.
+// Colores y direcciones de cada fotograma clave, convertidos una sola vez.
 const keyframeColors = TIME_KEYFRAMES.map(({ look }) => ({
   keyColor: new Color(look.keyColor),
   fillColor: new Color(look.fillColor),
   ringColor: new Color(look.ringColor),
+}))
+const keyframeVectors = TIME_KEYFRAMES.map(({ look }) => ({
+  keyDirection: new Vector3(...look.keyDirection).normalize(),
 }))
 
 const resolved = {
   keyColor: new Color(),
   fillColor: new Color(),
   ringColor: new Color(),
+  keyDirection: new Vector3(),
 } as ResolvedLook
 let resolvedFor = Number.NaN
 
@@ -36,10 +44,13 @@ function resolve(ciclo: number) {
   const b = TIME_KEYFRAMES[i + 1] ?? a
   const t = b.at > a.at ? (c - a.at) / (b.at - a.at) : 0
   for (const key of NUMBER_KEYS) resolved[key] = a.look[key] + (b.look[key] - a.look[key]) * t
+  const j = Math.min(i + 1, TIME_KEYFRAMES.length - 1)
   for (const key of COLOR_KEYS) {
-    resolved[key]
-      .copy(keyframeColors[i]![key])
-      .lerp(keyframeColors[Math.min(i + 1, keyframeColors.length - 1)]![key], t)
+    resolved[key].copy(keyframeColors[i]![key]).lerp(keyframeColors[j]![key], t)
+  }
+  for (const key of VECTOR_KEYS) {
+    // Lerp y normalizar: la luz gira sin cambiar de distancia.
+    resolved[key].copy(keyframeVectors[i]![key]).lerp(keyframeVectors[j]![key], t).normalize()
   }
   resolvedFor = ciclo
 }

@@ -280,3 +280,18 @@ canvas {
     animation: none;
   }
 }
+
+/* Control del sol (jornada 8): aparece con el primer brote; se arrastra en horizontal. */
+.controls__button--sun {
+  display: none;
+  cursor: ew-resize;
+}
+
+.controls__button--sun[data-visible='true'] {
+  display: flex;
+  animation: intro-in 1.2s ease;
+}
+
+.controls__button--sun[data-dragging='true'] {
+  background: color-mix(in srgb, var(--reflejo) 16%, transparent);
+}

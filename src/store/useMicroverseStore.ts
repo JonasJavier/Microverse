@@ -49,6 +49,8 @@ interface MicroverseStore {
   haLlovido: boolean
   /** Exceso de agua sostenido: la interfaz pide descanso ("La tierra necesita descansar"). */
   encharcado: boolean
+  /** El visitante ya ha movido el sol alguna vez (la pista del sol desaparece). */
+  haMovidoSol: boolean
   despertar(): void
   llover(intensidad: number): void
   /**
@@ -57,7 +59,10 @@ interface MicroverseStore {
    */
   empezarLluvia(fuente: FuenteLluvia): void
   pararLluvia(fuente: FuenteLluvia): void
+  /** Ciclo absoluto (URL, panel de desarrollo). */
   sol(ciclo: number): void
+  /** Sol del visitante (control, orbe, flechas): desplaza el ciclo y cuenta como usado. */
+  moverSol(delta: number): void
 }
 
 const engine = createEngine()
@@ -92,6 +97,13 @@ export const useMicroverseStore = create<MicroverseStore>()((set) => ({
     engine.dispatch({ type: 'lluvia', intensidad: 0 })
   },
   sol: (ciclo) => engine.dispatch({ type: 'sol', ciclo }),
+  haMovidoSol: false,
+  moverSol: (delta) => {
+    // El control del sol aparece con el primer brote: antes no hay sol que mover.
+    if (!engine.state.primerBrote || delta === 0) return
+    engine.dispatch({ type: 'sol', ciclo: engine.state.ciclo + delta })
+    set({ haMovidoSol: true })
+  },
 }))
 
 /**

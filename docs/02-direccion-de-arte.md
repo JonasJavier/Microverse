@@ -30,7 +30,7 @@
 
 ## Iluminación: ciclo día/noche
 
-Un único parámetro `ciclo` (0 → 1) controla toda la iluminación (`config/timeOfDay.ts`, fotogramas clave interpolados). Mañana y noche están hechas desde la jornada 4; mediodía y atardecer llegan en la 8 (hasta entonces, la mañana se sostiene hasta 0,65 y la noche entra entre 0,65 y 0,9). Desde la jornada 5 el ciclo vive en el motor; `?noche` en la URL muestra la noche. De noche: luna teñida de Vida que recorta la cima de las nubes, relleno que sostiene los estratos, raíces a pleno brillo (el bloom las recoge), anillo del pedestal en Vida y reflejos del cristal al 30 %. Valores iniciales:
+Un único parámetro `ciclo` (0 → 1) controla toda la iluminación (`config/timeOfDay.ts`, fotogramas clave interpolados). Mañana y noche desde la jornada 4; mediodía y atardecer desde la 8, con la **luz principal girando** (`keyDirection`): alta y casi blanca a mediodía (sombras cortas, materiales a plena lectura), rasante y naranja desde atrás a la derecha al atardecer (contraluz: ramas recortadas, sombras largas; el relleno y el ambiente suben para que el corte siga leyéndose). Capturas `jornada-08-manana|mediodia|atardecer|noche.jpg`, misma cámara. Desde la jornada 5 el ciclo vive en el motor; `?noche` en la URL muestra la noche. De noche: luna teñida de Vida que recorta la cima de las nubes, relleno que sostiene los estratos, raíces a pleno brillo (el bloom las recoge), anillo del pedestal en Vida y reflejos del cristal al 30 %. Valores iniciales:
 
 | `ciclo` | Momento | Luz principal | Ambiente / fondo | Emisivos |
 |---|---|---|---|---|
@@ -87,6 +87,13 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Crecimiento** (`uGrowth`): las ramas se alargan a lo largo de su distancia desde la semilla, con punta (los anillos aún no revelados se pliegan hacia el eje), y las nubes se llenan **mechón a mechón** cuando el frente llega a su rama. Las sombras crecen igual.
 - **Brotes:** asoman primero alrededor de la semilla y después hacia fuera, al subir la vitalidad. Secos, se encogen y se abren.
 - **Charcos:** solo aparecen al **pasarse de agua** (encharcado): agua oscura que refleja el estudio (velo tenue, más en ángulo rasante), con ondas mientras llueve. Son el aviso visual del exceso, junto con la tierra saturada (más oscura y lisa), la pista "La tierra necesita descansar" y los hongos (jornada 8). Regar sin parar no es cuidar: el visitante tiene que descubrir la dosis.
+
+## Acto 03 · Transform (jornada 8)
+
+- **El sol se mueve**: control en la cápsula (aparece con el primer brote; arrastre horizontal, flechas con el foco) y un **orbe solar** sobre un arco alrededor del cristal, de la mañana (izquierda) al cenit y al atardecer (derecha); se arrastra igual. De noche el orbe es una luna tenue teñida de Vida. Sin números: el deslizador accesible describe el momento con palabras.
+- **Hongos:** lámparas altas en corona alrededor del tronco (casi siempre están) y racimos pequeños junto a las hondonadas que **asoman con el exceso de agua** (umbral por hongo): son la señal viva del desequilibrio, no decoración. Sombrero pálido (`organismos.hongo`); de noche brillan con Vida por las láminas, con una respiración lenta. Crecen desde el suelo con un pequeño rebote; las sombras crecen igual.
+- **Luciérnagas:** emergen poco a poco con la noche y la vitalidad; vuelo lento de suma de senos y parpadeo propio (la mayor parte del tiempo apagadas). En la Sincronía, la fase propia cede a una común.
+- **Cristal en exploración:** revisado desde tres cámaras (`general`, `lateral`, `superior`): el softbox principal se estrecha y pierde ganancia, y `f0` baja a 0,025 para que de lado o desde arriba no cruce la copa como una barra. La media luna frontal se conserva. Capturas `jornada-08-cristal-*`.
 
 ## Vegetación y organismos
 

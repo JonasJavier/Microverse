@@ -37,5 +37,14 @@ export const palette = {
   luz: {
     vida: '#73E2D7',
     sol: '#EFC77D',
+    // Derivados de Sol para el ciclo (jornada 8): blanco cálido del mediodía y
+    // naranja rasante del atardecer. Solo como color de luz.
+    mediodia: '#FFF2DB',
+    atardecer: '#F0A058',
+  },
+  /** Hongos (jornada 8): sombrero pálido, casi hueso; el brillo (Vida) es luz, no pintura. */
+  organismos: {
+    hongo: '#CFC3A6',
+    hongoPie: '#9A8F78',
   },
 } as const

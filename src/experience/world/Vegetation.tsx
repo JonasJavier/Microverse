@@ -13,19 +13,17 @@ import {
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js'
 import { palette } from '../../config/palette.ts'
 import { QUALITY } from '../../config/quality.ts'
-import { findPuddles, scatterSprouts } from '../../generators/vegetation.ts'
+import { scatterSprouts } from '../../generators/vegetation.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { ecoUniforms } from '../signals.ts'
 import { disposeMesh, toInstancedMesh } from './geometry.ts'
 import { ISLAND, SEED_POSITION, worldRandom } from './island.ts'
-import { CLEARINGS } from './life.ts'
+import { CLEARINGS, PUDDLES } from './life.ts'
 import { patchMaterial } from './materialPatch.ts'
 import groundFragment from '../../shaders/life/ground.frag.glsl?raw'
 import sproutsVertex from '../../shaders/life/sprouts.vert.glsl?raw'
 import puddlesVertex from '../../shaders/life/puddles.vert.glsl?raw'
 import puddlesFragment from '../../shaders/life/puddles.frag.glsl?raw'
-
-const PUDDLES = 7
 
 /** Brote: tres hojas finas abiertas desde la base (~24 triángulos). */
 function sproutGeometry() {
@@ -80,7 +78,7 @@ function createVegetation(sproutCount: number) {
   )
   sproutMesh.receiveShadow = true
 
-  const puddles = findPuddles(ISLAND, worldRandom.fork('charcos'), PUDDLES, CLEARINGS)
+  const puddles = PUDDLES
   const disc = new CircleGeometry(1, 28)
   disc.rotateX(-Math.PI / 2)
   const puddleMesh = new InstancedMesh(

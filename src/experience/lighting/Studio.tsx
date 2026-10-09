@@ -10,6 +10,7 @@ import { currentLook } from './timeOfDay.ts'
 
 /** Resolución del mapa de sombras según el nivel de arranque (ADR-013). */
 const SHADOW_MAP_SIZE = { suaves: 2048, basicas: 1024, ninguna: 0 } as const
+const KEY_LIGHT_DISTANCE = 5
 
 interface StudioLights {
   key: DirectionalLight | null
@@ -23,6 +24,9 @@ function applyLook(lights: StudioLights, scene: Scene) {
   if (lights.key) {
     lights.key.intensity = look.keyIntensity
     lights.key.color.copy(look.keyColor)
+    // La luz gira con el ciclo (sombras cortas a mediodía, largas al atardecer).
+    // El objetivo es el origen: la cámara de sombras sigue encuadrando la isla.
+    lights.key.position.copy(look.keyDirection).multiplyScalar(KEY_LIGHT_DISTANCE)
   }
   if (lights.fill) {
     lights.fill.intensity = look.fillIntensity
@@ -66,7 +70,8 @@ export function Studio() {
   )
 
   const keyPosition = useMemo(
-    () => new Vector3(...KEY_LIGHT.direction).normalize().multiplyScalar(5).toArray(),
+    () =>
+      new Vector3(...KEY_LIGHT.direction).normalize().multiplyScalar(KEY_LIGHT_DISTANCE).toArray(),
     [],
   )
   const fillPosition = useMemo(

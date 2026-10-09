@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useThree } from '@react-three/fiber'
+import { SUN_KEY_STEP } from '../../config/sunControl.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 
 /** Pulsación larga (docs/04 · Interacción): más de 400 ms con menos de 8 px de movimiento. */
@@ -9,7 +10,8 @@ const LONG_PRESS_SLOP = 8
 /**
  * Gestos sobre la esfera y teclado (acto 02 · Nourish):
  *  - pulsación larga sobre el lienzo = lluvia mientras se mantiene;
- *  - mantener R = lluvia.
+ *  - mantener R = lluvia;
+ *  - flechas ← / → = sol (jornada 8), cuando ya hay sol que mover.
  * Un arrastre (más de 8 px) es un giro de cámara: cancela la pulsación larga.
  * Funciona igual con ratón y en táctil (Pointer Events).
  *
@@ -19,7 +21,7 @@ const LONG_PRESS_SLOP = 8
  * aportar nada: el fondo vacío no tiene otra interacción.
  */
 function listen(canvas: HTMLElement) {
-  const { empezarLluvia, pararLluvia } = useMicroverseStore.getState()
+  const { empezarLluvia, pararLluvia, moverSol } = useMicroverseStore.getState()
   let timer = 0
   let raining = false
   let startX = 0
@@ -54,7 +56,14 @@ function listen(canvas: HTMLElement) {
     event.target instanceof Element &&
     event.target.closest('input, textarea, select, button, [contenteditable]') !== null
   const onKeyDown = (event: KeyboardEvent) => {
-    if (event.repeat || keyRain || typing(event) || event.key.toLowerCase() !== 'r') return
+    if (typing(event)) return
+    // Flechas: el sol (con repetición al mantener). Con el foco en la cápsula,
+    // el propio control las gestiona (`typing` lo excluye).
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+      moverSol(event.key === 'ArrowRight' ? SUN_KEY_STEP : -SUN_KEY_STEP)
+      return
+    }
+    if (event.repeat || keyRain || event.key.toLowerCase() !== 'r') return
     keyRain = true
     empezarLluvia('tecla')
   }

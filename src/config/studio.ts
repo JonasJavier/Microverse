@@ -32,13 +32,15 @@ export const SOFTBOXES: readonly Softbox[] = [
     // Jornada 4: más hacia atrás, para que la media luna suba hasta el borde
     // superior y no caiga sobre la copa del árbol.
     direction: [0.06, 1, -0.6],
-    halfSize: [0.58, 0.12],
+    // Jornada 8: más estrecho (0,58 → 0,46) y con menos ganancia: visto de lado o
+    // desde arriba, el reflejo era una barra gruesa que cruzaba la copa.
+    halfSize: [0.46, 0.11],
     cornerRadius: 0.1,
     softness: 0.035,
     color: palette.luz.sol,
     intensity: 2.2,
     // Jornada 3: −20 %. La media luna enmarca; no debe competir con el árbol.
-    reflectionGain: 2,
+    reflectionGain: 1.6,
   },
   {
     // Tira vertical de contraluz: dibuja el borde derecho. Jornada 3: un 30 % más

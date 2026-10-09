@@ -4,8 +4,13 @@
  * sin provocar renders de React; en producción se quedan con estos valores.
  */
 export const glassTuning = {
-  /** Reflectancia a incidencia normal (vidrio ≈ 0.04). */
-  f0: 0.04,
+  /**
+   * Reflectancia a incidencia normal (vidrio ≈ 0,04). Jornada 8: 0,025, algo por
+   * debajo de lo físico: de lado y desde arriba, el softbox principal se reflejaba
+   * en el centro de la esfera como una pieza amarilla; la media luna frontal (ángulo
+   * rasante) no cambia.
+   */
+  f0: 0.025,
   /** Multiplicador artístico de los reflejos de los softboxes. */
   reflection: 3,
   /** Brillo del borde (Fresnel artístico, color *reflejo*). */

@@ -67,6 +67,14 @@ export const ecoUniforms = {
   uPuddle: { value: 0 },
   /** Reloj del render en segundos (la lluvia cae a velocidad real, no del mundo). */
   uTime: { value: 0 },
+  /** Desarrollo de los hongos (asoman por umbral). */
+  uMushrooms: { value: 0 },
+  /** Brillo de los hongos (Vida, de noche). */
+  uMushroomGlow: { value: 0 },
+  /** Proporción de luciérnagas que vuelan. */
+  uFireflies: { value: 0 },
+  /** Sincronía (0 → 1 → 0): las luciérnagas parpadean al unísono. */
+  uSync: { value: 0 },
 }
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -108,4 +116,8 @@ export function updateSignals(delta: number) {
   easing.damp(ecoUniforms.uRain, 'value', visuals.lluvia, 0.3, delta)
   easing.damp(ecoUniforms.uPuddle, 'value', smoothstep(0.55, 0.85, visuals.sueloHumedo), 1.5, delta)
   ecoUniforms.uTime.value = (ecoUniforms.uTime.value + delta) % 3600
+  easing.damp(ecoUniforms.uMushrooms, 'value', visuals.hongos, 1.5, delta)
+  easing.damp(ecoUniforms.uMushroomGlow, 'value', 2.2 * visuals.brilloHongos, 1, delta)
+  easing.damp(ecoUniforms.uFireflies, 'value', visuals.luciernagas, 2, delta)
+  easing.damp(ecoUniforms.uSync, 'value', visuals.sincronia, 0.5, delta)
 }

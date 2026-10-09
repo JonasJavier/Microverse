@@ -1,15 +1,18 @@
 import { palette } from './palette.ts'
+import { KEY_LIGHT } from './studio.ts'
 
 /**
  * Ciclo día/noche (docs/02-direccion-de-arte.md · Iluminación). Un único
  * parámetro `ciclo` (0 → 1) mueve toda la iluminación entre fotogramas clave.
- * Jornada 4: mañana y noche, estáticas, para la captura del H1. El mediodía y
- * el atardecer (0,35 y 0,65) llegan con el control del sol en la jornada 8.
+ * Jornada 4: mañana y noche. Jornada 8: mediodía (0,35) y atardecer (0,65) con el
+ * control del sol; la luz principal también se mueve (`keyDirection`).
  */
 export interface TimeOfDayLook {
   /** Luz principal (con sombras). */
   keyIntensity: number
   keyColor: string
+  /** De dónde viene la luz principal (desde el centro hacia la luz; se normaliza). */
+  keyDirection: readonly [number, number, number]
   /** Relleno opuesto. */
   fillIntensity: number
   fillColor: string
@@ -33,6 +36,7 @@ export interface TimeOfDayLook {
 export const MANANA: TimeOfDayLook = {
   keyIntensity: 1.1,
   keyColor: palette.luz.sol,
+  keyDirection: KEY_LIGHT.direction,
   fillIntensity: 0.75,
   fillColor: palette.materia.reflejo,
   ambientIntensity: 0.04,
@@ -54,6 +58,8 @@ export const NOCHE: TimeOfDayLook = {
   // con el fondo y el árbol pierde la silueta.
   keyIntensity: 0.55,
   keyColor: palette.luz.vida,
+  // La luna, alta y algo por detrás: recorta la copa sin aplanar la cara del corte.
+  keyDirection: [-0.35, 1, -0.2],
   // Relleno y ambiente sostienen el volumen de la tierra: los estratos se
   // intuyen, no desaparecen (rúbrica del H1).
   fillIntensity: 0.4,
@@ -69,13 +75,56 @@ export const NOCHE: TimeOfDayLook = {
 }
 
 /**
- * Hasta la jornada 8 solo hay mañana y noche: la mañana se sostiene hasta 0,65 y
- * la noche entra entre 0,65 y 0,9 (donde el motor define `noche`). El ciclo
- * inicial del motor (0,15) cae así en la mañana.
+ * 0,35 · Mediodía: luz alta y casi blanca, sombras cortas, materiales a plena
+ * lectura (la textura de la tierra y el verde del musgo). Emisivos al mínimo.
+ */
+export const MEDIODIA: TimeOfDayLook = {
+  keyIntensity: 1.7,
+  keyColor: palette.luz.mediodia,
+  keyDirection: [-0.22, 1, 0.3],
+  fillIntensity: 0.55,
+  fillColor: palette.materia.reflejo,
+  ambientIntensity: 0.06,
+  environment: 1.15,
+  reflection: 1,
+  rootGlow: 0.2,
+  rootFilament: 0.5,
+  ringColor: palette.luz.sol,
+  ringGain: 1.2,
+  backdrop: 1.1,
+}
+
+/**
+ * 0,65 · Atardecer: Sol naranja y rasante desde atrás a la derecha (contraluz):
+ * ramas recortadas, sombras largas hacia la cámara, los emisivos empiezan a subir.
+ */
+export const ATARDECER: TimeOfDayLook = {
+  keyIntensity: 1.45,
+  keyColor: palette.luz.atardecer,
+  keyDirection: [0.75, 0.2, -0.55],
+  // A contraluz, el relleno y el ambiente sostienen la cara del corte: los
+  // estratos se leen también al atardecer.
+  fillIntensity: 0.55,
+  fillColor: palette.materia.reflejo,
+  ambientIntensity: 0.065,
+  environment: 0.8,
+  reflection: 0.85,
+  rootGlow: 0.6,
+  rootFilament: 0.6,
+  ringColor: palette.luz.atardecer,
+  ringGain: 1.5,
+  backdrop: 0.9,
+}
+
+/**
+ * Fotogramas clave del ciclo. La noche entra entre 0,65 y 0,9 (donde el motor
+ * define `noche`). El ciclo inicial del motor (0,15) cae entre la mañana y el
+ * mediodía.
  */
 export const TIME_KEYFRAMES: readonly { at: number; look: TimeOfDayLook }[] = [
   { at: 0, look: MANANA },
-  { at: 0.65, look: MANANA },
+  { at: 0.35, look: MEDIODIA },
+  { at: 0.65, look: ATARDECER },
   { at: 0.9, look: NOCHE },
   { at: 1, look: NOCHE },
 ]
