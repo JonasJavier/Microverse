@@ -1,6 +1,6 @@
 import { Color } from 'three'
 import { TIME_KEYFRAMES, type TimeOfDayLook } from '../../config/timeOfDay.ts'
-import { useLookdevStore } from '../../store/useLookdevStore.ts'
+import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 
 type ColorKey = 'keyColor' | 'fillColor' | 'ringColor'
 type NumberKey = Exclude<keyof TimeOfDayLook, ColorKey>
@@ -45,11 +45,12 @@ function resolve(ciclo: number) {
 }
 
 /**
- * Look del momento actual. Se llama desde `useFrame`: lee el ciclo por referencia
- * (sin re-render) y solo recalcula si ha cambiado.
+ * Look del momento actual. Se llama desde `useFrame`: lee el ciclo del motor por
+ * referencia (sin re-render) y solo recalcula si ha cambiado. El ciclo es control
+ * del visitante (acción `sol`), no decisión del motor.
  */
 export function currentLook(): Readonly<ResolvedLook> {
-  const { ciclo } = useLookdevStore.getState()
+  const { ciclo } = useMicroverseStore.getState().engine.state
   if (ciclo !== resolvedFor) resolve(ciclo)
   return resolved
 }

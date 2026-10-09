@@ -115,16 +115,31 @@ export type EcosystemAction =
 export class EcosystemEngine {
   constructor(config?: Partial<EcosystemConfig>, estado?: EcosystemState)
   dispatch(action: EcosystemAction): void
-  step(dt: number): void                   // avanza con pasos fijos internos
+  step(dt: number): void                   // un frame: pasos fijos, como máximo MAX_PASOS_POR_FRAME
+  advance(segundos: number, paso?: number): void // sin tope por frame: tests, calibración, ausencia
+  configure(config: Partial<EcosystemConfig>): void // calibración en vivo
   get state(): Readonly<EcosystemState>
   get visuals(): Readonly<VisualParams>    // objeto reutilizado: no se crea uno por tick
   on(evento: EcosystemEvent, cb: () => void): () => void
-  serialize(): SavedWorld
-  static hydrate(saved: SavedWorld, ahoraMs: number): EcosystemEngine
+  serialize(guardadoEn: number): SavedWorld // la marca de tiempo la pone quien guarda
+  static hydrate(saved: SavedWorld | null, ahoraMs: number): EcosystemEngine
 }
 ```
 
-- El motor **no** llama a `Date.now()` ni a `Math.random()`: el tiempo entra por `step` e `hydrate`. Así es determinista y testeable.
+- El motor **no** llama a `Date.now()` ni a `Math.random()`: el tiempo entra por `step`, `advance` e `hydrate`. Así es determinista y testeable.
+
+## Implementación (jornada 5)
+
+Decisiones tomadas al implementar, donde la especificación dejaba hueco:
+
+- **Dormido, el mundo está en pausa.** Antes de despertar no hay evaporación ni crecimiento, y la acción `lluvia` se ignora: la lluvia es la puerta del acto 02. Así se cumple el escenario 1 al pie de la letra. El `sol` sí funciona siempre (es iluminación).
+- **Etapas:** `dormido` (sin despertar) → `despertando` (hasta el primer brote, vitalidad > 0.2) → `creciendo` → `floreciendo` (vitalidad ≥ 0.7). Para dejar de florecer hay que bajar de 0.6: sin esa histéresis, un mundo en el umbral cambiaría de etapa en cada tick.
+- **`pulsoSemilla`** = 1 dormido; tras despertar, `1 − smoothstep(VITALIDAD_MIN, 0.4, vitalidad)`: la semilla se calma cuando el mundo coge vida.
+- **`sincronia`** (visual) = `sin(π · t / DURACION)`: entra y sale suave. Al terminar, el equilibrio vuelve a 0.
+- **`hydrate`** valida el guardado (localStorage puede venir corrupto: se empieza de nuevo) y durante la ausencia no puede empezar una Sincronía: el visitante tiene que vivirla.
+- **Eventos → interfaz:** el motor emite dentro de su paso, que corre en `useFrame`. El store refleja `etapa`, `primerBrote` y `sincronia` aplazando el `setState` a una tarea aparte: nunca se hace setState dentro de `useFrame`.
+
+**Calibración:** un visitante simulado que riega cuando la tierra se seca y para antes de encharcarla llega a la primera Sincronía en **~90 s**. Un visitante real, que antes tiene que descubrir la semilla y el gesto de la lluvia, debería quedar en los 2–3 min del objetivo; se valida con tres personas en la jornada 10. Sin regar no llega nunca, y con mediodía permanente tampoco (exceso de sol): los tests lo comprueban.
 
 ## Persistencia: "el mundo te recuerda"
 

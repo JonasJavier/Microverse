@@ -110,9 +110,15 @@ microverse/
                                                             ▼
                          Componentes 3D: easing.damp → uniforms / escalas / intensidades
 
-[UI DOM] ◀── suscripción selectiva (etapa, despertado, nivel de calidad) ── store
-Lighting ◀── ciclo (lo controla el usuario directamente, no lo decide el motor)
+[UI DOM] ◀── suscripción selectiva (etapa, primer brote, sincronía, nivel de calidad) ── store
+Lighting ◀── engine.state.ciclo (acción `sol`: lo controla el visitante, no lo decide el motor)
 ```
+
+**Implementado en la jornada 5:**
+- `useMicroverseStore` crea el motor (uno por sesión) y expone las acciones `despertar`, `llover` y `sol`. `?noche`, `?manana` o `?ciclo=0.65` fijan el ciclo al arrancar (`config/urlParams.ts`).
+- `SimulationDriver` llama a `engine.step(delta)` en `useFrame` con prioridad −2: todo lo que se dibuja en el frame ve el mundo ya actualizado.
+- Los eventos del motor (`etapa`, `primerBrote`, `sincronia:*`) se reflejan en el store **aplazando** el `setState` a una tarea aparte: el motor emite dentro de `useFrame` y ahí nunca se hace setState.
+- `ui/ObserverMode` (tecla O) lee el motor por referencia en su propio bucle de `requestAnimationFrame` y escribe en el DOM: sin renders de React por frame.
 
 ## Responsabilidades por capa
 

@@ -20,7 +20,7 @@
 | 2 | Isla y subsuelo ✅ | `islandGenerator`, corte de diorama con estratos (se cierra ADR-008), musgo instanciado (`scatter`), luz de mañana fija |
 | 3 | Generadores ✅ | Pulido A/B (reflejos, pedestal, estratos por valor). `spaceColonization`, `tree`, `roots`, `tubes` con tests; `LifeTree` y `RootNetwork` estáticos; nervio semilla → tronco garantizado; grafo con `distance` por las conexiones |
 | 4 | Composición ✅ | Árbol bonsái (nubes, tronco en "S", nebari; se cierra ADR-003), métrica de cobertura corregida, material de raíces por grosor, `ciclo` mañana/noche, media luna del cristal recolocada, presupuesto móvil recuperado. DOF descartada en A/B. **H1 · Captura** |
-| 5 | Motor | `EcosystemEngine` + tests, store, `SimulationDriver`, `ObserverMode`, panel Leva para calibrar |
+| 5 | Motor ✅ | `EcosystemEngine` (8 escenarios + calibración con un visitante simulado), store con el motor, `SimulationDriver`, `ObserverMode` (tecla O), panel Leva para calibrar (acciones, velocidad ×1/×5/×20, constantes). El ciclo pasa a vivir en el motor; `?noche` en la URL |
 | 6 | 01 · Awakening | `Seed`, shader `rootPulse` (señales de la semilla al árbol por `distance`; cada nodo responde según su `temperament`: unos con un destello breve, otros lentos y tenues), encendido por ramas, `IntroOverlay` |
 | 7 | 02 · Nourish | `RainSystem`, `Puddles`, shader `growth` (`uGrowth`), shader de vegetación (humedad/marchitez), gestos |
 | 8 | 03 · Transform | `SunHandle` + `ExperienceControls`, ciclo de iluminación, `Mushrooms` con brillo, `Fireflies` |

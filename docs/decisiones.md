@@ -48,6 +48,7 @@ El sobrecoste de MTM crece con la escena (la vuelve a renderizar entera cada fra
 ## ADR-005 · Motor de simulación desacoplado a 10 Hz — Aceptada (2026-10-07)
 **Decisión:** `EcosystemEngine` en TS puro (sin React ni Three), con paso fijo de 0.1 s, determinista y con tests. El render suaviza con `easing.damp`.
 **Consecuencias:** las reglas se pueden calibrar y probar sin abrir el navegador, y el rendimiento del render no altera la simulación.
+**Implementado (jornada 5):** `src/simulation/` con los 8 escenarios de la especificación como tests y una prueba de calibración con un visitante simulado. El ciclo del día vive en el motor (acción `sol`); la iluminación lo lee por referencia. Los eventos llegan a la interfaz aplazados, nunca con setState dentro de `useFrame`.
 
 ## ADR-006 · Shaders con `?raw`, sin plugin — Aceptada (2026-10-07)
 **Contexto:** `vite-plugin-glsl` necesita `esbuild` como peer y Vite 8 (Rolldown) ya no lo incluye.

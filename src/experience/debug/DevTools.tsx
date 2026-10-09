@@ -1,12 +1,28 @@
 import { useEffect, useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Stats } from '@react-three/drei'
-import { useControls } from 'leva'
+import { button, useControls } from 'leva'
 import { glassTuning } from '../../config/lookdev.ts'
 import { useLookdevStore, type ToneMappingName } from '../../store/useLookdevStore.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import type { WebGLRenderer } from 'three'
+import type { EcosystemConfig } from '../../simulation/ecosystemConfig.ts'
 import { setCaptureMode, setSilhouette, setView, type ViewName } from './lookdevTools.ts'
+
+/** Constantes calibrables: [nombre, mínimo, máximo, paso]. */
+type NumericConfigKey = {
+  [K in keyof EcosystemConfig]: EcosystemConfig[K] extends number ? K : never
+}[keyof EcosystemConfig]
+
+const CALIBRATION: readonly [NumericConfigKey, number, number, number][] = [
+  ['K_CRECER', 0.005, 0.1, 0.001],
+  ['K_DECAER', 0.001, 0.05, 0.001],
+  ['K_EVAP', 0.001, 0.02, 0.0005],
+  ['K_LLUVIA', 0.01, 0.2, 0.005],
+  ['K_SOL', 0.005, 0.05, 0.001],
+  ['K_HONGOS', 0.005, 0.1, 0.001],
+  ['T_SINCRONIA', 10, 120, 1],
+]
 
 /** El post-proceso renderiza varias pasadas por frame: se acumulan y se reinician a mano. */
 function setManualInfoReset(gl: WebGLRenderer, manual: boolean) {
@@ -112,15 +128,47 @@ export default function DevTools() {
     },
   })
 
-  useControls('Ciclo', {
+  // Motor (jornada 5): acciones del visitante y velocidad para calibrar sin esperar.
+  useControls('Motor', {
+    despertar: button(() => useMicroverseStore.getState().despertar()),
+    lluvia: {
+      value: 0,
+      min: 0,
+      max: 1,
+      step: 0.05,
+      onChange: (v: number) => useMicroverseStore.getState().llover(v),
+    },
     ciclo: {
-      value: useLookdevStore.getState().ciclo,
+      value: useMicroverseStore.getState().engine.state.ciclo,
       min: 0,
       max: 1,
       step: 0.01,
-      onChange: (v: number) => useLookdevStore.setState({ ciclo: v }),
+      onChange: (v: number) => useMicroverseStore.getState().sol(v),
+    },
+    velocidad: {
+      value: 1,
+      options: { '×1': 1, '×5': 5, '×20': 20 },
+      onChange: (v: number) => useLookdevStore.setState({ velocidad: v }),
     },
   })
+
+  // Constantes de docs/05 que más pesan en la sensación; se calibran en vivo.
+  useControls(
+    'Calibración',
+    Object.fromEntries(
+      CALIBRATION.map(([key, min, max, step]) => [
+        key,
+        {
+          value: useMicroverseStore.getState().engine.settings[key],
+          min,
+          max,
+          step,
+          onChange: (v: number) => useMicroverseStore.getState().engine.configure({ [key]: v }),
+        },
+      ]),
+    ),
+    { collapsed: true },
+  )
 
   useControls('Post', {
     toneMapping: {

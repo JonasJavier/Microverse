@@ -30,7 +30,7 @@
 
 ## Iluminación: ciclo día/noche
 
-Un único parámetro `ciclo` (0 → 1) controla toda la iluminación (`config/timeOfDay.ts`, fotogramas clave interpolados). Mañana y noche están hechas desde la jornada 4; mediodía y atardecer llegan en la 8. De noche: luna teñida de Vida que recorta la cima de las nubes, relleno que sostiene los estratos, raíces a pleno brillo (el bloom las recoge), anillo del pedestal en Vida y reflejos del cristal al 30 %. Valores iniciales:
+Un único parámetro `ciclo` (0 → 1) controla toda la iluminación (`config/timeOfDay.ts`, fotogramas clave interpolados). Mañana y noche están hechas desde la jornada 4; mediodía y atardecer llegan en la 8 (hasta entonces, la mañana se sostiene hasta 0,65 y la noche entra entre 0,65 y 0,9). Desde la jornada 5 el ciclo vive en el motor; `?noche` en la URL muestra la noche. De noche: luna teñida de Vida que recorta la cima de las nubes, relleno que sostiene los estratos, raíces a pleno brillo (el bloom las recoge), anillo del pedestal en Vida y reflejos del cristal al 30 %. Valores iniciales:
 
 | `ciclo` | Momento | Luz principal | Ambiente / fondo | Emisivos |
 |---|---|---|---|---|

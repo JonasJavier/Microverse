@@ -68,7 +68,14 @@ export const NOCHE: TimeOfDayLook = {
   backdrop: 0.55,
 }
 
+/**
+ * Hasta la jornada 8 solo hay mañana y noche: la mañana se sostiene hasta 0,65 y
+ * la noche entra entre 0,65 y 0,9 (donde el motor define `noche`). El ciclo
+ * inicial del motor (0,15) cae así en la mañana.
+ */
 export const TIME_KEYFRAMES: readonly { at: number; look: TimeOfDayLook }[] = [
   { at: 0, look: MANANA },
+  { at: 0.65, look: MANANA },
+  { at: 0.9, look: NOCHE },
   { at: 1, look: NOCHE },
 ]

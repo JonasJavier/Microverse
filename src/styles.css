@@ -26,3 +26,37 @@ canvas {
   display: block;
   touch-action: none;
 }
+
+/* Modo observador (tecla O): cartela de museo en monoespaciada pequeña. */
+.observer {
+  position: fixed;
+  left: max(16px, env(safe-area-inset-left));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 5;
+  padding: 10px 14px 12px;
+  border-left: 1px solid color-mix(in srgb, var(--reflejo) 35%, transparent);
+  background: color-mix(in srgb, var(--vacio) 72%, transparent);
+  color: var(--reflejo);
+  font:
+    11px/1.55 ui-monospace,
+    'SFMono-Regular',
+    Menlo,
+    Consolas,
+    monospace;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
+.observer__title {
+  margin: 0 0 6px;
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.observer__values {
+  margin: 0;
+  font: inherit;
+  white-space: pre;
+}

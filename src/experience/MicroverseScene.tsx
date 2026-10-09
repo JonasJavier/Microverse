@@ -1,5 +1,6 @@
 import { CameraRig } from './camera/CameraRig.tsx'
 import { PostFX } from './effects/PostFX.tsx'
+import { SimulationDriver } from './SimulationDriver.tsx'
 import { Studio } from './lighting/Studio.tsx'
 import { Backdrop } from './world/Backdrop.tsx'
 import { FloatingIsland } from './world/FloatingIsland.tsx'
@@ -17,6 +18,7 @@ import { Seed } from './world/Seed.tsx'
 export function MicroverseScene() {
   return (
     <>
+      <SimulationDriver />
       <Backdrop />
       <Studio />
       <FloatingIsland />

@@ -6,7 +6,9 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 4 completada, **hito H1 (captura)**: un bonsái procedural con copa en nubes y raíces que abrazan el suelo, una red de raíces que de noche se enciende como un sistema nervioso, y el ciclo de mañana a noche. Siguiente: jornada 5, el motor del ecosistema.
+**Estado:** Jornada 5 completada: el motor del ecosistema (luz, humedad, vitalidad y memoria) funciona y está probado; todavía no mueve lo que se ve. Hito H1 (captura) en la jornada 4. Siguiente: jornada 6, el despertar de la semilla y los pulsos por las raíces.
+
+**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana; añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
 
 | Mañana | Noche |
 |---|---|
