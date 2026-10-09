@@ -104,6 +104,15 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Cámara:** distancia mínima 1,6 (antes 2,2) para primeros planos; sigue fuera del cristal.
 - Fuera (orden de recorte): gusanos luminosos en las raíces. Los pulsos de la red ya cumplen ese papel.
 
+## Acto 05 · Sincronía (jornada 10)
+
+- **Disparo:** el motor la enciende tras `T_SINCRONIA` segundos de equilibrio (salud y vitalidad altas); dura `DURACION_SINCRONIA` (12 s) con una envolvente 0 → 1 → 0 (`uSync`) y respeta un cooldown. Sin notificaciones: es la recompensa.
+- **Raíces al unísono:** los pulsos dejan de viajar por la red y todos los nodos laten a la vez (`signalPulse` mezcla la fase por distancia con una fase común); la red sube de brillo y los filamentos se igualan con las maestras.
+- **Floración:** uno de cada diez mechones de la copa se vuelve flor Sol (hash estable por mechón), con un brillo que crece con la vitalidad alta y se dispara en la Sincronía. Sol y Vida conviven por primera vez: el anillo del pedestal mezcla los dos.
+- **Luciérnagas** al unísono (fase común), **halo del fondo** más vivo. Todo con el mismo `uSync`.
+- **Persistencia** (ADR-007): el mundo se guarda cada 10 s y al ocultar la pestaña; al volver, se simula la ausencia (más seco, nunca muerto). `?nuevo` empieza de cero.
+- Pendiente: calibración con tres personas y audio ambiente (opcional, orden de recorte).
+
 ## Vegetación y organismos
 
 - **Hongos lámpara** (altos y finos, referencia 1) y **racimos pequeños** sobre raíces y troncos. Brillan con *Vida* de noche.

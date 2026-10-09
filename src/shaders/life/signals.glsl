@@ -10,6 +10,8 @@ uniform float uLife;
 uniform float uFlash;
 uniform vec3 uSolColor;
 uniform vec3 uVidaColor;
+// Sincronía (0 → 1 → 0): los pulsos dejan de viajar y toda la red late a la vez.
+uniform float uSync;
 
 // 1 por detrás del frente de encendido, 0 por delante (y mientras duerme).
 float signalLit(float d) {
@@ -28,7 +30,7 @@ float signalSpark(float d) {
 // el carácter del nodo (0..1) decide la respuesta: 0 = destello breve y vivo,
 // 1 = respuesta lenta y tenue. Así la red no late como un circuito.
 float signalPulse(float d, float temperament) {
-  float local = fract(uPhase - d / uWavelength);
+  float local = fract(uPhase - mix(d / uWavelength, 0.0, uSync));
   float tail = mix(0.025, 0.11, temperament);
   float gain = mix(1.0, 0.38, temperament);
   float behind = exp(-(local * local) / (tail * tail));

@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { detectInitialTier, lowerTier, raiseTier, type QualityTier } from '../config/quality.ts'
-import { cicloFromSearch } from '../config/urlParams.ts'
+import { cicloFromSearch, nuevoMundoFromSearch } from '../config/urlParams.ts'
 import { EcosystemEngine } from '../simulation/EcosystemEngine.ts'
+import { STORAGE_KEY, restoreEngine } from './persistence.ts'
 import type { Etapa } from '../simulation/types.ts'
 
 const initialTier = detectInitialTier()
@@ -16,10 +17,26 @@ export const LLUVIA_SUAVE = 0.7
 export type FuenteLluvia = 'control' | 'gesto' | 'tecla'
 const fuentesLluvia = new Set<FuenteLluvia>()
 
-/** El motor del mundo: uno por sesión. El render lo lee por referencia en `useFrame`. */
+/** `localStorage` puede no existir o estar bloqueado (modo privado): entonces no se recuerda nada. */
+function safeStorage(): Storage | null {
+  try {
+    return typeof window === 'undefined' ? null : window.localStorage
+  } catch {
+    return null
+  }
+}
+
+/**
+ * El motor del mundo: uno por sesión. El render lo lee por referencia en `useFrame`.
+ * Si hay un mundo guardado, vuelve como lo dejaste, algo más seco (ADR-007);
+ * `?nuevo` lo olvida y empieza de cero.
+ */
 function createEngine() {
-  const engine = new EcosystemEngine()
-  const ciclo = typeof window === 'undefined' ? null : cicloFromSearch(window.location.search)
+  const search = typeof window === 'undefined' ? '' : window.location.search
+  const storage = safeStorage()
+  if (storage && nuevoMundoFromSearch(search)) storage.removeItem(STORAGE_KEY)
+  const engine = restoreEngine(storage, Date.now())
+  const ciclo = cicloFromSearch(search)
   if (ciclo !== null) engine.dispatch({ type: 'sol', ciclo })
   return engine
 }
@@ -81,7 +98,8 @@ export const useMicroverseStore = create<MicroverseStore>()((set) => ({
   etapa: engine.state.etapa,
   primerBrote: engine.state.primerBrote,
   sincronia: engine.state.sincronia.activa,
-  haLlovido: false,
+  // Un mundo recuperado ya pasó por esas pistas: no se repiten.
+  haLlovido: engine.state.primerBrote,
   encharcado: engine.state.encharcado,
   despertar: () => engine.dispatch({ type: 'despertar' }),
   llover: (intensidad) => engine.dispatch({ type: 'lluvia', intensidad }),
@@ -97,7 +115,7 @@ export const useMicroverseStore = create<MicroverseStore>()((set) => ({
     engine.dispatch({ type: 'lluvia', intensidad: 0 })
   },
   sol: (ciclo) => engine.dispatch({ type: 'sol', ciclo }),
-  haMovidoSol: false,
+  haMovidoSol: engine.state.primerBrote,
   moverSol: (delta) => {
     // El control del sol aparece con el primer brote: antes no hay sol que mover.
     if (!engine.state.primerBrote || delta === 0) return

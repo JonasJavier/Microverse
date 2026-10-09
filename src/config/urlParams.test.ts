@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cicloFromSearch } from './urlParams.ts'
+import { cicloFromSearch, nuevoMundoFromSearch } from './urlParams.ts'
 
 describe('cicloFromSearch', () => {
   it('reconoce los atajos de noche y mañana', () => {
@@ -19,5 +19,14 @@ describe('cicloFromSearch', () => {
     expect(cicloFromSearch('?ciclo=')).toBeNull()
     expect(cicloFromSearch('?ciclo=tarde')).toBeNull()
     expect(cicloFromSearch('?otra=1')).toBeNull()
+  })
+})
+
+describe('nuevoMundoFromSearch', () => {
+  it('solo con ?nuevo', () => {
+    expect(nuevoMundoFromSearch('?nuevo')).toBe(true)
+    expect(nuevoMundoFromSearch('?noche&nuevo')).toBe(true)
+    expect(nuevoMundoFromSearch('?noche')).toBe(false)
+    expect(nuevoMundoFromSearch('')).toBe(false)
   })
 })

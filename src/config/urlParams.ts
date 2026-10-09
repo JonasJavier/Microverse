@@ -15,3 +15,8 @@ export function cicloFromSearch(search: string): number | null {
   const value = Number(ciclo)
   return Number.isFinite(value) ? Math.min(1, Math.max(0, value)) : null
 }
+
+/** `?nuevo`: ignora el mundo guardado y empieza de cero (y lo olvida). */
+export function nuevoMundoFromSearch(search: string): boolean {
+  return new URLSearchParams(search).has('nuevo')
+}

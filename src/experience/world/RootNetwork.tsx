@@ -7,7 +7,7 @@ import { ROOT_PARAMS } from '../../generators/roots.ts'
 import { buildTubes } from '../../generators/tubes.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
-import { signalUniforms } from '../signals.ts'
+import { ecoUniforms, signalUniforms } from '../signals.ts'
 import { disposeMesh, toTubeGeometry } from './geometry.ts'
 import { ROOT_NETWORK } from './life.ts'
 import { patchMaterial } from './materialPatch.ts'
@@ -67,8 +67,10 @@ function createRootNetwork(tubeSegments: number) {
 /** Brillo según el momento del día: tenue de mañana, máximo de noche. */
 function syncRoots({ material, uniforms }: RootMaterial) {
   const look = currentLook()
-  material.emissiveIntensity = look.rootGlow
-  uniforms.uFilament.value = look.rootFilament
+  // En la Sincronía toda la red sube de brillo: "un solo organismo".
+  const sync = ecoUniforms.uSync.value
+  material.emissiveIntensity = look.rootGlow * (1 + 1.4 * sync)
+  uniforms.uFilament.value = look.rootFilament + 0.3 * sync
 }
 
 /** Red de raíces: una sola malla de tubos; la animan las señales (signals.ts). */

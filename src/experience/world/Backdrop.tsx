@@ -3,6 +3,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { Color, ShaderMaterial, Vector2 } from 'three'
 import { palette } from '../../config/palette.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
+import { ecoUniforms } from '../signals.ts'
 import { noRaycast } from '../utils.ts'
 import vertexShader from '../../shaders/backdrop/backdrop.vert?raw'
 import fragmentShader from '../../shaders/backdrop/backdrop.frag?raw'
@@ -34,9 +35,10 @@ function setBackdropAspect({ uniforms }: BackdropResources, aspect: number) {
   uniforms.uAspect.value = aspect
 }
 
-/** El halo se apaga de noche, sin bajar nunca del Vacío. */
+/** El halo se apaga de noche, sin bajar nunca del Vacío; en la Sincronía respira más. */
 function syncBackdrop({ uniforms }: BackdropResources) {
-  uniforms.uCenterColor.value.copy(VACIO).lerp(HALO, currentLook().backdrop)
+  const glow = Math.min(1, currentLook().backdrop * (1 + 0.5 * ecoUniforms.uSync.value))
+  uniforms.uCenterColor.value.copy(VACIO).lerp(HALO, glow)
 }
 
 /** Fondo de museo: Vacío con un halo muy leve de Bosque detrás de la esfera. */

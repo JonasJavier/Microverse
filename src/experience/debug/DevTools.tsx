@@ -65,6 +65,13 @@ export default function DevTools() {
         signals: { signalUniforms, ecoUniforms },
         // Mutable en consola para el A/B de la silueta seca (`growth.bare = 0.6`).
         growth: GROWTH,
+        // Fuerza la Sincronía (solo desarrollo): deja el equilibrio a punto de dispararla.
+        sincronia: () => {
+          const { engine } = useMicroverseStore.getState()
+          engine.configure({ T_SINCRONIA: 0.1 })
+          engine.dispatch({ type: 'despertar' })
+          ;(engine.state as { equilibrio: number }).equilibrio = 1
+        },
       },
     })
     return () => {

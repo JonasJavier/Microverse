@@ -208,8 +208,8 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 
 ## Persistencia
 
-- Clave de `localStorage`: `microverse:v1` → `{ version, estado, guardadoEn }`.
-- Se guarda cada 10 s y cuando la pestaña pasa a segundo plano (`visibilitychange`).
+- Clave de `localStorage`: `microverse:v1` → `{ version, estado, guardadoEn }` (`store/persistence.ts`, con tests y almacenamiento inyectable).
+- Se guarda cada 10 s y cuando la pestaña pasa a segundo plano (`visibilitychange`); solo mundos despiertos. El store crea el motor con `restoreEngine` (hydrate con la ausencia); `?nuevo` borra el guardado. Un mundo recuperado no repite las pistas de lluvia y sol si ya brotó.
 - Al volver, se simula el tiempo de ausencia (con tope) sin lluvia. El mundo nunca baja del mínimo de vitalidad.
 - Todo el acceso va dentro de `try/catch`: la experiencia funciona igual sin almacenamiento.
 

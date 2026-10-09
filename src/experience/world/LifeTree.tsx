@@ -90,6 +90,7 @@ function createLifeTree(tubeSegments: number, tufts: number) {
         ...growthUniforms,
         uFoliageFlash: { value: 0.35 },
         uWilt: ecoUniforms.uWilt,
+        uBloom: ecoUniforms.uBloom,
         uDryColor: { value: new Color(palette.materia.musgoSeco) },
       },
     }),

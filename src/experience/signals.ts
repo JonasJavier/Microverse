@@ -21,7 +21,11 @@ export const SIGNALS = {
   flashTime: 1.2,
 } as const
 
+/** Sincronía (0 → 1 → 0): lo comparten las señales de la red y el resto del mundo. */
+const syncUniform = { value: 0 }
+
 export const signalUniforms = {
+  uSync: syncUniform,
   /** Distancia alcanzada por el encendido; < 0 mientras la semilla duerme. */
   uIgnition: { value: -1 },
   /** Fase de los pulsos, en ciclos (se integra: cambiar la frecuencia no da saltos). */
@@ -73,8 +77,10 @@ export const ecoUniforms = {
   uMushroomGlow: { value: 0 },
   /** Proporción de luciérnagas que vuelan. */
   uFireflies: { value: 0 },
-  /** Sincronía (0 → 1 → 0): las luciérnagas parpadean al unísono. */
-  uSync: { value: 0 },
+  /** Sincronía (0 → 1 → 0): las luciérnagas parpadean al unísono (mismo objeto que en las señales). */
+  uSync: syncUniform,
+  /** Floración: flores Sol en la copa (con la vitalidad alta y, del todo, en la Sincronía). */
+  uBloom: { value: 0 },
   /** Viento en la copa: brisa constante que arrecia con la lluvia. */
   uWind: { value: 0.5 },
   /** Esporas del corte: salen al despertar el mundo (0 → 1, despacio). */
@@ -124,6 +130,7 @@ export function updateSignals(delta: number) {
   easing.damp(ecoUniforms.uMushroomGlow, 'value', 2.2 * visuals.brilloHongos, 1, delta)
   easing.damp(ecoUniforms.uFireflies, 'value', visuals.luciernagas, 2, delta)
   easing.damp(ecoUniforms.uSync, 'value', visuals.sincronia, 0.5, delta)
+  easing.damp(ecoUniforms.uBloom, 'value', visuals.floracion, 1.5, delta)
   easing.damp(ecoUniforms.uWind, 'value', 0.5 + 0.8 * visuals.lluvia, 2, delta)
   easing.damp(ecoUniforms.uSpores, 'value', state.despertado ? 1 : 0, 4, delta)
 }
