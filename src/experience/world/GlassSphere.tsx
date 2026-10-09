@@ -11,6 +11,7 @@ import {
   SphereGeometry,
   Vector3,
   Vector4,
+  type Camera,
   type Side,
 } from 'three'
 import { glassTuning } from '../../config/lookdev.ts'
@@ -26,6 +27,8 @@ import fragmentShader from '../../shaders/glass/glass.frag?raw'
 
 /** Debe coincidir con MAX_SOFTBOXES en glass.frag. */
 const MAX_SOFTBOXES = 4
+const UP = new Vector3(0, 1, 0)
+let lastAzimuth = Number.NaN
 
 /** Uniforms comunes a la cara delantera y la trasera (mismos objetos, se mutan una vez). */
 function createSharedUniforms() {
@@ -57,6 +60,12 @@ function createSharedUniforms() {
   }
 
   return {
+    /** Orientación del estudio en reposo (cámara en +z); se gira con la cámara cada frame. */
+    studioBase: {
+      dirs: dirs.map((v) => v.clone()),
+      tangents: tangents.map((v) => v.clone()),
+      bitangents: bitangents.map((v) => v.clone()),
+    },
     uSoftboxDir: { value: dirs },
     uSoftboxTangent: { value: tangents },
     uSoftboxBitangent: { value: bitangents },
@@ -76,10 +85,13 @@ type SharedUniforms = ReturnType<typeof createSharedUniforms>
 
 function createGlassMaterial(shared: SharedUniforms, side: Side, faceFactor: number) {
   const uFaceFactor = { value: faceFactor }
+  // `studioBase` no es un uniform: se queda fuera del material.
+  const { studioBase, ...uniforms } = shared
+  void studioBase
   const material = new ShaderMaterial({
     vertexShader,
     fragmentShader,
-    uniforms: { ...shared, uFaceFactor },
+    uniforms: { ...uniforms, uFaceFactor },
     side,
     transparent: true,
     depthWrite: false,
@@ -106,7 +118,21 @@ type Glass = ReturnType<typeof createGlass>
  * Vuelca `glassTuning` y el momento del ciclo en los uniforms (se llama cada
  * frame; no asigna memoria). De noche, el estudio se apaga y los reflejos bajan.
  */
-function syncGlassUniforms({ shared, back }: Glass) {
+function syncGlassUniforms({ shared, back }: Glass, camera: Camera) {
+  // El estudio de reflejos gira con la cámara (solo en azimut): la media luna
+  // enmarca el cristal desde cualquier lado, como en una sesión de producto en la
+  // que la luz se recoloca con la cámara. La iluminación de la isla (Lightformers
+  // y luz principal) sigue fija en el mundo: las sombras no giran al orbitar.
+  const azimuth = Math.atan2(camera.position.x, camera.position.z)
+  if (azimuth !== lastAzimuth) {
+    lastAzimuth = azimuth
+    const { dirs, tangents, bitangents } = shared.studioBase
+    for (let i = 0; i < MAX_SOFTBOXES; i++) {
+      shared.uSoftboxDir.value[i]!.copy(dirs[i]!).applyAxisAngle(UP, azimuth)
+      shared.uSoftboxTangent.value[i]!.copy(tangents[i]!).applyAxisAngle(UP, azimuth)
+      shared.uSoftboxBitangent.value[i]!.copy(bitangents[i]!).applyAxisAngle(UP, azimuth)
+    }
+  }
   shared.uF0.value = glassTuning.f0
   shared.uReflection.value = glassTuning.reflection * currentLook().reflection
   shared.uRimStrength.value = glassTuning.rimStrength
@@ -135,7 +161,7 @@ export function GlassSphere() {
   const glass = useMemo(() => createGlass(), [])
   useEffect(() => () => geometry.dispose(), [geometry])
   useEffect(() => () => disposeGlass(glass), [glass])
-  useFrame(() => syncGlassUniforms(glass))
+  useFrame(({ camera }) => syncGlassUniforms(glass, camera))
 
   return (
     <>

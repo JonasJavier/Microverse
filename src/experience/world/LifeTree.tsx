@@ -31,6 +31,9 @@ const BARK_FLUTES = { count: 5, depth: 0.14, minRadius: 0.012, twist: 9 }
 const treeStart = TREE.graph.node(0).distance
 const growthUniforms = {
   uGrowth: ecoUniforms.uGrowth,
+  // Viento del follaje (también en su material de sombra).
+  uTime: ecoUniforms.uTime,
+  uWind: ecoUniforms.uWind,
   uTreeStart: { value: treeStart },
   uTreeLength: { value: Math.max(...TREE.graph.nodes.map((n) => n.distance)) - treeStart },
 }
@@ -45,7 +48,7 @@ const growthUniforms = {
  *    cuidarlo, las ramas se alargan y las nubes se llenan mechón a mechón
  *    (`uGrowth`). Las sombras crecen igual: materiales de sombra con el mismo
  *    parche de vértice. Seca, la copa pierde el verde (`uWilt`).
- * El viento llega en la jornada 8.
+ *  - Jornada 8: la copa se mece con el viento (`uWind`, más con lluvia).
  */
 function createLifeTree(tubeSegments: number, tufts: number) {
   const barkUniforms = {
