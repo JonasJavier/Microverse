@@ -54,6 +54,11 @@ si despertado:
 
 encharcado = smoothstep(0.55, 0.90, humedad)
 hongos    += ((despertado ? 0.2 + 0.8 * encharcado : 0) - hongos) * K_HONGOS * dt
+
+// Aviso de exceso de agua (con histéresis): se enciende tras T_ENCHARCADO segundos
+// por encima de UMBRAL_ENCHARCADO y se apaga al volver a la banda de humedad.
+tiempoEncharcado = humedad > UMBRAL_ENCHARCADO ? tiempoEncharcado + dt : 0
+encharcadoAviso  = encharcadoAviso ? humedad > BANDA_HUMEDAD[1] : tiempoEncharcado >= T_ENCHARCADO
 ```
 
 **`banda(x, [a, b])`:** vale 1 si `a ≤ x ≤ b`; fuera, baja linealmente hasta 0 a una distancia `CAIDA_BANDA` (0.3).
@@ -103,7 +108,7 @@ donde `noche = smoothstep(0.70, 0.90, ciclo)`. La iluminación (`Lighting`) lee 
 
 ## Eventos
 
-`despertar` · `etapa` (cambio) · `primerBrote` (vitalidad > 0.2 por primera vez → aparece el control del sol) · `sincronia:inicio` · `sincronia:fin`.
+`despertar` · `etapa` (cambio) · `primerBrote` (vitalidad > 0.2 por primera vez → aparece el control del sol) · `sincronia:inicio` · `sincronia:fin` · `encharcado` (el aviso de exceso de agua cambió; la interfaz muestra "La tierra necesita descansar").
 
 ## API
 
@@ -164,6 +169,8 @@ Decisiones tomadas al implementar, donde la especificación dejaba hueco:
 | `K_DECAER` | 0.01 /s | Decaimiento indulgente |
 | `VITALIDAD_MIN` | 0.1 | Suelo tras despertar |
 | `K_HONGOS` | 0.02 /s | Crecimiento de los hongos |
+| `UMBRAL_ENCHARCADO` | 0.8 | Humedad a partir de la cual se avisa del exceso de agua |
+| `T_ENCHARCADO` | 2 s | Tiempo seguido por encima del umbral antes de avisar |
 | `T_SINCRONIA` | 40 s | Equilibrio necesario |
 | `DURACION_SINCRONIA` | 12 s | Duración del final |
 | `COOLDOWN_SINCRONIA` | 180 s | Entre sincronías |

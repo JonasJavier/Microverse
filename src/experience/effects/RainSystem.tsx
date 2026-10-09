@@ -41,7 +41,7 @@ function createRain(count: number) {
       uRain: ecoUniforms.uRain,
       uWidth: { value: 0.0035 },
       uColor: { value: new Color(palette.materia.reflejo) },
-      uOpacity: { value: 0.55 },
+      uOpacity: { value: 0.42 },
     },
     transparent: true,
     depthWrite: false,

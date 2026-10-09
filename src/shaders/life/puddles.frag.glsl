@@ -31,4 +31,9 @@ diffuseColor.a *= uPuddle * 0.85 * (1.0 - smoothstep(0.7, 1.0, length(vLocal)));
     rings += exp(-x * x) * (1.0 - age);
   }
   totalEmissiveRadiance += uRippleColor * rings * uRain * uPuddle * 0.3;
+  // Reflejo del estudio: un velo tenue, más fuerte en ángulo rasante (Fresnel), para
+  // que el charco se lea como agua también desde la vista general (aviso de exceso).
+  float grazing = pow(1.0 - max(dot(normalize(vViewPosition), normal), 0.0), 3.0);
+  float edge = 1.0 - smoothstep(0.6, 1.0, length(vLocal));
+  totalEmissiveRadiance += uRippleColor * uPuddle * edge * (0.015 + 0.08 * grazing);
 }

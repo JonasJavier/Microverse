@@ -21,6 +21,8 @@ export function initialState(): EcosystemState {
     humedad: 0.05,
     vitalidad: 0,
     hongos: 0,
+    encharcado: false,
+    tiempoEncharcado: 0,
     equilibrio: 0,
     etapa: 'dormido',
     primerBrote: false,
@@ -67,6 +69,9 @@ function isValidState(s: unknown): s is EcosystemState {
   return (
     typeof state.despertado === 'boolean' &&
     typeof state.primerBrote === 'boolean' &&
+    typeof state.encharcado === 'boolean' &&
+    typeof state.tiempoEncharcado === 'number' &&
+    Number.isFinite(state.tiempoEncharcado) &&
     NUMBER_KEYS.every((k) => {
       const v = state[k]
       return typeof v === 'number' && v >= 0 && v <= 1
@@ -204,6 +209,17 @@ export class EcosystemEngine {
 
     const encharcado = smoothstep(0.55, 0.9, s.humedad)
     s.hongos += (0.2 + 0.8 * encharcado - s.hongos) * c.K_HONGOS * dt
+
+    // Aviso de exceso de agua: hace falta pasarse un rato (no un tick) y se
+    // apaga al volver a la banda, para que no parpadee alrededor del umbral.
+    s.tiempoEncharcado = s.humedad > c.UMBRAL_ENCHARCADO ? s.tiempoEncharcado + dt : 0
+    const avisar = s.encharcado
+      ? s.humedad > c.BANDA_HUMEDAD[1]
+      : s.tiempoEncharcado >= c.T_ENCHARCADO
+    if (avisar !== s.encharcado) {
+      s.encharcado = avisar
+      this.emit('encharcado')
+    }
 
     if (!s.primerBrote && s.vitalidad > 0.2) {
       s.primerBrote = true

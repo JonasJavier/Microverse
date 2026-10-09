@@ -28,6 +28,13 @@ export interface EcosystemState {
   /** Salud del mundo: la memoria de cómo se le ha cuidado. */
   vitalidad: number
   hongos: number
+  /**
+   * Exceso de agua sostenido (humedad por encima de `UMBRAL_ENCHARCADO` durante
+   * `T_ENCHARCADO`). Con histéresis: se apaga al volver a la banda de humedad.
+   */
+  encharcado: boolean
+  /** Segundos seguidos por encima del umbral de encharcado. */
+  tiempoEncharcado: number
   /** Segundos seguidos en equilibrio (oculto). */
   equilibrio: number
   etapa: Etapa
@@ -71,7 +78,13 @@ export type EcosystemAction =
   | { type: 'sol'; ciclo: number }
 
 export type EcosystemEvent =
-  'despertar' | 'etapa' | 'primerBrote' | 'sincronia:inicio' | 'sincronia:fin'
+  | 'despertar'
+  | 'etapa'
+  | 'primerBrote'
+  | 'sincronia:inicio'
+  | 'sincronia:fin'
+  /** `encharcado` cambió (en cualquier sentido). */
+  | 'encharcado'
 
 /** Mundo guardado ("el mundo te recuerda", ADR-007). */
 export interface SavedWorld {

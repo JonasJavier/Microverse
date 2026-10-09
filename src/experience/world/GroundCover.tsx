@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
-import { IcosahedronGeometry, MeshStandardMaterial } from 'three'
-import { QUALITY } from '../../config/quality.ts'
+import { IcosahedronGeometry, MeshStandardMaterial, OctahedronGeometry } from 'three'
+import { QUALITY, type QualitySettings } from '../../config/quality.ts'
 import { scatterMoss, scatterPebbles } from '../../generators/scatter.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { disposeMesh, toInstancedMesh } from './geometry.ts'
@@ -15,10 +15,11 @@ const PEBBLES = 28
  * La cantidad de musgo depende del nivel de arranque: reconstruir el reparto en
  * caliente sería caro (ADR-013).
  */
-function createGroundCover(mossCount: number) {
+function createGroundCover(mossCount: number, mossShape: QualitySettings['mossShape']) {
   const moss = toInstancedMesh(
     // Icosaedro sin subdividir (20 triángulos): a esta escala se lee como almohadilla.
-    new IcosahedronGeometry(1, 0),
+    // En media y baja, octaedro (8): a escala de móvil no se distingue y libera presupuesto.
+    mossShape === 'icosaedro' ? new IcosahedronGeometry(1, 0) : new OctahedronGeometry(1, 0),
     // El musgo se moja (oscurece y brilla) y, seco, pierde el verde.
     groundMaterial(new MeshStandardMaterial({ roughness: 1 }), 'musgo', { wet: 0.8, wilt: 0.65 }),
     scatterMoss(ISLAND, worldRandom.fork('musgo'), mossCount, CLEARINGS),
@@ -38,8 +39,11 @@ function createGroundCover(mossCount: number) {
 
 export function GroundCover() {
   const tier = useMicroverseStore((s) => s.startupTier)
-  const mossCount = QUALITY[tier].mossInstances
-  const cover = useMemo(() => createGroundCover(mossCount), [mossCount])
+  const { mossInstances, mossShape } = QUALITY[tier]
+  const cover = useMemo(
+    () => createGroundCover(mossInstances, mossShape),
+    [mossInstances, mossShape],
+  )
   useEffect(
     () => () => {
       disposeMesh(cover.moss)

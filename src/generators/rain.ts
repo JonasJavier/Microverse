@@ -28,7 +28,8 @@ export const RAIN_OPTIONS: RainOptions = {
   sphereRadius: 1,
   margin: 0.12,
   speed: [1.1, 1.6],
-  length: [0.035, 0.08],
+  // Trazos cortos y tenues: de cerca la lluvia envuelve, no tapa la vegetación.
+  length: [0.03, 0.065],
 }
 
 export function scatterRain(

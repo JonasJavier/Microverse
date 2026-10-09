@@ -12,6 +12,11 @@ const LONG_PRESS_SLOP = 8
  *  - mantener R = lluvia.
  * Un arrastre (más de 8 px) es un giro de cámara: cancela la pulsación larga.
  * Funciona igual con ratón y en táctil (Pointer Events).
+ *
+ * Decisión (revisión tras la jornada 7): la pulsación larga vale en **todo el
+ * lienzo**, no solo sobre la proyección de la esfera. La esfera ocupa casi todo el
+ * encuadre y, en táctil, exigir acertar sobre ella castigaría al visitante sin
+ * aportar nada: el fondo vacío no tiene otra interacción.
  */
 function listen(canvas: HTMLElement) {
   const { empezarLluvia, pararLluvia } = useMicroverseStore.getState()
@@ -26,7 +31,7 @@ function listen(canvas: HTMLElement) {
   }
   const stop = () => {
     cancel()
-    if (raining) pararLluvia()
+    if (raining) pararLluvia('gesto')
     raining = false
   }
   const onDown = (event: PointerEvent) => {
@@ -36,7 +41,7 @@ function listen(canvas: HTMLElement) {
     cancel()
     timer = window.setTimeout(() => {
       raining = true
-      empezarLluvia()
+      empezarLluvia('gesto')
     }, LONG_PRESS_MS)
   }
   const onMove = (event: PointerEvent) => {
@@ -51,17 +56,17 @@ function listen(canvas: HTMLElement) {
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.repeat || keyRain || typing(event) || event.key.toLowerCase() !== 'r') return
     keyRain = true
-    empezarLluvia()
+    empezarLluvia('tecla')
   }
   const onKeyUp = (event: KeyboardEvent) => {
     if (!keyRain || event.key.toLowerCase() !== 'r') return
     keyRain = false
-    pararLluvia()
+    pararLluvia('tecla')
   }
   // Si la ventana pierde el foco con la lluvia activa, se para.
   const onBlur = () => {
     stop()
-    if (keyRain) pararLluvia()
+    if (keyRain) pararLluvia('tecla')
     keyRain = false
   }
 

@@ -13,6 +13,7 @@ uniform float uTreeLength;
 vDistance = pathDistance;
 {
   float front = uTreeStart + uTreeLength * uGrowth;
-  float grown = smoothstep(front, front - 0.06, pathDistance);
+  // Bordes en orden (edge0 < edge1): con los bordes invertidos, smoothstep es indefinido en GLSL.
+  float grown = 1.0 - smoothstep(front - 0.06, front, pathDistance);
   transformed = mix(ringCenter, transformed, grown);
 }

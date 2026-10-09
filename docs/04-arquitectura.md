@@ -129,9 +129,9 @@ Lighting ◀── engine.state.ciclo (acción `sol`: lo controla el visitante, 
 | `uLife` | `brilloRaices`, suavizado con `easing.damp` | Brillo de la red según la salud |
 | `uFlash` | Exponencial desde el despertar | Estallido de la semilla |
 
-**Entorno (jornada 7):** `ecoUniforms` en el mismo módulo, suavizados con `easing.damp`: `uGrowth` (fracción del árbol revelada: 0,5 desnudo → 1 con vitalidad 0,9), `uVital`, `uWet`, `uWilt`, `uRain`, `uPuddle` y `uTime` (reloj del render: la lluvia cae a velocidad real aunque el mundo vaya a ×20). Los materiales con geometría deformada en el shader (corteza y follaje al crecer) usan **materiales de sombra con el mismo parche de vértice** (`patchedDepthMaterial`): si no, la sombra dibujaría el árbol entero.
+**Entorno (jornada 7):** `ecoUniforms` en el mismo módulo, suavizados con `easing.damp`: `uGrowth` (fracción del árbol revelada: 0,6 desnudo → 1 con vitalidad 0,9), `uVital`, `uWet`, `uWilt`, `uRain`, `uPuddle` y `uTime` (reloj del render: la lluvia cae a velocidad real aunque el mundo vaya a ×20). Los materiales con geometría deformada en el shader (corteza y follaje al crecer) usan **materiales de sombra con el mismo parche de vértice** (`patchedDepthMaterial`): si no, la sombra dibujaría el árbol entero.
 
-**Interacción (jornada 7):** `experience/interaction/Gestures.tsx` escucha el lienzo (pulsación larga > 400 ms con < 8 px de movimiento) y la tecla R; `ui/ExperienceControls.tsx` es la cápsula con la lluvia (mantener; espacio/Intro con el foco). Todos llaman a `empezarLluvia`/`pararLluvia` del store.
+**Interacción (jornada 7):** `experience/interaction/Gestures.tsx` escucha el lienzo (pulsación larga > 400 ms con < 8 px de movimiento) y la tecla R; `ui/ExperienceControls.tsx` es la cápsula con la lluvia (mantener; espacio/Intro con el foco). Todos llaman a `empezarLluvia(fuente)`/`pararLluvia(fuente)` del store, que **cuenta las fuentes** (`control`, `gesto`, `tecla`): llueve mientras quede alguna activa, y parar una que no lo estaba no hace nada. El motor emite `encharcado` cuando el exceso de agua se sostiene; el store lo refleja y la cápsula muestra "La tierra necesita descansar".
 
 Los parches GLSL viven en `shaders/life/` y `shaders/roots/`; `experience/world/materialPatch.ts` los inserta en `MeshStandardMaterial` por secciones (`//#color`, `//#emissive`…). Atributos por vértice: `pathDistance` (no `distance`: es una función de GLSL), `thickness` y `nodeValue` (en las raíces, el **carácter** de cada nodo; en el follaje, cada mechón hereda la distancia de su rama más cercana). El reloj del despertar sale del motor (`despertadoEn`): es determinista y un mundo recuperado no se vuelve a encender.
 
@@ -200,7 +200,7 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 ## Interacción
 
 - **Cámara:** `CameraControls` de Drei con amortiguación, sin desplazamiento lateral. Ángulo polar de 20° a 150° (se puede mirar desde abajo para ver las raíces colgantes) y distancia mínima y máxima.
-- **Gestos:** toque o clic = interactuar; arrastre = orbitar; pulsación larga (más de 400 ms con menos de 8 px de movimiento) = lluvia. Funciona igual con ratón y en táctil.
+- **Gestos:** toque o clic = interactuar; arrastre = orbitar; pulsación larga (más de 400 ms con menos de 8 px de movimiento) = lluvia, **en todo el lienzo** (decisión tras la jornada 7: la esfera ocupa casi todo el encuadre y exigir acertar sobre ella castigaría en táctil sin aportar nada). Funciona igual con ratón y en táctil.
 - **Teclado:** mantener `R` = lluvia · `←`/`→` = sol · `O` = modo observador · `M` = silenciar.
 - **Accesibilidad:** con `prefers-reduced-motion` se reducen las partículas y los movimientos automáticos de cámara. Los controles tienen `aria-label`.
 

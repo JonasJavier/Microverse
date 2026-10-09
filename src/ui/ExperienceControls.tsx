@@ -20,23 +20,27 @@ const HOLD_KEYS = new Set([' ', 'Enter'])
 /**
  * Cápsula de controles (docs/02 · Interfaz): aparece al despertar la semilla.
  * La lluvia se mantiene pulsada (ratón, dedo o espacio/Intro con el foco). Hasta
- * la primera lluvia, una pista dice cómo usarla; después desaparece.
+ * la primera lluvia, una pista dice cómo usarla; después desaparece. Si el
+ * visitante se pasa de agua, la pista vuelve para pedir descanso.
+ * Pendiente (jornada 11): activación sin mantener para lectores de pantalla.
  */
 export function ExperienceControls() {
   const awake = useMicroverseStore((s) => s.etapa !== 'dormido')
   const haLlovido = useMicroverseStore((s) => s.haLlovido)
+  const encharcado = useMicroverseStore((s) => s.encharcado)
   const empezarLluvia = useMicroverseStore((s) => s.empezarLluvia)
   const pararLluvia = useMicroverseStore((s) => s.pararLluvia)
   const [pressed, setPressed] = useState(false)
 
+  // Parar es idempotente (el store cuenta las fuentes): no depende de `pressed`,
+  // así una pulsación muy breve nunca deja la lluvia encendida.
   const start = () => {
     setPressed(true)
-    empezarLluvia()
+    empezarLluvia('control')
   }
   const stop = () => {
-    if (!pressed) return
     setPressed(false)
-    pararLluvia()
+    pararLluvia('control')
   }
   const onKeyDown = (event: KeyboardEvent) => {
     if (!HOLD_KEYS.has(event.key) || event.repeat) return
@@ -49,8 +53,9 @@ export function ExperienceControls() {
 
   return (
     <div className="controls" data-visible={awake} aria-hidden={!awake}>
-      <p className="controls__hint" data-visible={awake && !haLlovido}>
-        Mantén pulsado para que llueva
+      {/* Dos pistas, nunca a la vez: cómo regar y, si se pasa de agua, que pare. */}
+      <p className="controls__hint" data-visible={awake && (encharcado || !haLlovido)}>
+        {encharcado ? 'La tierra necesita descansar' : 'Mantén pulsado para regar'}
       </p>
       <div className="controls__capsule">
         <button

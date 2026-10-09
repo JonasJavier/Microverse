@@ -6,6 +6,11 @@ export interface QualitySettings {
   /** Muestras MSAA del EffectComposer (0 = sin antialiasing). */
   multisampling: number
   mossInstances: number
+  /**
+   * Caras de cada almohadilla de musgo: icosaedro (20 triángulos) o octaedro (8).
+   * En móvil el octaedro ahorra ~26.000 triángulos con 2.200 instancias.
+   */
+  mossShape: 'icosaedro' | 'octaedro'
   /** Mechones de follaje del árbol (con menos, cada uno es mayor: la silueta no cambia). */
   foliageTufts: number
   /** Brotes que asoman al revivir el mundo. */
@@ -26,6 +31,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     bloomHalfRes: false,
     multisampling: 4,
     mossInstances: 6000,
+    mossShape: 'icosaedro',
     foliageTufts: 4500,
     sprouts: 260,
     tubeSegments: 8,
@@ -39,6 +45,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     bloomHalfRes: true,
     multisampling: 2,
     mossInstances: 2200,
+    mossShape: 'octaedro',
     foliageTufts: 2800,
     sprouts: 120,
     tubeSegments: 6,
@@ -52,6 +59,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     bloomHalfRes: true,
     multisampling: 0,
     mossInstances: 1200,
+    mossShape: 'octaedro',
     foliageTufts: 1600,
     sprouts: 90,
     tubeSegments: 5,

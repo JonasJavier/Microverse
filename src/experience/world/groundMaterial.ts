@@ -21,6 +21,7 @@ export function groundMaterial(
     uniforms: {
       uWet: ecoUniforms.uWet,
       uWilt: ecoUniforms.uWilt,
+      uPuddle: ecoUniforms.uPuddle,
       uDryColor: dryColor,
       uWetAmount: { value: wet },
       uWiltAmount: { value: wilt },

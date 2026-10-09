@@ -109,6 +109,33 @@ describe('EcosystemEngine · escenarios (docs/05)', () => {
     expect(salud(engine.state.humedad, engine.state.energiaSolar, C)).toBeLessThan(0.3)
   })
 
+  it('4b · el aviso de encharcado llega tras pasarse un rato y se apaga al volver a la banda', () => {
+    const engine = awake()
+    let cambios = 0
+    engine.on('encharcado', () => cambios++)
+    engine.dispatch({ type: 'lluvia', intensidad: 1 })
+    // Hasta el umbral no hay aviso; al cruzarlo, todavía no (hace falta T_ENCHARCADO).
+    while (engine.state.humedad <= C.UMBRAL_ENCHARCADO) engine.advance(0.1)
+    expect(engine.state.encharcado).toBe(false)
+    engine.advance(C.T_ENCHARCADO + 0.2)
+    expect(engine.state.encharcado).toBe(true)
+    expect(cambios).toBe(1)
+    // Parar la lluvia: el aviso sigue hasta volver a la banda, sin parpadear.
+    engine.dispatch({ type: 'lluvia', intensidad: 0 })
+    engine.advance(5)
+    expect(engine.state.encharcado).toBe(true)
+    while (engine.state.humedad > C.BANDA_HUMEDAD[1]) engine.advance(1)
+    expect(engine.state.encharcado).toBe(false)
+    expect(cambios).toBe(2)
+  })
+
+  it('4c · mantener la lluvia suave del visitante sin soltar acaba avisando antes de un minuto', () => {
+    const engine = awake()
+    engine.dispatch({ type: 'lluvia', intensidad: 0.7 })
+    engine.advance(60)
+    expect(engine.state.encharcado).toBe(true)
+  })
+
   it('5 · de noche hay luciérnagas solo si hay vitalidad', () => {
     const asleep = new EcosystemEngine()
     asleep.dispatch({ type: 'sol', ciclo: 1 })

@@ -81,12 +81,12 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 
 ## Acto 02 · Nourish (jornada 7)
 
-- **El mundo empieza seco** (humedad 0,05): árbol **desnudo** (tronco y arranque de ramas, sin copa), musgo marchito hacia un tono de hoja seca (`musgoSeco`). Es la imagen de "la última semilla": un mundo que espera.
-- **La lluvia** es suave: trazos finos de luz *reflejo* que caen dentro del cristal hasta la isla. Se mantiene pulsada (cápsula, pulsación larga sobre la esfera o tecla R).
+- **El mundo empieza seco** (humedad 0,05): árbol **desnudo** (tronco, dos ramas y unas pocas masas de follaje marchito: `GROWTH.bare` 0,6, elegido en el A/B `jornada-07b-seco-*`), musgo marchito hacia un tono de hoja seca (`musgoSeco`). Es la imagen de "la última semilla": un mundo hermoso pero vulnerable, no un palo. Con follaje marchito, la chispa del despertar (acto 01) tiene algo que encender antes de la lluvia.
+- **La lluvia** es suave: trazos finos y tenues de luz *reflejo* que caen dentro del cristal hasta la isla (de cerca envuelve, no tapa la vegetación). Se mantiene pulsada (cápsula, pulsación larga sobre el lienzo o tecla R).
 - **La tierra mojada** se oscurece y brilla (menos rugosidad); el musgo recupera el verde.
 - **Crecimiento** (`uGrowth`): las ramas se alargan a lo largo de su distancia desde la semilla, con punta (los anillos aún no revelados se pliegan hacia el eje), y las nubes se llenan **mechón a mechón** cuando el frente llega a su rama. Las sombras crecen igual.
 - **Brotes:** asoman primero alrededor de la semilla y después hacia fuera, al subir la vitalidad. Secos, se encogen y se abren.
-- **Charcos:** solo aparecen al **pasarse de agua** (encharcado): agua oscura que refleja el estudio, con ondas mientras llueve. Son el aviso visual del exceso, junto con los hongos (jornada 8).
+- **Charcos:** solo aparecen al **pasarse de agua** (encharcado): agua oscura que refleja el estudio (velo tenue, más en ángulo rasante), con ondas mientras llueve. Son el aviso visual del exceso, junto con la tierra saturada (más oscura y lisa), la pista "La tierra necesita descansar" y los hongos (jornada 8). Regar sin parar no es cuidar: el visitante tiene que descubrir la dosis.
 
 ## Vegetación y organismos
 

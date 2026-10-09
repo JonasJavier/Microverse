@@ -25,6 +25,10 @@ export interface EcosystemConfig {
   /** Suelo de la vitalidad tras despertar: el mundo nunca muere. */
   VITALIDAD_MIN: number
   K_HONGOS: number
+  /** Humedad a partir de la cual el mundo avisa de exceso de agua. */
+  UMBRAL_ENCHARCADO: number
+  /** Segundos seguidos por encima del umbral antes de avisar. */
+  T_ENCHARCADO: number
   /** Salud y vitalidad mínimas para estar en equilibrio. */
   EQUILIBRIO_SALUD: number
   EQUILIBRIO_VITALIDAD: number
@@ -55,6 +59,8 @@ export const DEFAULT_CONFIG: EcosystemConfig = {
   K_DECAER: 0.01,
   VITALIDAD_MIN: 0.1,
   K_HONGOS: 0.02,
+  UMBRAL_ENCHARCADO: 0.8,
+  T_ENCHARCADO: 2,
   EQUILIBRIO_SALUD: 0.85,
   EQUILIBRIO_VITALIDAD: 0.75,
   T_SINCRONIA: 40,

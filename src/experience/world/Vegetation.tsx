@@ -66,6 +66,7 @@ function createVegetation(sproutCount: number) {
         uVital: ecoUniforms.uVital,
         uWet: ecoUniforms.uWet,
         uWilt: ecoUniforms.uWilt,
+        uPuddle: ecoUniforms.uPuddle,
         uDryColor: { value: new Color(palette.materia.musgoSeco) },
         uWetAmount: { value: 0.4 },
         uWiltAmount: { value: 0.7 },

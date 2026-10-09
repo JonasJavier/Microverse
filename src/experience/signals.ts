@@ -40,8 +40,13 @@ export const signalUniforms = {
  * el motor cambia a 10 Hz y la vista no debe dar saltos.
  */
 export const GROWTH = {
-  /** Fracción del árbol visible con el mundo recién despierto (tronco y arranque de ramas). */
-  bare: 0.5,
+  /**
+   * Fracción del árbol visible con el mundo recién despierto. A/B tras la jornada 7
+   * (0,5 · 0,6 · 0,65, misma cámara `general`): con 0,5 era un palo sin silueta y
+   * el encendido del despertar no tenía copa que iluminar; con 0,65 regalaba media
+   * copa. 0,6: tronco, dos ramas y unas pocas masas de follaje marchito.
+   */
+  bare: 0.6,
   /** Crecimiento (vitalidad) a partir del cual empieza a revelarse el resto, y donde termina. */
   from: 0.1,
   to: 0.9,
