@@ -4,6 +4,7 @@ import { QUALITY } from '../../config/quality.ts'
 import { scatterMoss, scatterPebbles } from '../../generators/scatter.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { disposeMesh, toInstancedMesh } from './geometry.ts'
+import { groundMaterial } from './groundMaterial.ts'
 import { ISLAND, worldRandom } from './island.ts'
 import { CLEARINGS } from './life.ts'
 
@@ -18,7 +19,8 @@ function createGroundCover(mossCount: number) {
   const moss = toInstancedMesh(
     // Icosaedro sin subdividir (20 triángulos): a esta escala se lee como almohadilla.
     new IcosahedronGeometry(1, 0),
-    new MeshStandardMaterial({ roughness: 1 }),
+    // El musgo se moja (oscurece y brilla) y, seco, pierde el verde.
+    groundMaterial(new MeshStandardMaterial({ roughness: 1 }), 'musgo', { wet: 0.8, wilt: 0.65 }),
     scatterMoss(ISLAND, worldRandom.fork('musgo'), mossCount, CLEARINGS),
   )
   moss.receiveShadow = true

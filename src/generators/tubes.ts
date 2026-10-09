@@ -18,6 +18,11 @@ export interface TubeMeshData {
   thicknesses: Float32Array
   /** Valor por nodo (`TubeOptions.nodeValue`; en las raíces, su carácter). 0 si no hay. */
   nodeValues: Float32Array
+  /**
+   * Centro del anillo de cada vértice (xyz). El crecimiento pliega hacia aquí los
+   * anillos aún no revelados: la rama crece con punta, no aparece cortada.
+   */
+  centers: Float32Array
   indices: Uint32Array
 }
 
@@ -121,6 +126,7 @@ export function buildTubes(
   const distances: number[] = []
   const thicknesses: number[] = []
   const nodeValues: number[] = []
+  const centers: number[] = []
   const indices: number[] = []
 
   const tangent = new Vector3()
@@ -191,6 +197,7 @@ export function buildTubes(
         distances.push(ring.distance)
         thicknesses.push(ring.radius)
         nodeValues.push(nodeValue ? nodeValue(ring.id) : 0)
+        centers.push(ring.position.x, ring.position.y, ring.position.z)
       }
     }
 
@@ -212,6 +219,7 @@ export function buildTubes(
     distances: new Float32Array(distances),
     thicknesses: new Float32Array(thicknesses),
     nodeValues: new Float32Array(nodeValues),
+    centers: new Float32Array(centers),
     indices: new Uint32Array(indices),
   }
 }

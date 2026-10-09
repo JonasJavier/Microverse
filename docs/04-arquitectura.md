@@ -129,6 +129,10 @@ Lighting ◀── engine.state.ciclo (acción `sol`: lo controla el visitante, 
 | `uLife` | `brilloRaices`, suavizado con `easing.damp` | Brillo de la red según la salud |
 | `uFlash` | Exponencial desde el despertar | Estallido de la semilla |
 
+**Entorno (jornada 7):** `ecoUniforms` en el mismo módulo, suavizados con `easing.damp`: `uGrowth` (fracción del árbol revelada: 0,5 desnudo → 1 con vitalidad 0,9), `uVital`, `uWet`, `uWilt`, `uRain`, `uPuddle` y `uTime` (reloj del render: la lluvia cae a velocidad real aunque el mundo vaya a ×20). Los materiales con geometría deformada en el shader (corteza y follaje al crecer) usan **materiales de sombra con el mismo parche de vértice** (`patchedDepthMaterial`): si no, la sombra dibujaría el árbol entero.
+
+**Interacción (jornada 7):** `experience/interaction/Gestures.tsx` escucha el lienzo (pulsación larga > 400 ms con < 8 px de movimiento) y la tecla R; `ui/ExperienceControls.tsx` es la cápsula con la lluvia (mantener; espacio/Intro con el foco). Todos llaman a `empezarLluvia`/`pararLluvia` del store.
+
 Los parches GLSL viven en `shaders/life/` y `shaders/roots/`; `experience/world/materialPatch.ts` los inserta en `MeshStandardMaterial` por secciones (`//#color`, `//#emissive`…). Atributos por vértice: `pathDistance` (no `distance`: es una función de GLSL), `thickness` y `nodeValue` (en las raíces, el **carácter** de cada nodo; en el follaje, cada mechón hereda la distancia de su rama más cercana). El reloj del despertar sale del motor (`despertadoEn`): es determinista y un mundo recuperado no se vuelve a encender.
 
 ## Responsabilidades por capa
@@ -179,7 +183,8 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 | DPR máximo | 2 | 1.5 | 1 |
 | Cristal | Fresnel + entorno (MTM si se justifica) | Fresnel + entorno | Fresnel simple |
 | Bloom | Completo | Media resolución | Media resolución, menos niveles |
-| Instancias de musgo | ~6000 | ~2400 | ~1200 |
+| Instancias de musgo | ~6000 | ~2200 | ~1200 |
+| Brotes | 260 | 120 | 90 |
 | Lados de los tubos (árbol y raíces) | 8 | 6 | 5 |
 | Mechones de follaje | 4500 | 2800 | 1600 |
 | Segmentos del cristal | 128×64 | 64×32 | 56×28 |

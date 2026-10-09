@@ -1,17 +1,23 @@
 import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { InstancedBufferAttribute, Mesh, MeshStandardMaterial, OctahedronGeometry } from 'three'
+import {
+  Color,
+  InstancedBufferAttribute,
+  Mesh,
+  MeshStandardMaterial,
+  OctahedronGeometry,
+} from 'three'
 import { palette } from '../../config/palette.ts'
 import { QUALITY } from '../../config/quality.ts'
 import { scatterTreeFoliage } from '../../generators/tree.ts'
 import { buildTubes } from '../../generators/tubes.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
-import { signalUniforms } from '../signals.ts'
+import { ecoUniforms, signalUniforms } from '../signals.ts'
 import { disposeMesh, toInstancedMesh, toTubeGeometry } from './geometry.ts'
 import { worldRandom } from './island.ts'
 import { TREE } from './life.ts'
-import { patchMaterial } from './materialPatch.ts'
+import { patchMaterial, patchedDepthMaterial } from './materialPatch.ts'
 import signalsGlsl from '../../shaders/life/signals.glsl?raw'
 import barkVertex from '../../shaders/life/bark.vert.glsl?raw'
 import barkFragment from '../../shaders/life/bark.frag.glsl?raw'
@@ -21,15 +27,33 @@ import foliageFragment from '../../shaders/life/foliage.frag.glsl?raw'
 /** Corteza con crestas en espiral en el tronco y el cuello; las ramas finas, lisas. */
 const BARK_FLUTES = { count: 5, depth: 0.14, minRadius: 0.012, twist: 9 }
 
+/** Recorrido del crecimiento: de la base del tronco a la punta más lejana. */
+const treeStart = TREE.graph.node(0).distance
+const growthUniforms = {
+  uGrowth: ecoUniforms.uGrowth,
+  uTreeStart: { value: treeStart },
+  uTreeLength: { value: Math.max(...TREE.graph.nodes.map((n) => n.distance)) - treeStart },
+}
+
 /**
  * Árbol protagonista: tronco, ramas y nebari como tubos (una draw call) y las
- * nubes de follaje como mechones instanciados (otra). Desde la jornada 6 lo
- * recorren las señales de la semilla: la chispa del encendido trepa por el
- * tronco, los pulsos suben como luz bajo la corteza y cada nube destella al
- * llegarle el frente. El crecimiento (`uGrowth`) y el viento, en las jornadas 7 y 8.
+ * nubes de follaje como mechones instanciados (otra).
+ *  - Jornada 6: lo recorren las señales de la semilla (la chispa del encendido
+ *    trepa por el tronco, los pulsos suben como luz bajo la corteza y cada nube
+ *    destella al llegarle el frente).
+ *  - Jornada 7: crece con la vitalidad. El mundo seco tiene un árbol desnudo; al
+ *    cuidarlo, las ramas se alargan y las nubes se llenan mechón a mechón
+ *    (`uGrowth`). Las sombras crecen igual: materiales de sombra con el mismo
+ *    parche de vértice. Seca, la copa pierde el verde (`uWilt`).
+ * El viento llega en la jornada 8.
  */
 function createLifeTree(tubeSegments: number, tufts: number) {
-  const barkUniforms = { ...signalUniforms, uBarkPulse: { value: 0.2 }, uSparkGain: { value: 4 } }
+  const barkUniforms = {
+    ...signalUniforms,
+    ...growthUniforms,
+    uBarkPulse: { value: 0.2 },
+    uSparkGain: { value: 4 },
+  }
   const bark = new Mesh(
     toTubeGeometry(buildTubes(TREE.graph, tubeSegments, { flutes: BARK_FLUTES }), true),
     patchMaterial(new MeshStandardMaterial({ color: palette.materia.corteza, roughness: 0.9 }), {
@@ -39,6 +63,11 @@ function createLifeTree(tubeSegments: number, tufts: number) {
       uniforms: barkUniforms,
     }),
   )
+  bark.customDepthMaterial = patchedDepthMaterial({
+    key: 'corteza',
+    vertex: barkVertex,
+    uniforms: growthUniforms,
+  })
   // Nombres: los usa la prueba de silueta del look-dev (rúbrica del H1).
   bark.name = 'arbol'
   bark.castShadow = true
@@ -53,11 +82,22 @@ function createLifeTree(tubeSegments: number, tufts: number) {
       key: 'follaje',
       vertex: foliageVertex,
       fragment: [signalsGlsl, foliageFragment],
-      uniforms: { ...signalUniforms, uFoliageFlash: { value: 0.35 } },
+      uniforms: {
+        ...signalUniforms,
+        ...growthUniforms,
+        uFoliageFlash: { value: 0.35 },
+        uWilt: ecoUniforms.uWilt,
+        uDryColor: { value: new Color(palette.materia.musgoSeco) },
+      },
     }),
     scatter,
   )
   foliage.geometry.setAttribute('pathDistance', new InstancedBufferAttribute(scatter.distances, 1))
+  foliage.customDepthMaterial = patchedDepthMaterial({
+    key: 'follaje',
+    vertex: foliageVertex,
+    uniforms: growthUniforms,
+  })
   foliage.name = 'arbol'
   foliage.castShadow = true
   foliage.receiveShadow = true
@@ -72,6 +112,13 @@ function syncTree({ barkUniforms }: LifeTreeResources) {
   barkUniforms.uBarkPulse.value = 0.55 * currentLook().rootGlow
 }
 
+function disposeTree({ bark, foliage }: LifeTreeResources) {
+  disposeMesh(bark)
+  disposeMesh(foliage)
+  bark.customDepthMaterial?.dispose()
+  foliage.customDepthMaterial?.dispose()
+}
+
 export function LifeTree() {
   const tier = useMicroverseStore((s) => s.startupTier)
   const { tubeSegments, foliageTufts } = QUALITY[tier]
@@ -79,13 +126,7 @@ export function LifeTree() {
     () => createLifeTree(tubeSegments, foliageTufts),
     [tubeSegments, foliageTufts],
   )
-  useEffect(
-    () => () => {
-      disposeMesh(tree.bark)
-      disposeMesh(tree.foliage)
-    },
-    [tree],
-  )
+  useEffect(() => () => disposeTree(tree), [tree])
   useFrame(() => syncTree(tree))
 
   return (

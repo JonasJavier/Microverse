@@ -58,6 +58,17 @@ describe('buildTubes', () => {
     expect(partial.indices.length).toBeLessThan(mesh.indices.length)
   })
 
+  it('cada vértice sabe el centro de su anillo, a un radio de distancia', () => {
+    const p = new Vector3()
+    const c = new Vector3()
+    expect(mesh.centers.length).toBe(mesh.positions.length)
+    for (let v = 0; v < vertexCount; v++) {
+      p.fromArray(mesh.positions, v * 3)
+      c.fromArray(mesh.centers, v * 3)
+      expect(p.distanceTo(c)).toBeCloseTo(mesh.thicknesses[v]!, 3)
+    }
+  })
+
   it('lleva un valor por nodo a cada vértice', () => {
     const tagged = buildTubes(fork(), S, { nodeValue: (id) => id / 10 })
     expect(tagged.nodeValues.length).toBe(tagged.positions.length / 3)

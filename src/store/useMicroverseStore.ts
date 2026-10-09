@@ -6,6 +6,9 @@ import type { Etapa } from '../simulation/types.ts'
 
 const initialTier = detectInitialTier()
 
+/** Intensidad de la lluvia del visitante: suave (docs/01 · acto 02). */
+export const LLUVIA_SUAVE = 0.7
+
 /** El motor del mundo: uno por sesión. El render lo lee por referencia en `useFrame`. */
 function createEngine() {
   const engine = new EcosystemEngine()
@@ -35,8 +38,13 @@ interface MicroverseStore {
   etapa: Etapa
   primerBrote: boolean
   sincronia: boolean
+  /** El visitante ya ha hecho llover alguna vez (la pista de la lluvia desaparece). */
+  haLlovido: boolean
   despertar(): void
   llover(intensidad: number): void
+  /** Lluvia del visitante: control, pulsación larga o tecla R. */
+  empezarLluvia(): void
+  pararLluvia(): void
   sol(ciclo: number): void
 }
 
@@ -56,8 +64,16 @@ export const useMicroverseStore = create<MicroverseStore>()((set) => ({
   etapa: engine.state.etapa,
   primerBrote: engine.state.primerBrote,
   sincronia: engine.state.sincronia.activa,
+  haLlovido: false,
   despertar: () => engine.dispatch({ type: 'despertar' }),
   llover: (intensidad) => engine.dispatch({ type: 'lluvia', intensidad }),
+  empezarLluvia: () => {
+    // Antes de despertar no hay lluvia (el motor la ignora): tampoco cuenta como hecha.
+    if (!engine.state.despertado) return
+    engine.dispatch({ type: 'lluvia', intensidad: LLUVIA_SUAVE })
+    set({ haLlovido: true })
+  },
+  pararLluvia: () => engine.dispatch({ type: 'lluvia', intensidad: 0 }),
   sol: (ciclo) => engine.dispatch({ type: 'sol', ciclo }),
 }))
 

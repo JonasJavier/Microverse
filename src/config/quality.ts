@@ -8,6 +8,8 @@ export interface QualitySettings {
   mossInstances: number
   /** Mechones de follaje del árbol (con menos, cada uno es mayor: la silueta no cambia). */
   foliageTufts: number
+  /** Brotes que asoman al revivir el mundo. */
+  sprouts: number
   /** Lados de los tubos del árbol y las raíces. */
   tubeSegments: number
   /** Segmentos de la esfera de cristal (horizontal, vertical). */
@@ -25,6 +27,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     multisampling: 4,
     mossInstances: 6000,
     foliageTufts: 4500,
+    sprouts: 260,
     tubeSegments: 8,
     glassSegments: [128, 64],
     fireflies: 60,
@@ -35,8 +38,9 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     maxDpr: 1.5,
     bloomHalfRes: true,
     multisampling: 2,
-    mossInstances: 2400,
+    mossInstances: 2200,
     foliageTufts: 2800,
+    sprouts: 120,
     tubeSegments: 6,
     glassSegments: [64, 32],
     fireflies: 40,
@@ -49,6 +53,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     multisampling: 0,
     mossInstances: 1200,
     foliageTufts: 1600,
+    sprouts: 90,
     tubeSegments: 5,
     glassSegments: [56, 28],
     fireflies: 24,

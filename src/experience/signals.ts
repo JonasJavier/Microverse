@@ -35,6 +35,40 @@ export const signalUniforms = {
   uVidaColor: { value: new Color(palette.luz.vida) },
 }
 
+/**
+ * Acto 02 · Nourish (jornada 7): cómo se ve el agua y la vida. Todo suavizado:
+ * el motor cambia a 10 Hz y la vista no debe dar saltos.
+ */
+export const GROWTH = {
+  /** Fracción del árbol visible con el mundo recién despierto (tronco y arranque de ramas). */
+  bare: 0.5,
+  /** Crecimiento (vitalidad) a partir del cual empieza a revelarse el resto, y donde termina. */
+  from: 0.1,
+  to: 0.9,
+} as const
+
+export const ecoUniforms = {
+  /** Fracción del árbol revelada a lo largo de sus ramas (0..1+). */
+  uGrowth: { value: GROWTH.bare },
+  /** Vitalidad suavizada: los brotes asoman al superar su umbral. */
+  uVital: { value: 0 },
+  /** Tierra mojada: oscurece y da brillo al suelo y al musgo. */
+  uWet: { value: 0 },
+  /** Marchitez: desatura y apaga la vegetación. */
+  uWilt: { value: 1 },
+  /** Lluvia visible (intensidad suavizada). */
+  uRain: { value: 0 },
+  /** Encharcado: los charcos aparecen al pasarse de agua. */
+  uPuddle: { value: 0 },
+  /** Reloj del render en segundos (la lluvia cae a velocidad real, no del mundo). */
+  uTime: { value: 0 },
+}
+
+const smoothstep = (a: number, b: number, x: number) => {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
+  return t * t * (3 - 2 * t)
+}
+
 /** Valores suavizados que no son uniforms (los lee la semilla). */
 export const seedSignal = { pulse: 1 }
 
@@ -59,4 +93,14 @@ export function updateSignals(delta: number) {
 
   easing.damp(signalUniforms.uLife, 'value', visuals.brilloRaices, 0.8, delta)
   easing.damp(seedSignal, 'pulse', visuals.pulsoSemilla, 0.8, delta)
+
+  const growth =
+    GROWTH.bare + (1.05 - GROWTH.bare) * smoothstep(GROWTH.from, GROWTH.to, visuals.crecimiento)
+  easing.damp(ecoUniforms.uGrowth, 'value', growth, 1.2, delta)
+  easing.damp(ecoUniforms.uVital, 'value', visuals.crecimiento, 1.2, delta)
+  easing.damp(ecoUniforms.uWet, 'value', smoothstep(0.12, 0.65, visuals.sueloHumedo), 1, delta)
+  easing.damp(ecoUniforms.uWilt, 'value', visuals.marchitez, 1.5, delta)
+  easing.damp(ecoUniforms.uRain, 'value', visuals.lluvia, 0.3, delta)
+  easing.damp(ecoUniforms.uPuddle, 'value', smoothstep(0.55, 0.85, visuals.sueloHumedo), 1.5, delta)
+  ecoUniforms.uTime.value = (ecoUniforms.uTime.value + delta) % 3600
 }

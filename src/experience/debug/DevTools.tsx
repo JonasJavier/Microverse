@@ -7,6 +7,7 @@ import { useLookdevStore, type ToneMappingName } from '../../store/useLookdevSto
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import type { WebGLRenderer } from 'three'
 import type { EcosystemConfig } from '../../simulation/ecosystemConfig.ts'
+import { ecoUniforms, signalUniforms } from '../signals.ts'
 import { setCaptureMode, setSilhouette, setView, type ViewName } from './lookdevTools.ts'
 
 /** Constantes calibrables: [nombre, mínimo, máximo, paso]. */
@@ -61,6 +62,7 @@ export default function DevTools() {
         view: (name: ViewName) => setView(getThree(), name),
         capture: setCaptureMode,
         silhouette: (on: boolean) => setSilhouette(getThree(), on),
+        signals: { signalUniforms, ecoUniforms },
       },
     })
     return () => {

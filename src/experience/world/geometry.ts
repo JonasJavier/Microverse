@@ -34,6 +34,7 @@ export function toTubeGeometry(data: TubeMeshData, recomputeNormals = false) {
   geometry.setAttribute('pathDistance', new BufferAttribute(data.distances, 1))
   geometry.setAttribute('thickness', new BufferAttribute(data.thicknesses, 1))
   geometry.setAttribute('nodeValue', new BufferAttribute(data.nodeValues, 1))
+  geometry.setAttribute('ringCenter', new BufferAttribute(data.centers, 3))
   geometry.setIndex(new BufferAttribute(data.indices, 1))
   // Con estrías en la corteza, las normales radiales del generador no valen.
   if (recomputeNormals) geometry.computeVertexNormals()

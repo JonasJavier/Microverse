@@ -79,6 +79,15 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Color:** la señal del despertar es cálida (Sol, la semilla); la red es fría (Vida). Las dos se cruzan en el encendido.
 - **El brillo de la red sigue a la salud del mundo** (`brilloRaices`): recién despierta es tenue y crece al cuidarla. De noche se ve mucho más.
 
+## Acto 02 · Nourish (jornada 7)
+
+- **El mundo empieza seco** (humedad 0,05): árbol **desnudo** (tronco y arranque de ramas, sin copa), musgo marchito hacia un tono de hoja seca (`musgoSeco`). Es la imagen de "la última semilla": un mundo que espera.
+- **La lluvia** es suave: trazos finos de luz *reflejo* que caen dentro del cristal hasta la isla. Se mantiene pulsada (cápsula, pulsación larga sobre la esfera o tecla R).
+- **La tierra mojada** se oscurece y brilla (menos rugosidad); el musgo recupera el verde.
+- **Crecimiento** (`uGrowth`): las ramas se alargan a lo largo de su distancia desde la semilla, con punta (los anillos aún no revelados se pliegan hacia el eje), y las nubes se llenan **mechón a mechón** cuando el frente llega a su rama. Las sombras crecen igual.
+- **Brotes:** asoman primero alrededor de la semilla y después hacia fuera, al subir la vitalidad. Secos, se encogen y se abren.
+- **Charcos:** solo aparecen al **pasarse de agua** (encharcado): agua oscura que refleja el estudio, con ondas mientras llueve. Son el aviso visual del exceso, junto con los hongos (jornada 8).
+
 ## Vegetación y organismos
 
 - **Hongos lámpara** (altos y finos, referencia 1) y **racimos pequeños** sobre raíces y troncos. Brillan con *Vida* de noche.

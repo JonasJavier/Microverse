@@ -22,7 +22,7 @@
 | 4 | Composición ✅ | Árbol bonsái (nubes, tronco en "S", nebari; se cierra ADR-003), métrica de cobertura corregida, material de raíces por grosor, `ciclo` mañana/noche, media luna del cristal recolocada, presupuesto móvil recuperado. DOF descartada en A/B. **H1 · Captura** |
 | 5 | Motor ✅ | `EcosystemEngine` (8 escenarios + calibración con un visitante simulado), store con el motor, `SimulationDriver`, `ObserverMode` (tecla O), panel Leva para calibrar (acciones, velocidad ×1/×5/×20, constantes). El ciclo pasa a vivir en el motor; `?noche` en la URL |
 | 6 | 01 · Awakening ✅ | Tocar la semilla (área de toque de ~45 px en móvil, botón para teclado), encendido por la red con chispa Sol, pulsos con `temperament` como atributo por vértice, luz bajo la corteza, la copa se enciende nube a nube, cartela de entrada |
-| 7 | 02 · Nourish | `RainSystem`, `Puddles`, shader `growth` (`uGrowth`), shader de vegetación (humedad/marchitez), gestos |
+| 7 | 02 · Nourish ✅ | `RainSystem` (instanced, en shader), charcos con ondas solo al encharcar, crecimiento del árbol por `pathDistance` (`uGrowth`, sombras incluidas), suelo y musgo según humedad y marchitez, brotes desde la semilla, cápsula con la lluvia (mantener), pulsación larga y tecla R |
 | 8 | 03 · Transform | `SunHandle` + `ExperienceControls`, ciclo de iluminación, `Mushrooms` con brillo, `Fireflies` |
 | 9 | 04 · Discover | Límites de cámara, raíces colgantes, `HiddenOrganisms`; reconsiderar DOF solo para primeros planos. **H2 · Vivo** |
 | 10 | 05 · Sincronía | Final, calibración del motor con 3 personas, audio ambiente, persistencia |

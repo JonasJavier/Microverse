@@ -1,5 +1,7 @@
 import { CameraRig } from './camera/CameraRig.tsx'
 import { PostFX } from './effects/PostFX.tsx'
+import { RainSystem } from './effects/RainSystem.tsx'
+import { Gestures } from './interaction/Gestures.tsx'
 import { SimulationDriver } from './SimulationDriver.tsx'
 import { Studio } from './lighting/Studio.tsx'
 import { Backdrop } from './world/Backdrop.tsx'
@@ -10,6 +12,7 @@ import { LifeTree } from './world/LifeTree.tsx'
 import { Pedestal } from './world/Pedestal.tsx'
 import { RootNetwork } from './world/RootNetwork.tsx'
 import { Seed } from './world/Seed.tsx'
+import { Vegetation } from './world/Vegetation.tsx'
 
 /**
  * Composición de la escena. Orden de render: fondo → opacos → cristal
@@ -25,10 +28,13 @@ export function MicroverseScene() {
       <RootNetwork />
       <GroundCover />
       <LifeTree />
+      <Vegetation />
       <Seed />
+      <RainSystem />
       <Pedestal />
       <GlassSphere />
       <CameraRig />
+      <Gestures />
       <PostFX />
     </>
   )

@@ -18,6 +18,8 @@ export const palette = {
     corteza: '#4A3B2E',
     // Raíz viva: pálida, para leerse sobre los estratos oscuros (brilla con Vida).
     raiz: '#7A6E60',
+    // Hoja seca: hacia donde vira la vegetación marchita (jornada 7).
+    musgoSeco: '#7A7448',
   },
   /**
    * Estratos del corte de diorama (ADR-008), de arriba abajo. Poco saturados, y

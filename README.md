@@ -6,13 +6,19 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 6 completada, **acto 01 · Awakening**: toca la semilla y una chispa de luz recorre las raíces, sube por el tronco y enciende la copa nube a nube; después, pulsos de vida laten por toda la red al ritmo del motor. Siguiente: jornada 7, la lluvia y el crecimiento (acto 02).
+**Estado:** Jornada 7 completada, **acto 02 · Nourish**: el mundo empieza seco, con el árbol desnudo; al despertar la semilla aparece la lluvia (mantén pulsado), la tierra se moja, el musgo revive, asoman brotes y el árbol crece rama a rama hasta llenar su copa. Si te pasas de agua, aparecen charcos. Siguiente: jornada 8, el sol y el ciclo del día (acto 03).
+
+| Seco | Lluvia | Revivido |
+|---|---|---|
+| ![Seco](docs/capturas/jornada-07-seco.jpg) | ![Lluvia](docs/capturas/jornada-07-lluvia.jpg) | ![Revivido](docs/capturas/jornada-07-revivido.jpg) |
+
+Antes: el despertar (jornada 6).
 
 | Dormido | El despertar | La red, despierta |
 |---|---|---|
 | ![Dormido](docs/capturas/jornada-06-dormido.jpg) | ![El despertar](docs/capturas/jornada-06-despertar-1.jpg) | ![Despierto](docs/capturas/jornada-06-despierto.jpg) |
 
-**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
+**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
 
 | Mañana | Noche |
 |---|---|
