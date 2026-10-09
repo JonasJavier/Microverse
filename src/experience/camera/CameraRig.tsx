@@ -37,7 +37,8 @@ export function CameraRig() {
     <CameraControls
       ref={controls}
       makeDefault
-      minDistance={2.2}
+      // Jornada 9 (Discover): más cerca, para los primeros planos; el cristal queda fuera (radio 1).
+      minDistance={1.6}
       maxDistance={distance * 1.4}
       minPolarAngle={20 * DEG}
       maxPolarAngle={150 * DEG}

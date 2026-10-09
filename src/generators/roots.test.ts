@@ -72,7 +72,8 @@ describe('generateRootNetwork', () => {
 
   it('la ramificación queda dentro del suelo macizo y fuera del corte', () => {
     for (const node of graph.nodes) {
-      if (node.main) continue
+      // Las colgantes viven fuera del suelo a propósito (tienen su propio test).
+      if (node.main || roots.hanging[node.id] === 1) continue
       const { x, y, z } = node.position
       const theta = Math.atan2(x, z)
       expect(Math.hypot(x, z)).toBeLessThanOrEqual(
@@ -106,6 +107,25 @@ describe('generateRootNetwork', () => {
     expect(visible / graph.size).toBeLessThan(0.5)
   })
 
+  it('las raíces colgantes salen por la base, cuelgan en el vacío y se ven', () => {
+    const ids = [...roots.hanging.keys()].filter((id) => roots.hanging[id] === 1)
+    expect(ids.length).toBeGreaterThan(ROOT_PARAMS.hanging.count * 8)
+    let tips = 0
+    for (const id of ids) {
+      const node = graph.node(id)
+      expect(roots.exposed[id]).toBe(1)
+      expect(node.radius).toBeGreaterThanOrEqual(ROOT_PARAMS.hanging.minRadius)
+      const { x, y, z } = node.position
+      // Dentro del cristal y, las puntas, claramente por debajo de la base.
+      expect(Math.hypot(x, y, z)).toBeLessThan(0.95)
+      if (node.children.length === 0) {
+        tips++
+        expect(y).toBeLessThan(shape.bottomY(x, z) - ROOT_PARAMS.hanging.length[0] * 0.9)
+      }
+    }
+    expect(tips).toBe(ROOT_PARAMS.hanging.count)
+  })
+
   it('el nervio asoma entre el musgo y se hunde', () => {
     const depths = roots.nerve.slice(1, -1).map((id) => {
       const { x, y, z } = graph.node(id).position
@@ -118,7 +138,7 @@ describe('generateRootNetwork', () => {
 
   it('los radios decrecen hacia las puntas', () => {
     for (const node of graph.nodes.slice(1)) {
-      if (node.main) continue
+      if (node.main || roots.hanging[node.id] === 1) continue
       expect(node.radius).toBeLessThanOrEqual(graph.node(node.parent).radius + 1e-9)
     }
   })

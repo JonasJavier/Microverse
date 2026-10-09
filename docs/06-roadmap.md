@@ -25,7 +25,7 @@
 | 7 | 02 · Nourish ✅ | `RainSystem` (instanced, en shader), charcos con ondas solo al encharcar, crecimiento del árbol por `pathDistance` (`uGrowth`, sombras incluidas), suelo y musgo según humedad y marchitez, brotes desde la semilla, cápsula con la lluvia (mantener), pulsación larga y tecla R |
 | 7b | Revisión de Nourish ✅ | Pasada acotada tras dos revisiones externas (capturas `jornada-07b-*`): `smoothstep` de la corteza con bordes válidos; fuentes de lluvia contadas (control, gesto, tecla) para que no se pisen; aviso de exceso de agua (`encharcado` en el motor → "La tierra necesita descansar", tierra saturada y velo en los charcos); árbol seco con `GROWTH.bare` 0,6 (A/B 0,5 · 0,55 · 0,6 · 0,65) para que el despertar tenga copa que encender; lluvia más tenue de cerca; musgo de octaedros en media y baja (A/B a escala de móvil: −26 k triángulos sin diferencia visible) |
 | 8 | 03 · Transform ✅ | Ciclo completo con mediodía y atardecer (`timeOfDay`: la luz principal gira con `keyDirection`; contraluz naranja al atardecer), control del sol en la cápsula (arrastre horizontal, flechas), `SunHandle` (orbe arrastrable sobre un arco: Sol de día, luna Vida de noche), `Mushrooms` (lámparas junto al tronco y racimos que asoman con el exceso de agua; brillan de noche; sombras incluidas), `Fireflies` (vuelo y parpadeo en shader, al unísono en la Sincronía), cristal revisado desde tres cámaras (softbox principal más estrecho, F0 0,025 y el estudio de reflejos gira con la cámara en azimut), viento en la copa. Capturas `jornada-08-*` |
-| 9 | 04 · Discover | Límites de cámara, raíces colgantes, `HiddenOrganisms`; reconsiderar DOF solo para primeros planos. **H2 · Vivo** |
+| 9 | 04 · Discover ✅ | Raíces colgantes (salen por la base de roca y cuelgan en el vacío, con radio mínimo para verse desde abajo), `HiddenOrganisms` (esporas que flotan en el hueco del corte y una criatura dormida que respira bajo la isla, en el lado opuesto al corte; los gusanos de las raíces se recortan según el orden de recorte), cámara mínima a 1,6 para primeros planos. DOF reconsiderada y **descartada para v1** (el A/B de la jornada 4 ya mostró el coste y el desencuadre ×DPR de `postprocessing`; en primeros planos el bloom y la rugosidad ya dan el aspecto macro). Capturas `jornada-09-*`. **H2 · Vivo** |
 | 10 | 05 · Sincronía | Final, calibración del motor con 3 personas, audio ambiente, persistencia |
 | 11 | Rendimiento | Niveles de calidad medidos en dispositivos reales, táctil, accesibilidad, pérdida de contexto WebGL |
 | 12 | Publicación | `AboutPanel`, imagen OG, vídeo de 15 s de la Sincronía, deploy final. **H3 · Publicado** |
@@ -59,6 +59,10 @@ Capturas con la misma cámara (`__microverse.view('general')`): `jornada-04-mana
 | Día/noche | ✅ Mañana cálida y vegetal; noche fría donde la red de raíces es la protagonista |
 
 **Profundidad de campo: descartada** tras el A/B. Con un rango que no desenfoque las raíces, en el encuadre por defecto no hay diferencia visible; cuesta varias pasadas y, además, el efecto de `postprocessing` desencuadra la imagen (×DPR) tras ciertos cambios de cámara. Se reconsidera solo para primeros planos (jornada 9).
+
+### Evaluación del H2 · Vivo (jornada 9)
+
+Los cuatro actos funcionan sobre el motor: despertar (semilla → red → copa), regar (humedad → crecimiento, charcos y aviso de exceso), mover el sol (ciclo completo con luz que gira, hongos y luciérnagas de noche) y explorar (raíces colgantes, esporas y criatura desde abajo; el cristal enmarca desde cualquier ángulo). Capturas `jornada-08-*` y `jornada-09-*`. Lo que aún no está vivo del todo: la Sincronía (jornada 10) y la calibración con personas; el mundo responde, pero todavía no "celebra".
 
 **Queda para más adelante** (no bloquea el H1): el follaje de octaedros se lee como mechones a distancia, pero de cerca aún es facetado (hojas o tarjetas con viento en la jornada 7); las estrías de la corteza apenas se ven con la luz actual.
 

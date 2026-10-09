@@ -10,6 +10,7 @@ import { Backdrop } from './world/Backdrop.tsx'
 import { FloatingIsland } from './world/FloatingIsland.tsx'
 import { GlassSphere } from './world/GlassSphere.tsx'
 import { GroundCover } from './world/GroundCover.tsx'
+import { HiddenOrganisms } from './world/HiddenOrganisms.tsx'
 import { LifeTree } from './world/LifeTree.tsx'
 import { Mushrooms } from './world/Mushrooms.tsx'
 import { Pedestal } from './world/Pedestal.tsx'
@@ -33,6 +34,7 @@ export function MicroverseScene() {
       <LifeTree />
       <Vegetation />
       <Mushrooms />
+      <HiddenOrganisms />
       <Seed />
       <RainSystem />
       <Fireflies />

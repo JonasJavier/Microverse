@@ -77,6 +77,8 @@ export const ecoUniforms = {
   uSync: { value: 0 },
   /** Viento en la copa: brisa constante que arrecia con la lluvia. */
   uWind: { value: 0.5 },
+  /** Esporas del corte: salen al despertar el mundo (0 → 1, despacio). */
+  uSpores: { value: 0 },
 }
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -123,4 +125,5 @@ export function updateSignals(delta: number) {
   easing.damp(ecoUniforms.uFireflies, 'value', visuals.luciernagas, 2, delta)
   easing.damp(ecoUniforms.uSync, 'value', visuals.sincronia, 0.5, delta)
   easing.damp(ecoUniforms.uWind, 'value', 0.5 + 0.8 * visuals.lluvia, 2, delta)
+  easing.damp(ecoUniforms.uSpores, 'value', state.despertado ? 1 : 0, 4, delta)
 }

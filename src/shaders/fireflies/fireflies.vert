@@ -8,6 +8,8 @@ uniform float uTime;
 uniform float uFireflies;
 uniform float uSync;
 uniform float uSize;
+// 1 = brillo constante (esporas), 0 = parpadeo (luciérnagas).
+uniform float uSteady;
 varying float vGlow;
 varying vec2 vUv;
 
@@ -25,7 +27,7 @@ void main() {
   float ownPhase = uTime * aSeed.z + aSeed.x * 6.2831;
   float commonPhase = uTime * 0.6;
   float phase = mix(ownPhase, commonPhase, uSync);
-  float blink = pow(0.5 + 0.5 * sin(phase), 5.0);
+  float blink = mix(pow(0.5 + 0.5 * sin(phase), 5.0), 0.6 + 0.4 * sin(phase * 0.5), uSteady);
   // (`active` es palabra reservada en GLSL.)
   float flying = smoothstep(aSeed.w, aSeed.w + 0.1, uFireflies);
   vGlow = flying * (0.08 + 0.92 * blink);

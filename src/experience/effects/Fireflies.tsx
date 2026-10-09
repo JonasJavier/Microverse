@@ -40,6 +40,7 @@ function createFireflies(count: number) {
       uTime: ecoUniforms.uTime,
       uFireflies: ecoUniforms.uFireflies,
       uSync: ecoUniforms.uSync,
+      uSteady: { value: 0 },
       uSize: { value: 0.028 },
       uColor: { value: new Color(palette.luz.vida) },
       // HDR: por encima de 1 el bloom dibuja el halo.

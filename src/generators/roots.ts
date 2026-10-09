@@ -54,6 +54,16 @@ export interface RootParams {
     /** Profundidad del eje cuando se hunde. */
     buried: number
   }
+  /** Raíces colgantes (acto 04 · Discover): salen por la base y cuelgan en el vacío. */
+  hanging: {
+    count: number
+    /** Longitud en el vacío [mín, máx]. */
+    length: readonly [number, number]
+    /** Desvío lateral mientras cuelgan. */
+    sway: number
+    /** Radio mínimo: una raíz que cuelga sola tiene que verse desde abajo. */
+    minRadius: number
+  }
 }
 
 export const ROOT_PARAMS: RootParams = {
@@ -76,6 +86,7 @@ export const ROOT_PARAMS: RootParams = {
   maxRadius: 0.0105,
   // Al asomar, el eje queda por encima del suelo: tiene que sobresalir del musgo.
   nerve: { radius: 0.008, sway: 0.035, waves: 2.5, emerged: -0.004, buried: 0.016 },
+  hanging: { count: 7, length: [0.12, 0.26], sway: 0.03, minRadius: 0.0032 },
 }
 
 export interface RootNetwork {
@@ -96,6 +107,8 @@ export interface RootNetwork {
    * aflora en las caras del corte. Solo los visibles generan malla.
    */
   exposed: Uint8Array
+  /** Nodos de las raíces colgantes (1): cuelgan bajo la isla, en el vacío. */
+  hanging: Uint8Array
   /** Contabilidad de la colonización: alcanzados, bloqueados y pendientes. */
   growth: ColonizationResult
   /**
@@ -232,6 +245,67 @@ function traceNerve(
   return ids
 }
 
+/**
+ * Raíces colgantes: desde nodos de la red cercanos a la base de roca, una cadena
+ * atraviesa la base y cuelga en el vacío, vencida por la gravedad y con un
+ * leve balanceo. Se descubren al mirar desde abajo (acto 04). Devuelve los ids
+ * de los nodos nuevos.
+ */
+function growHangingRoots(
+  graph: BranchGraph,
+  shape: IslandShape,
+  random: Random,
+  params: RootParams,
+): number[] {
+  const { count, length, sway } = params.hanging
+  const rimLimit = 0.7
+  // Candidatos: nodos ramificados, pegados a la base y lejos del borde y del corte.
+  const candidates = graph.nodes.filter((node) => {
+    if (node.main) return false
+    const { x, y, z } = node.position
+    const theta = Math.atan2(x, z)
+    if (shape.inCut(theta) || Math.hypot(x, z) > shape.rimRadius(theta) * rimLimit) return false
+    return y - shape.bottomY(x, z) < params.bottomMargin + 0.035
+  })
+  // Elegidos al azar pero separados entre sí: que no cuelguen en manojo.
+  const chosen: typeof candidates = []
+  for (let attempt = 0; attempt < candidates.length * 4 && chosen.length < count; attempt++) {
+    const node = candidates[Math.floor(random.next() * candidates.length)]
+    if (!node) break
+    if (chosen.some((c) => c.position.distanceTo(node.position) < 0.1) || chosen.includes(node))
+      continue
+    chosen.push(node)
+  }
+
+  const ids: number[] = []
+  const point = new Vector3()
+  for (const start of chosen) {
+    const { x, z } = start.position
+    const exit = shape.bottomY(x, z)
+    const drop = random.range(length[0], length[1])
+    const phase = random.range(0, Math.PI * 2)
+    // Un poco hacia fuera, como si el peso la separase del centro.
+    const lean = Math.hypot(x, z) > 1e-6 ? 0.08 : 0
+    const steps = Math.max(3, Math.ceil((start.position.y - exit + drop) / params.segmentLength))
+    let parent = start.id
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps
+      const y = start.position.y - (start.position.y - exit + drop) * t
+      // Solo balancea la parte que cuelga en el vacío.
+      const free = Math.max(0, (exit - y) / drop)
+      const wiggle = sway * free * Math.sin(phase + free * Math.PI * 1.5)
+      point.set(
+        x + (x / Math.max(Math.hypot(x, z), 1e-6)) * lean * free * free + wiggle,
+        y,
+        z + (z / Math.max(Math.hypot(x, z), 1e-6)) * lean * free * free + wiggle * 0.6,
+      )
+      parent = graph.add(point, parent, false).id
+      ids.push(parent)
+    }
+  }
+  return ids
+}
+
 export function generateRootNetwork(
   shape: IslandShape,
   random: Random,
@@ -258,6 +332,11 @@ export function generateRootNetwork(
   smoothGraph(graph, 2, 0.5, (node) => node.main)
   for (const node of graph.nodes) if (!node.main) constrainToSoil(shape, node.position, params)
 
+  // Colgantes: después de encajar la red en el suelo (ellas viven fuera de él).
+  const hangingIds = growHangingRoots(graph, shape, random.fork('colgantes'), params)
+  const hanging = new Uint8Array(graph.size)
+  for (const id of hangingIds) hanging[id] = 1
+
   computeDistances(graph, 0)
   computeRadii(graph, {
     tip: params.tipRadius,
@@ -265,6 +344,10 @@ export function generateRootNetwork(
     max: params.maxRadius,
     mainMin: params.nerve.radius,
   })
+  for (const id of hangingIds) {
+    const node = graph.node(id)
+    node.radius = Math.max(node.radius, params.hanging.minRadius)
+  }
 
   // Distancia al tronco: subir hasta el nervio y recorrerlo hasta el final.
   const anchor = new Int32Array(graph.size)
@@ -290,7 +373,7 @@ export function generateRootNetwork(
         Math.abs(x * Math.cos(f) - z * Math.sin(f)) < node.radius &&
         x * Math.sin(f) + z * Math.cos(f) > -node.radius,
     )
-    exposed[node.id] = node.main || onFace ? 1 : 0
+    exposed[node.id] = node.main || onFace || hanging[node.id] === 1 ? 1 : 0
   }
 
   return {
@@ -300,6 +383,7 @@ export function generateRootNetwork(
     toTree,
     temperament,
     exposed,
+    hanging,
     growth,
     coverage: measureCoverage(graph, attractors, COVERAGE_RADIUS),
   }

@@ -96,6 +96,14 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Cristal en exploración:** revisado desde tres cámaras (`general`, `lateral`, `superior`). Estrechar el softbox principal y bajar `f0` a 0,025 no bastaba: de lado seguía siendo una mancha. Decisión: **el estudio de reflejos gira con la cámara en azimut** (como un fotógrafo que recoloca la luz con cada encuadre): la media luna enmarca siempre el borde superior y la tira de contraluz, el derecho. La iluminación de la isla (Lightformers, luz principal, sombras) sigue fija en el mundo. Capturas `jornada-08-cristal-*` (antes/después).
 - **Viento:** la copa se mece (vaivén lento más ráfaga fina, por mechón y por posición; más lejos del tronco, más), y arrecia con la lluvia. La sombra se mece igual (mismo parche en el material de sombra).
 
+## Acto 04 · Discover (jornada 9)
+
+- **Raíces colgantes:** siete cadenas que salen por la base de roca y cuelgan en el vacío, vencidas por la gravedad y con un balanceo leve; radio mínimo para que se lean desde abajo. De noche brillan como el resto de la red (filamentos).
+- **Esporas:** motas pequeñas y lentas en el hueco del corte, de brillo constante y tenue (mismo shader que las luciérnagas, sin parpadeo). Salen al despertar el mundo.
+- **Criatura dormida:** un cuerpo segmentado enroscado bajo la base, en el lado opuesto al corte, medio hundido en la roca. Respira (se hincha apenas) y tiene unas pocas motas Vida que laten con la respiración; el cuerpo tiene un brillo propio mínimo porque bajo la isla no llega luz. Solo se descubre mirando desde abajo y por detrás.
+- **Cámara:** distancia mínima 1,6 (antes 2,2) para primeros planos; sigue fuera del cristal.
+- Fuera (orden de recorte): gusanos luminosos en las raíces. Los pulsos de la red ya cumplen ese papel.
+
 ## Vegetación y organismos
 
 - **Hongos lámpara** (altos y finos, referencia 1) y **racimos pequeños** sobre raíces y troncos. Brillan con *Vida* de noche.
