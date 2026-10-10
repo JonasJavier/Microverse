@@ -41,10 +41,6 @@ export function restoreEngine(storage: WorldStorage | null, now: number): Ecosys
   return EcosystemEngine.hydrate(readSavedWorld(storage), now)
 }
 
-/**
- * Guarda periódicamente y al ocultar la pestaña. Devuelve la función que lo para.
- * Solo guarda mundos despiertos: un mundo dormido no tiene nada que recordar.
- */
 /** Lo mínimo de `document` que se usa (inyectable en tests). */
 export interface VisibilityTarget {
   readonly visibilityState: string
@@ -52,6 +48,10 @@ export interface VisibilityTarget {
   removeEventListener(type: 'visibilitychange', listener: () => void): void
 }
 
+/**
+ * Guarda periódicamente y al ocultar la pestaña. Devuelve la función que lo para.
+ * Solo guarda mundos despiertos: un mundo dormido no tiene nada que recordar.
+ */
 export function startPersistence(
   engine: EcosystemEngine,
   storage: WorldStorage,

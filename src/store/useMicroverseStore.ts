@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 import { detectInitialTier, lowerTier, raiseTier, type QualityTier } from '../config/quality.ts'
-import { cicloFromSearch, nuevoMundoFromSearch } from '../config/urlParams.ts'
+import { calidadFromSearch, cicloFromSearch, nuevoMundoFromSearch } from '../config/urlParams.ts'
 import { EcosystemEngine } from '../simulation/EcosystemEngine.ts'
 import { STORAGE_KEY, restoreEngine } from './persistence.ts'
 import type { Etapa } from '../simulation/types.ts'
 
-const initialTier = detectInitialTier()
+/** `?calidad=` fija el nivel para medir (jornada 11); si no, se detecta y se adapta. */
+const forcedTier = calidadFromSearch(typeof window === 'undefined' ? '' : window.location.search)
+const initialTier = forcedTier ?? detectInitialTier()
 
 /** Intensidad de la lluvia del visitante: suave (docs/01 · acto 02). */
 export const LLUVIA_SUAVE = 0.7
@@ -14,8 +16,16 @@ export const LLUVIA_SUAVE = 0.7
  * Quién mantiene la lluvia. Cada fuente se cuenta por separado: soltar la tecla
  * mientras se sigue pulsando el control no la para (y viceversa).
  */
-export type FuenteLluvia = 'control' | 'gesto' | 'tecla'
+export type FuenteLluvia = 'control' | 'gesto' | 'tecla' | 'chaparron'
 const fuentesLluvia = new Set<FuenteLluvia>()
+
+/**
+ * Chaparrón (jornada 11): un toque corto en el control, o su activación desde
+ * un lector de pantalla, riega durante este tiempo sin mantener nada. A
+ * `LLUVIA_SUAVE` aporta ~0,2 de humedad: se nota sin encharcar.
+ */
+export const CHAPARRON_MS = 5000
+let chaparronTimer = 0
 
 /** `localStorage` puede no existir o estar bloqueado (modo privado): entonces no se recuerda nada. */
 function safeStorage(): Storage | null {
@@ -34,7 +44,13 @@ function safeStorage(): Storage | null {
 function createEngine() {
   const search = typeof window === 'undefined' ? '' : window.location.search
   const storage = safeStorage()
-  if (storage && nuevoMundoFromSearch(search)) storage.removeItem(STORAGE_KEY)
+  if (storage && nuevoMundoFromSearch(search)) {
+    try {
+      storage.removeItem(STORAGE_KEY)
+    } catch {
+      // Almacenamiento bloqueado: no hay nada que olvidar.
+    }
+  }
   const engine = restoreEngine(storage, Date.now())
   const ciclo = cicloFromSearch(search)
   if (ciclo !== null) engine.dispatch({ type: 'sol', ciclo })
@@ -56,6 +72,11 @@ interface MicroverseStore {
   inclineQuality(): void
   lockQuality(): void
 
+  /** El navegador retiró el contexto WebGL (GPU reiniciada, demasiadas pestañas…). */
+  contextLost: boolean
+  perderContexto(): void
+  recuperarContexto(): void
+
   /** Instancia del motor. No es estado reactivo: no provoca renders. */
   engine: EcosystemEngine
   /** Copias reactivas de lo que la interfaz necesita saber (cambian pocas veces). */
@@ -76,6 +97,10 @@ interface MicroverseStore {
    */
   empezarLluvia(fuente: FuenteLluvia): void
   pararLluvia(fuente: FuenteLluvia): void
+  /** Hay un chaparrón en curso (el control se muestra pulsado). */
+  chaparronActivo: boolean
+  /** Lluvia de `CHAPARRON_MS` sin mantener; otro chaparrón la alarga. */
+  chaparron(): void
   /** Ciclo absoluto (URL, panel de desarrollo). */
   sol(ciclo: number): void
   /** Sol del visitante (control, orbe, flechas): desplaza el ciclo y cuenta como usado. */
@@ -84,15 +109,20 @@ interface MicroverseStore {
 
 const engine = createEngine()
 
-export const useMicroverseStore = create<MicroverseStore>()((set) => ({
+export const useMicroverseStore = create<MicroverseStore>()((set, get) => ({
   startupTier: initialTier,
   qualityTier: initialTier,
-  qualityLocked: false,
+  qualityLocked: forcedTier !== null,
   declineQuality: () =>
     set((s) => (s.qualityLocked ? s : { qualityTier: lowerTier(s.qualityTier) })),
   inclineQuality: () =>
     set((s) => (s.qualityLocked ? s : { qualityTier: raiseTier(s.qualityTier) })),
-  lockQuality: () => set({ qualityTier: 'baja', qualityLocked: true }),
+  lockQuality: () =>
+    set((s) => (s.qualityLocked ? s : { qualityTier: 'baja', qualityLocked: true })),
+
+  contextLost: false,
+  perderContexto: () => set({ contextLost: true }),
+  recuperarContexto: () => set({ contextLost: false }),
 
   engine,
   etapa: engine.state.etapa,
@@ -113,6 +143,17 @@ export const useMicroverseStore = create<MicroverseStore>()((set) => ({
   pararLluvia: (fuente) => {
     if (!fuentesLluvia.delete(fuente) || fuentesLluvia.size > 0) return
     engine.dispatch({ type: 'lluvia', intensidad: 0 })
+  },
+  chaparronActivo: false,
+  chaparron: () => {
+    if (!engine.state.despertado) return
+    window.clearTimeout(chaparronTimer)
+    get().empezarLluvia('chaparron')
+    set({ chaparronActivo: true })
+    chaparronTimer = window.setTimeout(() => {
+      set({ chaparronActivo: false })
+      get().pararLluvia('chaparron')
+    }, CHAPARRON_MS)
   },
   sol: (ciclo) => engine.dispatch({ type: 'sol', ciclo }),
   haMovidoSol: engine.state.primerBrote,

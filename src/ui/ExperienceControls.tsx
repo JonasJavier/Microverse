@@ -31,6 +31,10 @@ function SunIcon() {
 }
 
 const HOLD_KEYS = new Set([' ', 'Enter'])
+/** Por debajo de esto, soltar el control es un toque: se convierte en chaparrón. */
+const TAP_MS = 250
+/** Un clic que llega justo después de soltar es el de esa misma pulsación. */
+const CLICK_AFTER_PRESS_MS = 500
 
 /** Pista visible: una sola a la vez, por prioridad (descanso > regar > sol). */
 function hintFor(state: {
@@ -52,7 +56,9 @@ function hintFor(state: {
  *    (un ancho de `SUN_DRAG_PX` recorre el día entero) o con las flechas con el foco.
  *    Es un deslizador sin números: el valor se describe con palabras.
  * Una sola pista a la vez; cada una desaparece cuando el visitante ya sabe.
- * Pendiente (jornada 11): activación sin mantener para lectores de pantalla.
+ * Jornada 11: un toque corto, o un clic sin pulsación (lector de pantalla,
+ * control por voz), es un chaparrón de unos segundos: nadie se queda sin regar
+ * por no poder mantener. Las pistas se anuncian (`aria-live`).
  */
 export function ExperienceControls() {
   const awake = useMicroverseStore((s) => s.etapa !== 'dormido')
@@ -62,22 +68,41 @@ export function ExperienceControls() {
   const haMovidoSol = useMicroverseStore((s) => s.haMovidoSol)
   const empezarLluvia = useMicroverseStore((s) => s.empezarLluvia)
   const pararLluvia = useMicroverseStore((s) => s.pararLluvia)
+  const chaparron = useMicroverseStore((s) => s.chaparron)
+  const chaparronActivo = useMicroverseStore((s) => s.chaparronActivo)
   const moverSol = useMicroverseStore((s) => s.moverSol)
   const [pressed, setPressed] = useState(false)
   const [dragging, setDragging] = useState(false)
   // Solo para la accesibilidad del deslizador: se actualiza al soltar, no por frame.
   const [ciclo, setCiclo] = useState(() => useMicroverseStore.getState().engine.state.ciclo)
   const lastX = useRef(0)
+  // Inicio de la pulsación en curso (0 = ninguna) y último momento en que se soltó.
+  const pressStart = useRef(0)
+  const lastRelease = useRef(0)
 
-  // Parar es idempotente (el store cuenta las fuentes): no depende de `pressed`,
-  // así una pulsación muy breve nunca deja la lluvia encendida.
+  // Soltar llega por varios caminos (pointerup, pérdida de captura, blur): solo
+  // cuenta el primero. El store cuenta las fuentes, así que parar nunca deja
+  // la lluvia encendida.
   const start = () => {
+    if (pressStart.current) return
+    pressStart.current = performance.now()
     setPressed(true)
     empezarLluvia('control')
   }
   const stop = () => {
+    if (!pressStart.current) return
+    const now = performance.now()
+    const held = now - pressStart.current
+    pressStart.current = 0
+    lastRelease.current = now
     setPressed(false)
+    // Antes de parar el control: así la lluvia no llega a cortarse.
+    if (held < TAP_MS) chaparron()
     pararLluvia('control')
+  }
+  const onRainClick = () => {
+    if (pressStart.current || performance.now() - lastRelease.current < CLICK_AFTER_PRESS_MS) return
+    chaparron()
   }
   const onRainKeyDown = (event: KeyboardEvent) => {
     if (!HOLD_KEYS.has(event.key) || event.repeat) return
@@ -119,7 +144,8 @@ export function ExperienceControls() {
         <button
           type="button"
           className="controls__button"
-          aria-pressed={pressed}
+          aria-pressed={pressed || chaparronActivo}
+          aria-describedby="controls-rain-help"
           tabIndex={awake ? 0 : -1}
           onPointerDown={(event) => {
             event.currentTarget.setPointerCapture(event.pointerId)
@@ -131,11 +157,15 @@ export function ExperienceControls() {
           onKeyDown={onRainKeyDown}
           onKeyUp={onRainKeyUp}
           onBlur={stop}
+          onClick={onRainClick}
           onContextMenu={(event) => event.preventDefault()}
         >
           <DropIcon />
           <span>Lluvia</span>
         </button>
+        <span id="controls-rain-help" className="sr-only">
+          Mantén pulsado para regar; una pulsación corta trae un chaparrón.
+        </span>
         <button
           type="button"
           className="controls__button controls__button--sun"
@@ -162,7 +192,7 @@ export function ExperienceControls() {
         </button>
       </div>
       {/* Debajo de la cápsula: encima se pisaba con el anillo del pedestal a 16:9. */}
-      <p className="controls__hint" data-visible={awake && hint !== null}>
+      <p className="controls__hint" data-visible={awake && hint !== null} aria-live="polite">
         {hint}
       </p>
     </div>

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { cicloFromSearch, nuevoMundoFromSearch } from './urlParams.ts'
+import {
+  calidadFromSearch,
+  cicloFromSearch,
+  nuevoMundoFromSearch,
+  statsFromSearch,
+} from './urlParams.ts'
 
 describe('cicloFromSearch', () => {
   it('reconoce los atajos de noche y mañana', () => {
@@ -28,5 +33,27 @@ describe('nuevoMundoFromSearch', () => {
     expect(nuevoMundoFromSearch('?noche&nuevo')).toBe(true)
     expect(nuevoMundoFromSearch('?noche')).toBe(false)
     expect(nuevoMundoFromSearch('')).toBe(false)
+  })
+})
+
+describe('calidadFromSearch', () => {
+  it('acepta los tres niveles, sin distinguir mayúsculas', () => {
+    expect(calidadFromSearch('?calidad=alta')).toBe('alta')
+    expect(calidadFromSearch('?stats&calidad=Media')).toBe('media')
+    expect(calidadFromSearch('?calidad=baja')).toBe('baja')
+  })
+
+  it('sin parámetro o con un nivel desconocido, no fija nada', () => {
+    expect(calidadFromSearch('')).toBeNull()
+    expect(calidadFromSearch('?calidad=')).toBeNull()
+    expect(calidadFromSearch('?calidad=ultra')).toBeNull()
+  })
+})
+
+describe('statsFromSearch', () => {
+  it('solo con ?stats', () => {
+    expect(statsFromSearch('?stats')).toBe(true)
+    expect(statsFromSearch('?calidad=baja&stats')).toBe(true)
+    expect(statsFromSearch('?noche')).toBe(false)
   })
 })

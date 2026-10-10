@@ -1,4 +1,5 @@
 import { CameraRig } from './camera/CameraRig.tsx'
+import { ContextGuard } from './ContextGuard.tsx'
 import { Fireflies } from './effects/Fireflies.tsx'
 import { PostFX } from './effects/PostFX.tsx'
 import { RainSystem } from './effects/RainSystem.tsx'
@@ -25,6 +26,7 @@ import { Vegetation } from './world/Vegetation.tsx'
 export function MicroverseScene() {
   return (
     <>
+      <ContextGuard />
       <SimulationDriver />
       <Backdrop />
       <Studio />

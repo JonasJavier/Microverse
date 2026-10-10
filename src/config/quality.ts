@@ -28,7 +28,11 @@ export interface QualitySettings {
   shadows: 'suaves' | 'basicas' | 'ninguna'
 }
 
-/** Puntos de partida; se calibran en la jornada 11 (docs/04-arquitectura.md). */
+/**
+ * Jornada 11: geometría medida en los tres niveles, dentro del presupuesto
+ * (docs/06-roadmap.md · Medición). Los FPS se confirman en los equipos de
+ * referencia con `?stats&calidad=…` antes de tocar estas cifras.
+ */
 export const QUALITY: Record<QualityTier, QualitySettings> = {
   alta: {
     maxDpr: 2,

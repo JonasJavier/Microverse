@@ -7,6 +7,13 @@
       "runtimeArgs": ["run", "dev:poll"],
       "port": 5173,
       "autoPort": true
+    },
+    {
+      "name": "microverse-prod",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["start"],
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

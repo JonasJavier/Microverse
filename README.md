@@ -18,7 +18,7 @@ Antes: el despertar (jornada 6).
 |---|---|---|
 | ![Dormido](docs/capturas/jornada-06-dormido.jpg) | ![El despertar](docs/capturas/jornada-06-despertar-1.jpg) | ![Despierto](docs/capturas/jornada-06-despierto.jpg) |
 
-**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
+**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva; un toque corto en **Lluvia** trae un chaparrón. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
 
 | Mañana | Noche |
 |---|---|

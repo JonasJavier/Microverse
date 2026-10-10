@@ -60,6 +60,28 @@ describe('persistencia (ADR-007)', () => {
     expect(restoreEngine(storage, 0).state.despertado).toBe(false)
   })
 
+  it('con el almacenamiento bloqueado, el mundo funciona igual (solo no se recuerda)', () => {
+    const blocked: WorldStorage = {
+      getItem: () => {
+        throw new DOMException('bloqueado', 'SecurityError')
+      },
+      setItem: () => {
+        throw new DOMException('lleno', 'QuotaExceededError')
+      },
+      removeItem: () => {
+        throw new DOMException('bloqueado', 'SecurityError')
+      },
+    }
+    const engine = restoreEngine(blocked, 0)
+    expect(engine.state.despertado).toBe(false)
+    engine.dispatch({ type: 'despertar' })
+    expect(() => writeSavedWorld(blocked, engine, 0)).not.toThrow()
+    const doc = fakeDocument()
+    const stop = startPersistence(engine, blocked, doc)
+    expect(() => doc.hide()).not.toThrow()
+    expect(() => stop()).not.toThrow()
+  })
+
   it('guarda cada intervalo y al ocultar la pestaña; dormido no guarda nada', () => {
     vi.useFakeTimers()
     const storage = memoryStorage()

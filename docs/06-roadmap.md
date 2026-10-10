@@ -27,7 +27,7 @@
 | 8 | 03 · Transform ✅ | Ciclo completo con mediodía y atardecer (`timeOfDay`: la luz principal gira con `keyDirection`; contraluz naranja al atardecer), control del sol en la cápsula (arrastre horizontal, flechas), `SunHandle` (orbe arrastrable sobre un arco: Sol de día, luna Vida de noche), `Mushrooms` (lámparas junto al tronco y racimos que asoman con el exceso de agua; brillan de noche; sombras incluidas), `Fireflies` (vuelo y parpadeo en shader, al unísono en la Sincronía), cristal revisado desde tres cámaras (softbox principal más estrecho, F0 0,025 y el estudio de reflejos gira con la cámara en azimut), viento en la copa. Capturas `jornada-08-*` |
 | 9 | 04 · Discover ✅ | Raíces colgantes (salen por la base de roca y cuelgan en el vacío, con radio mínimo para verse desde abajo), `HiddenOrganisms` (esporas que flotan en el hueco del corte y una criatura dormida que respira bajo la isla, en el lado opuesto al corte; los gusanos de las raíces se recortan según el orden de recorte), cámara mínima a 1,6 para primeros planos. DOF reconsiderada y **descartada para v1** (el A/B de la jornada 4 ya mostró el coste y el desencuadre ×DPR de `postprocessing`; en primeros planos el bloom y la rugosidad ya dan el aspecto macro). Capturas `jornada-09-*`. **H2 · Vivo** |
 | 10 | 05 · Sincronía (en curso) | Hecho: la Sincronía visible (`uSync` compartido: raíces al unísono y más brillantes, floración Sol en la copa, luciérnagas a una, anillo Sol+Vida, halo), persistencia (`store/persistence.ts`, `?nuevo`), atajo `__microverse.sincronia()` para look-dev. Pendiente: calibración con 3 personas, audio ambiente (opcional) |
-| 11 | Rendimiento | Niveles de calidad medidos en dispositivos reales, táctil, accesibilidad, pérdida de contexto WebGL |
+| 11 | Rendimiento (en curso) | Hecho: herramientas de medición (`?calidad=`, `?stats` también en producción), geometría y bundle medidos en los tres niveles (todo dentro del presupuesto), pérdida de contexto WebGL con aviso y recuperación sin remontar, alternativa sin WebGL 2, chaparrón (toque corto o lector de pantalla) en el control de lluvia, pistas anunciadas, pellizco y `contextmenu` en táctil, test con almacenamiento bloqueado. Pendiente: FPS en los equipos de referencia y prueba de interacciones en Safari iOS y Chrome Android (protocolo abajo; necesita al usuario) |
 | 12 | Publicación | `AboutPanel`, imagen OG, vídeo de 15 s de la Sincronía, deploy final. **H3 · Publicado** |
 
 ## Rúbrica del H1 (jornada 4)
@@ -102,6 +102,38 @@ Objetivos que hay que **validar**, no resultados garantizados.
 | Primer frame | < 3 s (cable) | < 5 s (4G) |
 
 **Equipos de referencia:** escritorio de gama media (gráfica integrada reciente o GTX 1650 a 1080p) y móvil de gama media (iPhone 12 / Pixel 6a). Se confirman en la jornada 11.
+
+### Medición de la jornada 11
+
+Peor caso de la escena (despierta, de noche, lloviendo y en Sincronía), con el nivel fijado por URL. La geometría no cambia con el estado: lluvia, hongos y luciérnagas son instancias fijas que el shader muestra u oculta.
+
+| Nivel | Viewport | Draw calls | Triángulos | Presupuesto |
+|---|---|---|---|---|
+| Alta | 1280×720 | 49 | 359 k | < 150 · < 500 k ✅ |
+| Media | 375×812 (móvil) | 49 | 185 k | < 80 · < 200 k ✅ (7 % de margen) |
+| Baja | 375×812 (móvil) | 41 | 91 k | < 80 · < 200 k ✅ |
+
+| Transferencia | Medido | Presupuesto |
+|---|---|---|
+| JS inicial (gzip) | 404 KB | ≤ 600 KB ✅ |
+| Total sin audio | ~406 KB (sin HDRI, fuentes ni texturas) | ≤ 3 MB ✅ |
+
+El frame justo después de un cambio de DPR o de recuperar el contexto sube a ~70 draw calls (three.js regenera el entorno una vez) y vuelve a 49.
+
+**Lo que no se puede medir aquí:** los FPS. El panel de vista previa solo pinta frames al capturar, así que sus FPS no valen. Hacen falta los equipos de referencia.
+
+**Protocolo para dispositivos reales** (tras el deploy, en la URL pública):
+
+1. Abrir `/?stats&nuevo`. Anotar el nivel con el que arranca (`inicio`) y si baja solo.
+2. Despertar la semilla, regar hasta que brote, llevar el sol a la noche y esperar 30 s. Anotar FPS y ms.
+3. Repetir con `/?stats&calidad=alta`, `…=media` y `…=baja` (el nivel queda fijo).
+4. Interacciones: tocar la semilla, mantener el botón de lluvia, toque corto (chaparrón), pulsación larga sobre el lienzo, arrastrar el sol (cápsula y orbe), girar con un dedo y pellizcar para acercar.
+
+| Equipo | Navegador | Nivel inicial | FPS alta | FPS media | FPS baja | Interacciones |
+|---|---|---|---|---|---|---|
+| _pendiente_ | | | | | | |
+
+Criterio: el nivel automático debe dar ≥ 30 FPS en móvil y ~60 en escritorio. Si no, se ajustan las cifras de `config/quality.ts` (no hace falta ADR: son parámetros).
 
 ## Riesgos
 

@@ -197,21 +197,29 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 - **Nivel inicial:** táctil o pantalla pequeña → Media; escritorio → Alta.
 - `PerformanceMonitor` de Drei: `onDecline` baja un nivel, `onIncline` sube uno; si oscila (`onFallback`), se queda fijo en el más bajo.
 - **Qué se adapta en caliente (ADR-013):** solo lo barato, el DPR. Lo que reconstruye recursos (MSAA del post-proceso, resolución del bloom) se fija con el nivel de arranque (`startupTier`): cambiarlo en caliente provocaba un tirón y un fallo de encuadre.
-- Las cifras son puntos de partida: se calibran midiendo en la jornada 11.
+- **Medición (jornada 11):** `?calidad=alta|media|baja` fija el nivel sin adaptación y `?stats` muestra un contador (FPS y ms medios, draw calls, triángulos, nivel y DPR) también en producción. El contador va en un trozo aparte (0,6 KB gzip) que solo se descarga si la URL lo pide. Medidas y protocolo para móviles reales en [06-roadmap.md](06-roadmap.md#medición-de-la-jornada-11).
+- Las cifras de la tabla siguen siendo las de partida: la geometría queda dentro del presupuesto en los tres niveles; falta medir FPS en los equipos de referencia antes de tocarlas.
 
 ## Interacción
 
 - **Cámara:** `CameraControls` de Drei con amortiguación, sin desplazamiento lateral. Ángulo polar de 20° a 150° (se puede mirar desde abajo para ver las raíces colgantes) y distancia mínima 1,6 (jornada 9: primeros planos) y máxima según el encuadre.
-- **Gestos:** toque o clic = interactuar; arrastre = orbitar; pulsación larga (más de 400 ms con menos de 8 px de movimiento) = lluvia, **en todo el lienzo** (decisión tras la jornada 7: la esfera ocupa casi todo el encuadre y exigir acertar sobre ella castigaría en táctil sin aportar nada). Funciona igual con ratón y en táctil.
-- **Teclado:** mantener `R` = lluvia · `←`/`→` = sol · `O` = modo observador · `M` = silenciar.
-- **Accesibilidad:** con `prefers-reduced-motion` se reducen las partículas y los movimientos automáticos de cámara. Los controles tienen `aria-label`.
+- **Gestos:** toque o clic = interactuar; arrastre = orbitar; pulsación larga (más de 400 ms con menos de 8 px de movimiento) = lluvia, **en todo el lienzo** (decisión tras la jornada 7: la esfera ocupa casi todo el encuadre y exigir acertar sobre ella castigaría en táctil sin aportar nada). Funciona igual con ratón y en táctil. Un segundo dedo (pellizco) cancela la pulsación larga: es cámara. Sobre el lienzo se anula `contextmenu` (en Android la pulsación larga lo dispara y puede acabar en `pointercancel`) y no hay lupa ni menú de iOS (`-webkit-touch-callout`).
+- **Control de lluvia:** mantener = llueve mientras se mantiene; **un toque corto (< 250 ms) o un clic sin pulsación** (lector de pantalla, control por voz) = **chaparrón** de 5 s (`CHAPARRON_MS`, ~0,2 de humedad a lluvia suave). Es una fuente más del store (`'chaparron'`), así que convive con el gesto y la tecla sin pisarse.
+- **Teclado:** mantener `R` = lluvia · `←`/`→` = sol · `O` = modo observador · `M` = silenciar (solo si se hace el audio).
+- **Accesibilidad:** los controles son botones reales con foco visible; el del sol es un `slider` con el valor en palabras (`aria-valuetext`); el de lluvia describe sus dos usos (`aria-describedby`) y las pistas se anuncian (`aria-live="polite"`). La semilla se despierta con Intro desde un botón que aparece al recibir el foco. Con `prefers-reduced-motion` se apagan las animaciones de la interfaz. **No hay movimientos automáticos de cámara** (solo el visitante la mueve) y el movimiento de la escena (lluvia, luciérnagas, viento) es el contenido: lento y sin destellos, se mantiene.
+
+## Robustez (jornada 11)
+
+- **Pérdida del contexto WebGL:** `ContextGuard` escucha `webglcontextlost` (con `preventDefault` para que el navegador pueda devolverlo) y `webglcontextrestored`; `ContextNotice` muestra "El mundo se ha quedado a oscuras" y, si en 6 s no vuelve, un botón para recargar (el mundo se recuerda). three.js recrea programas, geometrías y texturas por su cuenta: **no se vuelve a montar la escena**. Medido con `WEBGL_lose_context`: misma imagen antes y después (luminancia media de la isla 22,2 → 21,9; sin el entorno sería 20,5), mismas draw calls y consola limpia. Remontarla dejaba ~70 avisos de WebGL al liberar recursos del contexto perdido.
+- **Sin WebGL 2:** three.js r186 ya no admite WebGL 1. `CanvasBoundary` lo comprueba antes de crear el lienzo y, si falta (o la escena falla al montar), explica qué pasa en lugar de dejar la página en negro.
+- **Consola:** sin errores. Queda un aviso de three.js (`THREE.Clock` obsoleto) que emite R3F 9.8 por dentro; se va al actualizar R3F (requiere ADR).
 
 ## Persistencia
 
 - Clave de `localStorage`: `microverse:v1` → `{ version, estado, guardadoEn }` (`store/persistence.ts`, con tests y almacenamiento inyectable).
 - Se guarda cada 10 s y cuando la pestaña pasa a segundo plano (`visibilitychange`); solo mundos despiertos. El store crea el motor con `restoreEngine` (hydrate con la ausencia); `?nuevo` borra el guardado. Un mundo recuperado no repite las pistas de lluvia y sol si ya brotó.
 - Al volver, se simula el tiempo de ausencia (con tope) sin lluvia. El mundo nunca baja del mínimo de vitalidad.
-- Todo el acceso va dentro de `try/catch`: la experiencia funciona igual sin almacenamiento.
+- Todo el acceso va dentro de `try/catch`: la experiencia funciona igual sin almacenamiento (test con un almacenamiento que lanza en cada acceso, como Safari en modo privado).
 
 ## Testing
 

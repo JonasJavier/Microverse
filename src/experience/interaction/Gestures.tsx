@@ -13,7 +13,10 @@ const LONG_PRESS_SLOP = 8
  *  - mantener R = lluvia;
  *  - flechas ← / → = sol (jornada 8), cuando ya hay sol que mover.
  * Un arrastre (más de 8 px) es un giro de cámara: cancela la pulsación larga.
+ * Un segundo dedo (pellizco para acercar) también: es cámara, no lluvia.
  * Funciona igual con ratón y en táctil (Pointer Events).
+ * Jornada 11: en Android la pulsación larga dispara `contextmenu`, que puede
+ * acabar en `pointercancel` y cortar la lluvia: se anula sobre el lienzo.
  *
  * Decisión (revisión tras la jornada 7): la pulsación larga vale en **todo el
  * lienzo**, no solo sobre la proyección de la esfera. La esfera ocupa casi todo el
@@ -37,7 +40,11 @@ function listen(canvas: HTMLElement) {
     raining = false
   }
   const onDown = (event: PointerEvent) => {
-    if (!event.isPrimary) return
+    if (!event.isPrimary) {
+      // Pellizco: la cámara manda; si ya llovía, sigue hasta soltar.
+      cancel()
+      return
+    }
     startX = event.clientX
     startY = event.clientY
     cancel()
@@ -79,8 +86,11 @@ function listen(canvas: HTMLElement) {
     keyRain = false
   }
 
+  const onContextMenu = (event: Event) => event.preventDefault()
+
   canvas.addEventListener('pointerdown', onDown)
   canvas.addEventListener('pointermove', onMove)
+  canvas.addEventListener('contextmenu', onContextMenu)
   window.addEventListener('pointerup', stop)
   window.addEventListener('pointercancel', stop)
   window.addEventListener('keydown', onKeyDown)
@@ -90,6 +100,7 @@ function listen(canvas: HTMLElement) {
     stop()
     canvas.removeEventListener('pointerdown', onDown)
     canvas.removeEventListener('pointermove', onMove)
+    canvas.removeEventListener('contextmenu', onContextMenu)
     window.removeEventListener('pointerup', stop)
     window.removeEventListener('pointercancel', stop)
     window.removeEventListener('keydown', onKeyDown)
