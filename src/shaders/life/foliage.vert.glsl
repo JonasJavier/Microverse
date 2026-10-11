@@ -3,10 +3,12 @@
 // crecimiento llega a su rama; las nubes se llenan mechón a mechón. Viento
 // (jornada 8): cada mechón se mece con un vaivén lento y una ráfaga más fina,
 // más cuanto más lejos del tronco; con lluvia sopla algo más. Se usa también en
-// el material de sombra: la sombra se mece igual.
+// el material de sombra: la sombra se mece igual. Jornada 11b: altura local del
+// mechón (la base se oscurece: oclusión propia).
 // Nota: no escribir aquí directivas include literales; el reemplazo las buscaría.
 attribute float pathDistance;
 varying float vDistance;
+varying float vTuftHeight;
 uniform float uGrowth;
 uniform float uTreeStart;
 uniform float uTreeLength;
@@ -14,6 +16,7 @@ uniform float uTime;
 uniform float uWind;
 //#main
 vDistance = pathDistance;
+vTuftHeight = position.y;
 {
   float front = uTreeStart + uTreeLength * uGrowth;
   transformed *= smoothstep(pathDistance - 0.02, pathDistance + 0.1, front);

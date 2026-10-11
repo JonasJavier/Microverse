@@ -12,6 +12,13 @@ interface LookdevStore {
   toneMapping: ToneMappingName
   bloomIntensity: number
   bloomThreshold: number
+  /**
+   * Oclusión ambiental (N8AO, jornada 11b). `aoRadius` en unidades del mundo:
+   * la isla mide ~1,3; con 0,1 la oclusión entra entre el musgo y bajo la copa
+   * sin ennegrecer el corte entero. `aoIntensity` es el exponente del efecto.
+   */
+  aoIntensity: number
+  aoRadius: number
   /** Velocidad de la simulación para calibrar (solo desarrollo): ×1, ×5, ×20. */
   velocidad: number
 }
@@ -21,5 +28,7 @@ export const useLookdevStore = create<LookdevStore>()(() => ({
   toneMapping: 'neutral',
   bloomIntensity: 0.9,
   bloomThreshold: 1,
+  aoIntensity: 2.4,
+  aoRadius: 0.1,
   velocidad: 1,
 }))

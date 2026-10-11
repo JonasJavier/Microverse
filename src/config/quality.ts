@@ -26,6 +26,15 @@ export interface QualitySettings {
   mushroomClusters: number
   raindrops: number
   shadows: 'suaves' | 'basicas' | 'ninguna'
+  /**
+   * Oclusión ambiental de pantalla (N8AO, ADR-014): a resolución completa, a la
+   * mitad o ninguna. Reconstruye buffers: se fija con el nivel de arranque.
+   */
+  ambientOcclusion: 'completa' | 'media' | 'ninguna'
+  /** Motas de polvo que flotan dentro del cristal (escala y aire). */
+  dust: number
+  /** Microdetalle de los materiales (grano y relieve procedural): 0 = apagado. */
+  surfaceDetail: number
 }
 
 /**
@@ -49,6 +58,9 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     mushroomClusters: 36,
     raindrops: 1500,
     shadows: 'suaves',
+    ambientOcclusion: 'completa',
+    dust: 56,
+    surfaceDetail: 1,
   },
   media: {
     maxDpr: 1.5,
@@ -65,6 +77,9 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     mushroomClusters: 28,
     raindrops: 800,
     shadows: 'basicas',
+    ambientOcclusion: 'media',
+    dust: 36,
+    surfaceDetail: 1,
   },
   baja: {
     maxDpr: 1,
@@ -81,6 +96,10 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     mushroomClusters: 20,
     raindrops: 400,
     shadows: 'ninguna',
+    ambientOcclusion: 'ninguna',
+    dust: 20,
+    // Sin relieve ni grano: el fragmento del suelo y el musgo queda como antes.
+    surfaceDetail: 0,
   },
 }
 

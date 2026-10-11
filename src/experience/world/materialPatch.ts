@@ -13,6 +13,7 @@ import {
  *   vértice:   declaraciones → tras `common`; `main` → tras `begin_vertex`
  *   fragmento: declaraciones → tras `common`; `color` → tras `color_fragment`;
  *              `roughness` → tras `roughnessmap_fragment`;
+ *              `normal` → tras `normal_fragment_maps` (relieve procedural; jornada 11b);
  *              `emissive` → tras `emissivemap_fragment`
  */
 export function sections(source: string): Record<string, string> {
@@ -57,6 +58,7 @@ export function patchMaterial<M extends Material>(material: M, patch: MaterialPa
         inc('roughnessmap_fragment'),
         `${inc('roughnessmap_fragment')}\n${join('roughness')}`,
       )
+      .replace(inc('normal_fragment_maps'), `${inc('normal_fragment_maps')}\n${join('normal')}`)
       .replace(inc('emissivemap_fragment'), `${inc('emissivemap_fragment')}\n${join('emissive')}`)
   }
   material.customProgramCacheKey = () => patch.key

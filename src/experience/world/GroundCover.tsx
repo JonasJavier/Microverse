@@ -7,6 +7,8 @@ import { disposeMesh, toInstancedMesh } from './geometry.ts'
 import { groundMaterial } from './groundMaterial.ts'
 import { ISLAND, worldRandom } from './island.ts'
 import { CLEARINGS } from './life.ts'
+import mossVertex from '../../shaders/life/moss.vert.glsl?raw'
+import mossFragment from '../../shaders/life/moss.frag.glsl?raw'
 
 const PEBBLES = 28
 
@@ -20,8 +22,14 @@ function createGroundCover(mossCount: number, mossShape: QualitySettings['mossSh
     // Icosaedro sin subdividir (20 triángulos): a esta escala se lee como almohadilla.
     // En media y baja, octaedro (8): a escala de móvil no se distingue y libera presupuesto.
     mossShape === 'icosaedro' ? new IcosahedronGeometry(1, 0) : new OctahedronGeometry(1, 0),
-    // El musgo se moja (oscurece y brilla) y, seco, pierde el verde.
-    groundMaterial(new MeshStandardMaterial({ roughness: 1 }), 'musgo', { wet: 0.8, wilt: 0.65 }),
+    // El musgo se moja (oscurece y brilla) y, seco, pierde el verde. Jornada 11b:
+    // base oscura (oclusión propia) y grano, para que no se lea como confeti.
+    groundMaterial(new MeshStandardMaterial({ roughness: 1 }), 'musgo', {
+      wet: 0.8,
+      wilt: 0.65,
+      vertex: mossVertex,
+      fragment: [mossFragment],
+    }),
     scatterMoss(ISLAND, worldRandom.fork('musgo'), mossCount, CLEARINGS),
   )
   moss.receiveShadow = true

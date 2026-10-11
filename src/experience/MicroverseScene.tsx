@@ -1,5 +1,6 @@
 import { CameraRig } from './camera/CameraRig.tsx'
 import { ContextGuard } from './ContextGuard.tsx'
+import { Dust } from './effects/Dust.tsx'
 import { Fireflies } from './effects/Fireflies.tsx'
 import { PostFX } from './effects/PostFX.tsx'
 import { RainSystem } from './effects/RainSystem.tsx'
@@ -40,6 +41,7 @@ export function MicroverseScene() {
       <Seed />
       <RainSystem />
       <Fireflies />
+      <Dust />
       <Pedestal />
       <GlassSphere />
       <SunHandle />

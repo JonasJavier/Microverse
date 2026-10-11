@@ -137,6 +137,45 @@ export default function DevTools() {
       step: 0.01,
       onChange: (v: number) => void (glassTuning.backFace = v),
     },
+    halo: {
+      value: glassTuning.sheen,
+      min: 0,
+      max: 0.6,
+      step: 0.01,
+      onChange: (v: number) => void (glassTuning.sheen = v),
+    },
+    limbo: {
+      value: glassTuning.limb,
+      min: 0,
+      max: 1,
+      step: 0.01,
+      onChange: (v: number) => void (glassTuning.limb = v),
+    },
+    reflejoAnillo: {
+      value: glassTuning.ringReflection,
+      min: 0,
+      max: 2,
+      step: 0.05,
+      onChange: (v: number) => void (glassTuning.ringReflection = v),
+    },
+  })
+
+  // Oclusión ambiental (jornada 11b): props de React del post-proceso.
+  useControls('Oclusión', {
+    intensidad: {
+      value: useLookdevStore.getState().aoIntensity,
+      min: 0,
+      max: 6,
+      step: 0.1,
+      onChange: (v: number) => useLookdevStore.setState({ aoIntensity: v }),
+    },
+    radio: {
+      value: useLookdevStore.getState().aoRadius,
+      min: 0.02,
+      max: 0.4,
+      step: 0.01,
+      onChange: (v: number) => useLookdevStore.setState({ aoRadius: v }),
+    },
   })
 
   // Motor (jornada 5): acciones del visitante y velocidad para calibrar sin esperar.

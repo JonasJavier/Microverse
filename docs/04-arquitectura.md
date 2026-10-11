@@ -10,94 +10,82 @@
 
 ## Estructura de carpetas
 
+Estado real del repo (jornada 11b). Los tests van junto al código que prueban.
+
 ```
 microverse/
 ├── CLAUDE.md
 ├── README.md
-├── docs/
-├── public/
-│   ├── fonts/
-│   └── audio/                    # ambiente (opcional, jornada 10)
+├── docs/                         # visión, arte, stack, arquitectura, motor, roadmap, ADR, capturas
+├── public/serve.json             # cabeceras de caché para Railway (ADR-011)
 └── src/
-    ├── main.tsx
-    ├── App.tsx
+    ├── main.tsx · App.tsx · styles.css
     ├── config/
     │   ├── palette.ts            # tokens de color (única fuente)
-    │   ├── quality.ts            # niveles alto / medio / bajo
-    │   └── world.ts              # semilla del mundo, dimensiones, constantes
+    │   ├── quality.ts            # niveles alta / media / baja (ADR-013, ADR-014)
+    │   ├── world.ts              # semilla del mundo, encuadre, posiciones de semilla y árbol, pedestal
+    │   ├── studio.ts             # softboxes, luces principal, relleno y contraluz, niebla, luz del pedestal
+    │   ├── timeOfDay.ts          # fotogramas clave del ciclo (`ciclo` → look)
+    │   ├── lookdev.ts            # parámetros del cristal leídos cada frame (Leva en desarrollo)
+    │   ├── sunControl.ts         # lenguaje del control del sol (píxeles por ciclo, pasos)
+    │   └── urlParams.ts          # ?noche · ?ciclo= · ?calidad= · ?stats · ?nuevo
     ├── simulation/               # TS puro: sin react, sin three
-    │   ├── types.ts
-    │   ├── ecosystemConfig.ts
-    │   ├── rules.ts              # funciones puras (bienestar, curvaLuz…)
-    │   ├── EcosystemEngine.ts
-    │   ├── persistence.ts        # serializar / hidratar + recuperación offline
-    │   └── EcosystemEngine.test.ts
-    ├── generators/               # geometría procedural (sin react)
+    │   ├── types.ts · ecosystemConfig.ts · rules.ts
+    │   └── EcosystemEngine.ts
+    ├── generators/               # geometría procedural (sin react, matemáticas de three)
     │   ├── random.ts             # PRNG con semilla
     │   ├── graph.ts              # grafo de ramificación: ids estables, distancias, radios
     │   ├── spaceColonization.ts  # algoritmo común a árbol y raíces
-    │   ├── tree.ts               # tronco trazado + copa por colonización + follaje
-    │   ├── roots.ts              # nervio semilla → tronco + red por colonización
-    │   ├── tubes.ts              # grafo → malla de tubos (atributo `distance`)
+    │   ├── tree.ts · roots.ts · tubes.ts
     │   ├── island.ts             # forma de la isla, malla con corte de diorama y estratos
-    │   ├── scatter.ts            # distribución de musgo, piedras, hongos
-    │   └── *.test.ts
+    │   ├── scatter.ts            # musgo y piedras
+    │   ├── vegetation.ts         # brotes y charcos
+    │   ├── rain.ts · fireflies.ts · mushrooms.ts
+    │   └── organisms.ts          # esporas, criatura dormida, polvo en suspensión
     ├── store/
-    │   └── useMicroverseStore.ts # instancia del motor, acciones, UI, nivel de calidad
+    │   ├── useMicroverseStore.ts # motor, acciones, fuentes de lluvia, nivel de calidad, contexto WebGL
+    │   ├── useLookdevStore.ts    # tone mapping, bloom, oclusión (props del post-proceso)
+    │   └── persistence.ts        # "el mundo te recuerda" (ADR-007)
     ├── experience/
-    │   ├── MicroverseCanvas.tsx  # <Canvas>, PerformanceMonitor, AdaptiveDpr
+    │   ├── MicroverseCanvas.tsx  # <Canvas>, PerformanceMonitor, DPR por nivel
     │   ├── MicroverseScene.tsx   # composición de la escena
     │   ├── SimulationDriver.tsx  # useFrame → engine.step a tick fijo
+    │   ├── ContextGuard.tsx      # pérdida y recuperación del contexto WebGL
+    │   ├── signals.ts            # motor → uniforms compartidos (señales y ecosistema)
     │   ├── camera/CameraRig.tsx
     │   ├── lighting/
-    │   │   ├── Studio.tsx        # Environment con Lightformers, luz principal y relleno
-    │   │   └── timeOfDay.ts      # `ciclo` → look resuelto (luces, reflejos, raíces, anillo, fondo)
-    │   ├── debug/
-    │   │   ├── DevTools.tsx      # FPS, contadores, Leva (solo desarrollo)
-    │   │   └── lookdevTools.ts   # vistas fijas, modo captura, prueba de silueta
+    │   │   ├── Studio.tsx        # Environment con Lightformers, principal, relleno, contraluz, hemisférica, niebla
+    │   │   └── timeOfDay.ts      # `ciclo` → look resuelto (sin asignar memoria)
+    │   ├── debug/                # DevTools (Leva, contadores), PerfStats (?stats), lookdevTools (vistas fijas)
     │   ├── world/
-    │   │   ├── GlassSphere.tsx
-    │   │   ├── Pedestal.tsx
-    │   │   ├── island.ts         # ISLAND: forma compartida, SEED_POSITION, TREE_BASE
-    │   │   ├── life.ts           # ROOT_NETWORK, TREE y claros del musgo (generados al cargar)
-    │   │   ├── geometry.ts       # datos de generador → BufferGeometry / InstancedMesh / tubos
-    │   │   ├── FloatingIsland.tsx
-    │   │   ├── GroundCover.tsx   # musgo y piedras (instancing)
-    │   │   ├── Seed.tsx
-    │   │   ├── LifeTree.tsx
-    │   │   ├── RootNetwork.tsx
-    │   │   ├── Vegetation.tsx
-    │   │   ├── Mushrooms.tsx
-    │   │   └── HiddenOrganisms.tsx
+    │   │   ├── island.ts · life.ts · geometry.ts
+    │   │   ├── materialPatch.ts  # parches GLSL por secciones (color, roughness, normal, emissive)
+    │   │   ├── groundMaterial.ts # suelo que responde al agua + parches extra (grano, relieve)
+    │   │   ├── GlassSphere.tsx · Pedestal.tsx · Backdrop.tsx
+    │   │   ├── FloatingIsland.tsx · GroundCover.tsx · Vegetation.tsx
+    │   │   ├── Seed.tsx · LifeTree.tsx · RootNetwork.tsx
+    │   │   └── Mushrooms.tsx · HiddenOrganisms.tsx
     │   ├── effects/
-    │   │   ├── RainSystem.tsx
-    │   │   ├── Puddles.tsx
-    │   │   ├── Fireflies.tsx
-    │   │   ├── InnerMist.tsx
-    │   │   └── PostFX.tsx
+    │   │   ├── PostFX.tsx        # N8AO → bloom → tone mapping → viñeta → grano
+    │   │   ├── RainSystem.tsx · Fireflies.tsx
+    │   │   └── Dust.tsx          # polvo en suspensión (jornada 11b)
     │   └── interaction/
-    │       ├── SunHandle.tsx     # orbe solar arrastrable
-    │       └── useGestures.ts    # toque / arrastre / pulsación larga
+    │       ├── Gestures.tsx      # pulsación larga, tecla R, pellizco
+    │       └── SunHandle.tsx     # orbe solar arrastrable
     ├── shaders/
-    │   ├── common/               # noise.glsl, fresnel.glsl…
-    │   ├── glass/                # glass.vert, glass.frag
-    │   ├── rootPulse/
-    │   ├── growth/               # revelado de ramas por uGrowth
-    │   └── vegetation/           # viento, marchitez, humedad
-    ├── audio/
-    │   └── AmbientAudio.ts       # Web Audio (opcional)
+    │   ├── glass/ · backdrop/ · rain/ · fireflies/ · roots/ · pedestal/
+    │   └── life/
+    │       ├── signals.glsl      # funciones de las señales (compartidas)
+    │       ├── surface.glsl      # ruido 3D y relieve procedural (compartidos, jornada 11b)
+    │       ├── bark.* · foliage.* · ground.frag · soil.* · moss.*
+    │       └── sprouts.vert · puddles.* · mushrooms.*
     └── ui/
-        ├── IntroOverlay.tsx
-        ├── ExperienceControls.tsx
-        ├── ObserverMode.tsx
-        └── AboutPanel.tsx        # "cómo se construyó"
+        ├── IntroOverlay.tsx · ExperienceControls.tsx
+        ├── ObserverMode.tsx      # tecla O
+        └── ContextNotice.tsx     # avisos (contexto perdido, sin WebGL 2)
 ```
 
-**Cambios respecto a la propuesta original:**
-- `GlassDome` → `GlassSphere` (es una esfera, no una campana).
-- Nuevos: `generators/` (procedural y testeable), `config/`, `SimulationDriver`, `PostFX`, `Seed`, `Mushrooms`, `Pedestal`, `HiddenOrganisms`, `interaction/` y `ObserverMode`.
-- Shaders organizados por efecto, con vertex y fragment separados.
-- Tests junto al código que prueban.
+Previsto y aún sin hacer: `audio/AmbientAudio.ts` (opcional, orden de recorte) y `ui/AboutPanel.tsx` (jornada 12).
 
 ## Flujo de datos
 
@@ -135,7 +123,7 @@ Lighting ◀── engine.state.ciclo (acción `sol`: lo controla el visitante, 
 
 **Sol (jornada 8):** `config/sunControl.ts` comparte el lenguaje del control (píxeles por ciclo, paso de flecha, arco del orbe). El store distingue `sol(ciclo)` (absoluto: URL, panel) de `moverSol(delta)` (visitante: marca `haMovidoSol` y solo actúa tras el primer brote). `interaction/SunHandle.tsx` es el orbe: arrastre horizontal relativo (no por ángulo en pantalla, que desde una cámara lateral sería ambiguo); mientras se arrastra, `CameraControls` se desactiva. **Discover (jornada 9):** `generators/roots.ts` añade las raíces colgantes tras la colonización (`hanging`, visibles como el nervio); `generators/organisms.ts` reparte las esporas (formato de luciérnagas, shader compartido con `uSteady`) y traza la criatura (`world/HiddenOrganisms.tsx`: esferas fundidas con `mergeGeometries`, respiración por `useFrame` sin estado). El cristal gira sus softboxes de reflejo con el azimut de la cámara (`syncGlassUniforms`, sin asignar memoria); los Lightformers del entorno no. Los hongos y las luciérnagas leen `ecoUniforms` (`uMushrooms`, `uMushroomGlow`, `uFireflies`, `uSync`); las luciérnagas vuelan en el shader (suma de senos) y su reparto sale de `generators/fireflies.ts`; los hongos, de `generators/mushrooms.ts` (geometría de revolución por perfil, dos `InstancedMesh`).
 
-Los parches GLSL viven en `shaders/life/` y `shaders/roots/`; `experience/world/materialPatch.ts` los inserta en `MeshStandardMaterial` por secciones (`//#color`, `//#emissive`…). Atributos por vértice: `pathDistance` (no `distance`: es una función de GLSL), `thickness` y `nodeValue` (en las raíces, el **carácter** de cada nodo; en el follaje, cada mechón hereda la distancia de su rama más cercana). El reloj del despertar sale del motor (`despertadoEn`): es determinista y un mundo recuperado no se vuelve a encender.
+Los parches GLSL viven en `shaders/life/` y `shaders/roots/`; `experience/world/materialPatch.ts` los inserta en `MeshStandardMaterial` por secciones (`//#color`, `//#roughness`, `//#normal`, `//#emissive`). **Microdetalle (jornada 11b):** `shaders/life/surface.glsl` aporta ruido de valor 3D y `surfBump` (relieve de un campo de altura con derivadas de pantalla sin normalizar: la altura está en unidades del mundo y no cambia de fuerza al acercar la cámara); lo usan el suelo (`soil.*`), el musgo (`moss.*`) y la corteza. `groundMaterial` admite parches extra. `surfaceDetail` (0 en Baja) se decide con el nivel de arranque y es un uniform compartido. Atributos por vértice: `pathDistance` (no `distance`: es una función de GLSL), `thickness` y `nodeValue` (en las raíces, el **carácter** de cada nodo; en el follaje, cada mechón hereda la distancia de su rama más cercana). El reloj del despertar sale del motor (`despertadoEn`): es determinista y un mundo recuperado no se vuelve a encender.
 
 ## Responsabilidades por capa
 
@@ -192,11 +180,14 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 | Segmentos del cristal | 128×64 | 64×32 | 56×28 |
 | Luciérnagas | 60 | 40 | 24 |
 | Gotas de lluvia | 1500 | 800 | 400 |
-| Sombras | 1024, suaves | 1024 | Sin sombras dinámicas (sombra falsa) |
+| Sombras | 2048, suaves | 1024 | Sin sombras dinámicas |
+| Oclusión ambiental (ADR-014) | N8AO completa ("medium") | N8AO a mitad de resolución ("low") | Ninguna |
+| Microdetalle (grano, relieve) | Sí | Sí | No |
+| Polvo en suspensión | 56 | 36 | 20 |
 
 - **Nivel inicial:** táctil o pantalla pequeña → Media; escritorio → Alta.
 - `PerformanceMonitor` de Drei: `onDecline` baja un nivel, `onIncline` sube uno; si oscila (`onFallback`), se queda fijo en el más bajo.
-- **Qué se adapta en caliente (ADR-013):** solo lo barato, el DPR. Lo que reconstruye recursos (MSAA del post-proceso, resolución del bloom) se fija con el nivel de arranque (`startupTier`): cambiarlo en caliente provocaba un tirón y un fallo de encuadre.
+- **Qué se adapta en caliente (ADR-013):** solo lo barato, el DPR. Lo que reconstruye recursos (MSAA del post-proceso, resolución del bloom, oclusión ambiental, programas con microdetalle) se fija con el nivel de arranque (`startupTier`): cambiarlo en caliente provocaba un tirón y un fallo de encuadre.
 - **Medición (jornada 11):** `?calidad=alta|media|baja` fija el nivel sin adaptación y `?stats` muestra un contador (FPS y ms medios, draw calls, triángulos, nivel y DPR) también en producción. El contador va en un trozo aparte (0,6 KB gzip) que solo se descarga si la URL lo pide. Medidas y protocolo para móviles reales en [06-roadmap.md](06-roadmap.md#medición-de-la-jornada-11).
 - Las cifras de la tabla siguen siendo las de partida: la geometría queda dentro del presupuesto en los tres niveles; falta medir FPS en los equipos de referencia antes de tocarlas.
 

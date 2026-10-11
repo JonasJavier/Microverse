@@ -18,7 +18,7 @@ import { glassTuning } from '../../config/lookdev.ts'
 import { palette } from '../../config/palette.ts'
 import { QUALITY } from '../../config/quality.ts'
 import { SOFTBOXES } from '../../config/studio.ts'
-import { SPHERE_RADIUS } from '../../config/world.ts'
+import { PEDESTAL_RING_RADIUS, PEDESTAL_TOP_Y, SPHERE_RADIUS } from '../../config/world.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
 import { noRaycast } from '../utils.ts'
@@ -78,6 +78,12 @@ function createSharedUniforms() {
     uRimStrength: { value: glassTuning.rimStrength },
     uRimPower: { value: glassTuning.rimPower },
     uAbsorption: { value: glassTuning.absorption },
+    uSheen: { value: glassTuning.sheen },
+    uLimb: { value: glassTuning.limb },
+    // Anillo del pedestal (jornada 11b): el cristal lo refleja por abajo.
+    uRingColor: { value: new Color(0, 0, 0) },
+    uRingTan: { value: PEDESTAL_RING_RADIUS / (SPHERE_RADIUS - PEDESTAL_TOP_Y) },
+    uRingWidth: { value: 0.07 },
   }
 }
 
@@ -138,7 +144,15 @@ function syncGlassUniforms({ shared, back }: Glass, camera: Camera) {
   shared.uRimStrength.value = glassTuning.rimStrength
   shared.uRimPower.value = glassTuning.rimPower
   shared.uAbsorption.value = glassTuning.absorption
+  shared.uSheen.value = glassTuning.sheen
+  shared.uLimb.value = glassTuning.limb
   back.uFaceFactor.value = glassTuning.backFace
+  // Por abajo, el cristal refleja el anillo del pedestal (Sol de día, Vida de
+  // noche): un arco fino que asienta la esfera sobre su luz.
+  const look = currentLook()
+  shared.uRingColor.value.copy(look.ringColor).multiplyScalar(
+    look.ringGain * glassTuning.ringReflection,
+  )
 }
 
 function disposeGlass({ back, front }: Glass) {

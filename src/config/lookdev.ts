@@ -24,6 +24,15 @@ export const glassTuning = {
    * bajo la isla.
    */
   backFace: 0.06,
+  /**
+   * Jornada 11b: halo ancho y tenue alrededor de cada reflejo (un softbox real
+   * se difumina en el cristal) y limbo: la línea clara justo en la silueta de
+   * una esfera de vidrio (reflexión interna). Ambos en color *reflejo*.
+   */
+  sheen: 0.08,
+  limb: 0.22,
+  /** Cuánto refleja el cristal, por abajo, la luz del anillo del pedestal (asienta la esfera). */
+  ringReflection: 0.6,
 }
 
 export type GlassTuning = typeof glassTuning

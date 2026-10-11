@@ -6,6 +6,8 @@ export const SPHERE_RADIUS = 1
 
 /** Pedestal flotante: altura de su cara superior, con un hueco bajo la esfera. */
 export const PEDESTAL_TOP_Y = -SPHERE_RADIUS - 0.16
+/** Radio del anillo de luz del pedestal (lo refleja el cristal por abajo). */
+export const PEDESTAL_RING_RADIUS = 0.48
 
 /**
  * Posición de la semilla en el plano xz: justo detrás del vértice del corte de

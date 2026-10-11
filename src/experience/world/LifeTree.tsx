@@ -15,10 +15,12 @@ import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
 import { ecoUniforms, signalUniforms } from '../signals.ts'
 import { disposeMesh, toInstancedMesh, toTubeGeometry } from './geometry.ts'
+import { surfaceDetail } from './groundMaterial.ts'
 import { worldRandom } from './island.ts'
 import { TREE } from './life.ts'
 import { patchMaterial, patchedDepthMaterial } from './materialPatch.ts'
 import signalsGlsl from '../../shaders/life/signals.glsl?raw'
+import surfaceGlsl from '../../shaders/life/surface.glsl?raw'
 import barkVertex from '../../shaders/life/bark.vert.glsl?raw'
 import barkFragment from '../../shaders/life/bark.frag.glsl?raw'
 import foliageVertex from '../../shaders/life/foliage.vert.glsl?raw'
@@ -56,13 +58,14 @@ function createLifeTree(tubeSegments: number, tufts: number) {
     ...growthUniforms,
     uBarkPulse: { value: 0.2 },
     uSparkGain: { value: 4 },
+    uDetail: surfaceDetail,
   }
   const bark = new Mesh(
     toTubeGeometry(buildTubes(TREE.graph, tubeSegments, { flutes: BARK_FLUTES }), true),
     patchMaterial(new MeshStandardMaterial({ color: palette.materia.corteza, roughness: 0.9 }), {
       key: 'corteza',
       vertex: barkVertex,
-      fragment: [signalsGlsl, barkFragment],
+      fragment: [signalsGlsl, surfaceGlsl, barkFragment],
       uniforms: barkUniforms,
     }),
   )

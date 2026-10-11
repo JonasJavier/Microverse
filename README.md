@@ -6,17 +6,12 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** Jornada 7 completada, **acto 02 · Nourish**: el mundo empieza seco, con el árbol desnudo; al despertar la semilla aparece la lluvia (mantén pulsado), la tierra se moja, el musgo revive, asoman brotes y el árbol crece rama a rama hasta llenar su copa. Si te pasas de agua, aparecen charcos. Siguiente: jornada 8, el sol y el ciclo del día (acto 03).
+**Estado:** jornadas 0–11 hechas (H1 · Captura y H2 · Vivo cumplidos) y **jornada 11b · Realismo**: oclusión ambiental, microdetalle procedural en suelo, corteza y musgo, luz hemisférica y contraluz, cristal con halo y limbo, pedestal con luz propia y polvo en suspensión. Sin dependencias nuevas. Siguiente: jornada 12, publicación (presentación, imagen OG, vídeo).
 
-| Seco | Lluvia | Revivido |
-|---|---|---|
-| ![Seco](docs/capturas/jornada-07-seco.jpg) | ![Lluvia](docs/capturas/jornada-07-lluvia.jpg) | ![Revivido](docs/capturas/jornada-07-revivido.jpg) |
-
-Antes: el despertar (jornada 6).
-
-| Dormido | El despertar | La red, despierta |
-|---|---|---|
-| ![Dormido](docs/capturas/jornada-06-dormido.jpg) | ![El despertar](docs/capturas/jornada-06-despertar-1.jpg) | ![Despierto](docs/capturas/jornada-06-despierto.jpg) |
+| Antes (jornada 11) | Después (jornada 11b) |
+|---|---|
+| ![Antes](docs/capturas/jornada-11b-antes-general.jpg) | ![Después](docs/capturas/jornada-11b-general.jpg) |
+| ![Antes, el árbol](docs/capturas/jornada-11b-antes-arbol.jpg) | ![Después, el árbol](docs/capturas/jornada-11b-arbol.jpg) |
 
 **Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva; un toque corto en **Lluvia** trae un chaparrón. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
 

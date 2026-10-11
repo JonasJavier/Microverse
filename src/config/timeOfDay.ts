@@ -30,6 +30,13 @@ export interface TimeOfDayLook {
   ringGain: number
   /** Brillo del halo del fondo. */
   backdrop: number
+  /**
+   * Contraluz (jornada 11b): luz fría desde atrás y arriba, sin sombras, que
+   * recorta la copa y el borde de la isla contra el fondo.
+   */
+  rimIntensity: number
+  /** Tinte Vida de la niebla interior (0 = Vacío puro); de noche, "niebla Vida muy sutil". */
+  fogVida: number
 }
 
 /** 0 · Mañana cálida: Sol bajo, emisivos bajos. */
@@ -47,6 +54,8 @@ export const MANANA: TimeOfDayLook = {
   ringColor: palette.luz.sol,
   ringGain: 1.4,
   backdrop: 1,
+  rimIntensity: 0.55,
+  fogVida: 0,
 }
 
 /**
@@ -72,6 +81,8 @@ export const NOCHE: TimeOfDayLook = {
   ringColor: palette.luz.vida,
   ringGain: 1.1,
   backdrop: 0.55,
+  rimIntensity: 0.35,
+  fogVida: 0.1,
 }
 
 /**
@@ -92,6 +103,8 @@ export const MEDIODIA: TimeOfDayLook = {
   ringColor: palette.luz.sol,
   ringGain: 1.2,
   backdrop: 1.1,
+  rimIntensity: 0.4,
+  fogVida: 0,
 }
 
 /**
@@ -114,6 +127,9 @@ export const ATARDECER: TimeOfDayLook = {
   ringColor: palette.luz.atardecer,
   ringGain: 1.5,
   backdrop: 0.9,
+  // La principal ya viene de atrás: el contraluz frío solo matiza.
+  rimIntensity: 0.3,
+  fogVida: 0.03,
 }
 
 /**

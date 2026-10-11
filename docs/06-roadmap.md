@@ -28,6 +28,7 @@
 | 9 | 04 · Discover ✅ | Raíces colgantes (salen por la base de roca y cuelgan en el vacío, con radio mínimo para verse desde abajo), `HiddenOrganisms` (esporas que flotan en el hueco del corte y una criatura dormida que respira bajo la isla, en el lado opuesto al corte; los gusanos de las raíces se recortan según el orden de recorte), cámara mínima a 1,6 para primeros planos. DOF reconsiderada y **descartada para v1** (el A/B de la jornada 4 ya mostró el coste y el desencuadre ×DPR de `postprocessing`; en primeros planos el bloom y la rugosidad ya dan el aspecto macro). Capturas `jornada-09-*`. **H2 · Vivo** |
 | 10 | 05 · Sincronía (en curso) | Hecho: la Sincronía visible (`uSync` compartido: raíces al unísono y más brillantes, floración Sol en la copa, luciérnagas a una, anillo Sol+Vida, halo), persistencia (`store/persistence.ts`, `?nuevo`), atajo `__microverse.sincronia()` para look-dev. Pendiente: calibración con 3 personas, audio ambiente (opcional) |
 | 11 | Rendimiento (en curso) | Hecho: herramientas de medición (`?calidad=`, `?stats` también en producción), geometría y bundle medidos en los tres niveles (todo dentro del presupuesto), pérdida de contexto WebGL con aviso y recuperación sin remontar, alternativa sin WebGL 2, chaparrón (toque corto o lector de pantalla) en el control de lluvia, pistas anunciadas, pellizco y `contextmenu` en táctil, test con almacenamiento bloqueado. Pendiente: FPS en los equipos de referencia y prueba de interacciones en Safari iOS y Chrome Android (protocolo abajo; necesita al usuario) |
+| 11b | Realismo ✅ | Pasada acotada tras la auditoría de realismo del 2026-10-11 (capturas `jornada-11b-antes-*` y `jornada-11b-*`, misma cámara, nivel Alta): oclusión ambiental N8AO (ADR-014); microdetalle procedural sin texturas (grano, relieve y motas minerales en el suelo; grietas en la corteza; oclusión propia en musgo y mechones; nuevo punto de inserción `normal` en los parches); luz hemisférica, contraluz y niebla interior por ciclo; cristal con halo, limbo y reflejo del anillo del pedestal; pedestal con halo de lámpara y luz hacia la roca; polvo en suspensión. Sin dependencias nuevas |
 | 12 | Publicación | `AboutPanel`, imagen OG, vídeo de 15 s de la Sincronía, deploy final. **H3 · Publicado** |
 
 ## Rúbrica del H1 (jornada 4)
@@ -63,6 +64,22 @@ Capturas con la misma cámara (`__microverse.view('general')`): `jornada-04-mana
 ### Evaluación del H2 · Vivo (jornada 9)
 
 Los cuatro actos funcionan sobre el motor: despertar (semilla → red → copa), regar (humedad → crecimiento, charcos y aviso de exceso), mover el sol (ciclo completo con luz que gira, hongos y luciérnagas de noche) y explorar (raíces colgantes, esporas y criatura desde abajo; el cristal enmarca desde cualquier ángulo). Capturas `jornada-08-*` y `jornada-09-*`. Lo que aún no está vivo del todo: la Sincronía (jornada 10) y la calibración con personas; el mundo responde, pero todavía no "celebra".
+
+### Evaluación de la jornada 11b · Realismo
+
+Auditoría del 2026-10-11 con la escena completa: el usuario sentía que "le faltaba mucho" para verse real. Diagnóstico con las vistas fijas: nada tocaba nada (sin oclusión), superficies de un solo color por vértice (plástico de cerca), reflejos del cristal con borde duro (pegatinas), pedestal como línea sobre negro y aire vacío. Capturas antes/después, misma cámara y nivel Alta: `jornada-11b-antes-{general,noche,corte,arbol}.jpg` → `jornada-11b-{general,noche,corte,arbol}.jpg`.
+
+| Qué | Antes | Después |
+|---|---|---|
+| Contacto | Musgo, copa y raíces flotaban | Oclusión ambiental (ADR-014) más oclusión propia por instancia: el musgo es un tapiz con huecos oscuros, cada nube tiene base |
+| Materia | Estratos y corteza lisos | Grano, relieve y motas en el suelo; grietas a lo largo del tronco. Todo procedural (0 KB) y apagado en Baja |
+| Cristal | Media luna y tira con borde duro; de cerca, trazos pintados | Softboxes más suaves, halo alrededor de cada reflejo, limbo claro en la silueta y arco del anillo del pedestal por abajo (solo cara delantera) |
+| Luz | Ambiental plana | Hemisférica (cielo frío, suelo Bosque), contraluz que recorta la copa, niebla interior leve teñida de Vida de noche, luz del anillo sobre la roca |
+| Aire | Vacío | Polvo en suspensión, tenue, más visible con el sol alto |
+
+Lo que se probó y se retiró en la misma pasada: reflejar el anillo del pedestal como un softbox blando desde abajo (velaba media esfera de color cálido: ahora es un anillo analítico), la luz puntual pegada al disco (brillo especular en forma de raya), y el halo con anchura proporcional a la suavidad de cada softbox (el rebote del suelo, muy suave, lo desbordaba).
+
+**Pendiente de la auditoría** (no bloquea): fuentes alojadas (Instrument Serif + Geist Mono, jornada 12); FPS en equipos reales con la oclusión activada (protocolo de la jornada 11); el follaje sigue siendo de octaedros (hojas o tarjetas quedan para v2).
 
 **Queda para más adelante** (no bloquea el H1): el follaje de octaedros se lee como mechones a distancia, pero de cerca aún es facetado (hojas o tarjetas con viento en la jornada 7); las estrías de la corteza apenas se ven con la luz actual.
 
@@ -109,13 +126,13 @@ Peor caso de la escena (despierta, de noche, lloviendo y en Sincronía), con el 
 
 | Nivel | Viewport | Draw calls | Triángulos | Presupuesto |
 |---|---|---|---|---|
-| Alta | 1280×720 | 49 | 359 k | < 150 · < 500 k ✅ |
-| Media | 375×812 (móvil) | 49 | 185 k | < 80 · < 200 k ✅ (7 % de margen) |
-| Baja | 375×812 (móvil) | 41 | 91 k | < 80 · < 200 k ✅ |
+| Alta | 1280×720 | 49 (69 con oclusión, jornada 11b) | 359 k | < 150 · < 500 k ✅ |
+| Media | 375×812 (móvil) | 49 (70 con oclusión a media resolución) | 185 k (196 k en la jornada 11b: anillo del pedestal y polvo) | < 80 · < 200 k ✅ (2 % de margen; la oclusión es lo primero que se recorta si los FPS no llegan) |
+| Baja | 375×812 (móvil) | 41 (43 en la jornada 11b) | 91 k | < 80 · < 200 k ✅ |
 
 | Transferencia | Medido | Presupuesto |
 |---|---|---|
-| JS inicial (gzip) | 404 KB | ≤ 600 KB ✅ |
+| JS inicial (gzip) | 404 KB (487 KB con N8AO, jornada 11b) | ≤ 600 KB ✅ |
 | Total sin audio | ~406 KB (sin HDRI, fuentes ni texturas) | ≤ 3 MB ✅ |
 
 El frame justo después de un cambio de DPR o de recuperar el contexto sube a ~70 draw calls (three.js regenera el entorno una vez) y vuelve a 49.

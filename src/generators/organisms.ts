@@ -90,3 +90,45 @@ export function sleepingCreature(shape: IslandShape, random: Random): SleepingCr
   }
   return { segments, radii, spots }
 }
+
+/**
+ * Polvo en suspensión (jornada 11b · Realismo): motas diminutas que flotan muy
+ * despacio por todo el aire del cristal, de día y de noche. Dan escala y aire
+ * (fotografía macro: siempre hay polvo en la luz). Fuera de la isla y lejos del
+ * cristal; mismo formato que las luciérnagas (comparten shader).
+ */
+export function scatterDust(shape: IslandShape, random: Random, count: number): Fireflies {
+  const homes = new Float32Array(count * 4)
+  const seeds = new Float32Array(count * 4)
+  let placed = 0
+  for (let attempt = 0; attempt < count * 40 && placed < count; attempt++) {
+    // Punto uniforme en la esfera interior (radio 0,86): nunca pegado al cristal.
+    const x = random.range(-0.86, 0.86)
+    const y = random.range(-0.86, 0.86)
+    const z = random.range(-0.86, 0.86)
+    if (x * x + y * y + z * z > 0.86 * 0.86) continue
+    // Fuera de la tierra: por encima de la superficie o por debajo de la roca.
+    const inIsland =
+      Math.hypot(x, z) < shape.rimRadius(Math.atan2(x, z)) * 1.08 &&
+      y < shape.topY(x, z) + 0.03 &&
+      y > shape.bottomY(x, z) - 0.03
+    if (inIsland) continue
+    homes.set([x, y, z, random.range(0.02, 0.06)], placed * 4)
+    seeds.set(
+      [
+        random.next(),
+        // Más lentas que las esporas: flotan en el aire quieto de una vitrina.
+        random.range(0.025, 0.06),
+        random.range(0.1, 0.25),
+        0.5 * random.next(),
+      ],
+      placed * 4,
+    )
+    placed++
+  }
+  return {
+    count: placed,
+    homes: placed === count ? homes : homes.slice(0, placed * 4),
+    seeds: placed === count ? seeds : seeds.slice(0, placed * 4),
+  }
+}

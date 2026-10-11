@@ -36,7 +36,9 @@ export const SOFTBOXES: readonly Softbox[] = [
     // desde arriba, el reflejo era una barra gruesa que cruzaba la copa.
     halfSize: [0.46, 0.11],
     cornerRadius: 0.1,
-    softness: 0.035,
+    // Jornada 11b: borde más suave (0,035 → 0,07). Con el borde duro, la media
+    // luna se leía como una pegatina; un softbox real se difumina en el cristal.
+    softness: 0.07,
     color: palette.luz.sol,
     intensity: 2.2,
     // Jornada 3: −20 %. La media luna enmarca; no debe competir con el árbol.
@@ -50,7 +52,8 @@ export const SOFTBOXES: readonly Softbox[] = [
     direction: [1, 0.15, -0.35],
     halfSize: [0.05, 0.95],
     cornerRadius: 0.04,
-    softness: 0.03,
+    // Jornada 11b: de cerca, la tira era un trazo pintado; más suave es un brillo.
+    softness: 0.08,
     color: palette.materia.reflejo,
     intensity: 2.25,
     reflectionGain: 0.45,
@@ -61,7 +64,7 @@ export const SOFTBOXES: readonly Softbox[] = [
     direction: [-1, 0.05, 0.25],
     halfSize: [0.05, 0.7],
     cornerRadius: 0.04,
-    softness: 0.04,
+    softness: 0.12,
     color: palette.luz.vida,
     intensity: 0.45,
     reflectionGain: 1,
@@ -99,6 +102,27 @@ export const FILL_LIGHT = {
   intensity: 0.75,
   color: palette.materia.reflejo,
 }
+
+/**
+ * Contraluz frío (jornada 11b): alto y por detrás, sin sombras. Recorta la copa y
+ * el hombro de la isla contra el fondo oscuro, como la luz de recorte de un
+ * retrato. Su intensidad va con el ciclo (`rimIntensity`).
+ */
+export const RIM_LIGHT = {
+  direction: [0.3, 0.8, -0.7] as const,
+  color: palette.materia.reflejo,
+}
+
+/**
+ * Niebla interior (jornada 11b): la oscuridad de la sala se traga un poco lo que
+ * está más lejos de la cámara. Con la cámara por defecto (distancia ~5,2), el
+ * fondo de la isla pierde ~10 %; en primer plano no hay niebla. Es un indicio de
+ * profundidad, no un efecto: si se nota, es demasiado.
+ */
+export const FOG = { near: 5, far: 14 }
+
+/** Luz del anillo del pedestal sobre la roca y las raíces colgantes (jornada 11b). */
+export const PEDESTAL_LIGHT = { intensity: 0.05, distance: 1.5 }
 
 /** Distancia a la que se colocan los Lightformers equivalentes. */
 export const LIGHTFORMER_DISTANCE = 6
