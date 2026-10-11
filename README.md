@@ -6,14 +6,16 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado:** jornadas 0–11 hechas (H1 · Captura y H2 · Vivo cumplidos) y **jornada 11b · Realismo**: oclusión ambiental, microdetalle procedural en suelo, corteza y musgo, luz hemisférica y contraluz, cristal con halo y limbo, pedestal con luz propia y polvo en suspensión. Sin dependencias nuevas. Siguiente: jornada 12, publicación (presentación, imagen OG, vídeo).
+**Estado: v1 publicada (H3, jornada 12).** Doce jornadas: fundaciones, cristal, isla con corte de diorama, bonsái y red de raíces procedurales, motor del ecosistema, los cinco actos (despertar, regar, mover el sol, explorar, Sincronía), persistencia, rendimiento y robustez, una pasada de realismo (oclusión ambiental, microdetalle, luz y cristal) y la publicación (cartela "Cómo se construyó", imagen OG, vídeo, fuentes alojadas). Quedan las pruebas con personas y en móviles reales (protocolo en [docs/06-roadmap.md](docs/06-roadmap.md)).
 
-| Antes (jornada 11) | Después (jornada 11b) |
+[**Vídeo de 15 s de la Sincronía**](docs/capturas/jornada-12-sincronia.webm) · imagen de la tarjeta: [og.jpg](public/og.jpg)
+
+| Antes de la pasada de realismo | Después (jornada 11b) |
 |---|---|
 | ![Antes](docs/capturas/jornada-11b-antes-general.jpg) | ![Después](docs/capturas/jornada-11b-general.jpg) |
 | ![Antes, el árbol](docs/capturas/jornada-11b-antes-arbol.jpg) | ![Después, el árbol](docs/capturas/jornada-11b-arbol.jpg) |
 
-**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva; un toque corto en **Lluvia** trae un chaparrón. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo.
+**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva; un toque corto en **Lluvia** trae un chaparrón. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo y la **I** (o la etiqueta de arriba a la derecha) la cartela "Cómo se construyó".
 
 | Mañana | Noche |
 |---|---|

@@ -23,6 +23,8 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 | `maath` | 0.10.8 | `easing.damp` (transiciones suaves), utilidades aleatorias |
 | `simplex-noise` | 4.0.3 | Ruido en CPU para los generadores (terreno, distribución) |
 | `serve` | 14.2.6 | Servidor estático en producción (Railway, ADR-011). `compression` forzada a 1.8.2 con `overrides` |
+| `@fontsource/instrument-serif` | 5.3.0 | Tipografía serif de cartela, alojada en el build (ADR-015, jornada 12) |
+| `@fontsource/geist-mono` | 5.3.0 | Monoespaciada de etiquetas, alojada en el build (ADR-015) |
 
 ## Desarrollo
 

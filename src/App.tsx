@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { MicroverseCanvas } from './experience/MicroverseCanvas.tsx'
 import { startPersistence } from './store/persistence.ts'
 import { useMicroverseStore } from './store/useMicroverseStore.ts'
+import { AboutPanel } from './ui/AboutPanel.tsx'
 import { CanvasBoundary, ContextNotice } from './ui/ContextNotice.tsx'
 import { ExperienceControls } from './ui/ExperienceControls.tsx'
 import { IntroOverlay } from './ui/IntroOverlay.tsx'
@@ -27,6 +28,7 @@ export function App() {
       <IntroOverlay />
       <ExperienceControls />
       <ObserverMode />
+      <AboutPanel />
       <ContextNotice />
     </CanvasBoundary>
   )

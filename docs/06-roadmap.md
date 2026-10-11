@@ -7,7 +7,7 @@
 | **H0 · Fundaciones** | Hoy | Documentación, stack y decisiones cerradas ✅ |
 | **H1 · Captura** | Jornada 4 | Una escena estática que merece una captura, de mañana y de noche ✅ (propuesto; ver evaluación) |
 | **H2 · Vivo** | Jornada 9 | Los cuatro actos funcionan sobre el motor; el mundo parece vivo |
-| **H3 · Publicado** | Jornada 12 | v1 en una URL pública, con presentación y "cómo se construyó" |
+| **H3 · Publicado** | Jornada 12 | v1 en una URL pública, con presentación y "cómo se construyó" ✅ (2026-10-11; quedan las pruebas con personas y en móviles reales, que necesitan al usuario) |
 
 "Jornada" es una sesión de trabajo, no un día de calendario. Hay **2 jornadas de colchón** reservadas para imprevistos: no se usan para añadir funcionalidades.
 
@@ -29,7 +29,7 @@
 | 10 | 05 · Sincronía (en curso) | Hecho: la Sincronía visible (`uSync` compartido: raíces al unísono y más brillantes, floración Sol en la copa, luciérnagas a una, anillo Sol+Vida, halo), persistencia (`store/persistence.ts`, `?nuevo`), atajo `__microverse.sincronia()` para look-dev. Pendiente: calibración con 3 personas, audio ambiente (opcional) |
 | 11 | Rendimiento (en curso) | Hecho: herramientas de medición (`?calidad=`, `?stats` también en producción), geometría y bundle medidos en los tres niveles (todo dentro del presupuesto), pérdida de contexto WebGL con aviso y recuperación sin remontar, alternativa sin WebGL 2, chaparrón (toque corto o lector de pantalla) en el control de lluvia, pistas anunciadas, pellizco y `contextmenu` en táctil, test con almacenamiento bloqueado. Pendiente: FPS en los equipos de referencia y prueba de interacciones en Safari iOS y Chrome Android (protocolo abajo; necesita al usuario) |
 | 11b | Realismo ✅ | Pasada acotada tras la auditoría de realismo del 2026-10-11 (capturas `jornada-11b-antes-*` y `jornada-11b-*`, misma cámara, nivel Alta): oclusión ambiental N8AO (ADR-014); microdetalle procedural sin texturas (grano, relieve y motas minerales en el suelo; grietas en la corteza; oclusión propia en musgo y mechones; nuevo punto de inserción `normal` en los parches); luz hemisférica, contraluz y niebla interior por ciclo; cristal con halo, limbo y reflejo del anillo del pedestal; pedestal con halo de lámpara y luz hacia la roca; polvo en suspensión. Sin dependencias nuevas |
-| 12 | Publicación | `AboutPanel`, imagen OG, vídeo de 15 s de la Sincronía, deploy final. **H3 · Publicado** |
+| 12 | Publicación ✅ | `AboutPanel` ("Cómo se construyó": cartela-diálogo accesible, etiqueta arriba a la derecha y tecla I), imagen OG y metadatos (`public/og.jpg`, generada desde la escena de noche en Sincronía), vídeo de 15 s de la Sincronía (`docs/capturas/jornada-12-sincronia.webm`, grabado con `MediaRecorder` desde el lienzo con la cámara orbitando), fuentes alojadas (ADR-015), deploy final en Railway. **H3 · Publicado** |
 
 ## Rúbrica del H1 (jornada 4)
 
@@ -101,7 +101,7 @@ Si hay retraso, se recorta en este orden (lo primero, lo primero que cae):
 | 2 | La lluvia afecta al crecimiento y a la apariencia | Tests 2–4 del motor en verde; el cambio se nota en menos de 10 s de lluvia |
 | 3 | Ciclo día/noche con organismos reactivos | Ciclo continuo; hongos y luciérnagas reaccionan; 2 de cada 3 personas de prueba llegan a la Sincronía sin ayuda |
 | 4 | Ratón y pantalla táctil | Todas las interacciones probadas en Chrome y Safari de escritorio, Safari iOS y Chrome Android; alternativa con teclado |
-| 5 | Publicada, con presentación y explicación | URL pública, `AboutPanel`, vídeo de 15 s, imagen OG |
+| 5 | Publicada, con presentación y explicación | URL pública, `AboutPanel`, vídeo de 15 s, imagen OG ✅ (jornada 12) |
 | + | Calidad técnica | Sin errores en consola; pérdida de contexto WebGL con mensaje y recuperación; funciona sin `localStorage` |
 
 ## Presupuesto de rendimiento

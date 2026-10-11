@@ -100,3 +100,8 @@ El sobrecoste de MTM crece con la escena (la vuelve a renderizar entera cada fra
 **Coste medido** (1280×720, escena dormida de mañana): 49 → 69 draw calls en Alta y 70 en Media (las pasadas de la oclusión); los triángulos no cambian. Dentro del presupuesto (< 150 escritorio, < 80 móvil), aunque en Media el margen baja a 10 llamadas: si los FPS reales en móvil no llegan a 30, lo primero que se recorta es la oclusión en Media.
 **Alternativas descartadas:** `SSAO` de `postprocessing` (más ruido, sin denoise); oclusión horneada por vértice (no sirve para instancias que crecen ni para la copa que se mece); un paquete de AO aparte (habría requerido ADR de dependencia).
 
+## ADR-015 · Tipografía alojada vía Fontsource — Aceptada (jornada 12, 2026-10-11)
+**Contexto:** la dirección de arte pedía *Instrument Serif* + *Geist Mono* alojadas en el propio proyecto; hasta ahora se usaban fuentes del sistema. Descargar los archivos a mano deja la procedencia y la licencia fuera del repo.
+**Decisión:** dependencias exactas `@fontsource/instrument-serif` 5.3.0 y `@fontsource/geist-mono` 5.3.0 (OFL); se importa solo el peso 400 latino (`400.css`) desde `main.tsx` y Vite empaqueta los `woff2` con hash (24 KB + 12 KB). Sin peticiones a terceros ni cambio de tamaño del JS. Las pilas de fuentes viven en dos variables CSS (`--font-serif`, `--font-mono`) con los mismos fallbacks del sistema de antes.
+**Consecuencias:** dos paquetes más en el lockfile, de datos, no de código; actualizarlos sigue las reglas de ADR-002.
+

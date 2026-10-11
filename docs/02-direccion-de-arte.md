@@ -140,7 +140,8 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 
 ## Tipografía e interfaz
 
-- Estilo de cartela de museo. Título serif display con tracking amplio y etiquetas pequeñas en monoespaciada. Propuesta a validar: *Instrument Serif* + *Geist Mono*, alojadas en el propio proyecto.
+- Estilo de cartela de museo. Título serif display con tracking amplio y etiquetas pequeñas en monoespaciada. *Instrument Serif* + *Geist Mono*, alojadas en el propio build desde la jornada 12 (ADR-015; variables `--font-serif` y `--font-mono`).
+- **"Cómo se construyó"** (jornada 12): etiqueta discreta arriba a la derecha (o tecla I) que abre una cartela-diálogo con qué es, cómo se cuida, con qué está hecho y los créditos. No es un tutorial: el mundo se descubre.
 - Interfaz: dos controles (lluvia y sol) en una cápsula translúcida en la parte inferior. Aparecen de forma progresiva. Sin números visibles.
 - **Modo observador** (tecla `O`): muestra luz, humedad y vitalidad en monoespaciada pequeña. Sirve para depurar y para la presentación de "cómo se construyó".
 
