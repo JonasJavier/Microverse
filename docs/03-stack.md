@@ -22,7 +22,6 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 | `zustand` | 5.0.15 | Estado de UI y puente con el motor |
 | `maath` | 0.10.8 | `easing.damp` (transiciones suaves), utilidades aleatorias |
 | `simplex-noise` | 4.0.3 | Ruido en CPU para los generadores (terreno, distribución) |
-| `serve` | 14.2.6 | Servidor estático en producción (Railway, ADR-011). `compression` forzada a 1.8.2 con `overrides` |
 | `@fontsource/instrument-serif` | 5.3.0 | Tipografía serif de cartela, alojada en el build (ADR-015, jornada 12) |
 | `@fontsource/geist-mono` | 5.3.0 | Monoespaciada de etiquetas, alojada en el build (ADR-015) |
 
@@ -72,7 +71,7 @@ Versiones verificadas con `npm view` el **2026-10-07**. Todas se fijan **exactas
 
 - **Git + GitHub**, Conventional Commits.
 - **codebase-memory-mcp:** se indexa en la jornada 0, se reindexa tras cambios estructurales y guarda los ADR (`manage_adr`).
-- **Hosting:** Railway, servicio `web` desplegado desde GitHub en cada push a `main`, servido con `serve` (ADR-011). Guía obligatoria: [railway.md](railway.md).
+- **Hosting:** GitHub Pages, construido por GitHub Actions en cada push a `main` (ADR-016; antes Railway, ADR-011). Guía: [github-pages.md](github-pages.md).
 - **Depuración:** `<Stats>` de Drei + panel `DevTools` (ADR-010) + extensión Spector.js + Chrome DevTools (pestaña Performance).
 
 ## `package.json` objetivo (jornada 0)

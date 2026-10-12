@@ -23,10 +23,10 @@
 - Servidor de desarrollo para Claude: `npm run dev:poll` (configurado en `.claude/launch.json`, con `autoPort`: si 5173 está ocupado, Vite usa el `PORT` asignado). Sin polling, Vite en Windows pierde cambios y sirve módulos viejos.
 - Verificación visual: con el panel del navegador oculto, la página no anima. Hacer una captura fuerza los frames. En desarrollo, `window.__microverse` expone `glassTuning`, los stores, `three()`, `view(nombre)` (vistas de cámara fijas: comparar siempre con la misma), `capture(true)` (oculta los paneles) y `silhouette(true)` (prueba de la mancha negra). Los paneles cargan en diferido y Leva reinicia `ciclo` al montarse: aplicar el ciclo después.
 
-## Despliegue (Railway)
-- Seguir **siempre** [docs/railway.md](docs/railway.md) y, si existe, `CLAUDE.local.md` (reglas de la cuenta, no versionadas). Solo se opera sobre el proyecto `microverse`.
-- Nunca ejecutar `railway variables --json` ni mostrar secretos.
-- Cada push a `main` despliega: no subir a `main` nada que no pase `npm run build`.
+## Despliegue (GitHub Pages)
+- Seguir [docs/github-pages.md](docs/github-pages.md). El flujo `.github/workflows/pages.yml` publica `dist/` en cada push a `main`; no hay servidor, variables ni secretos.
+- No subir a `main` nada que no pase `npm run build`. Un flujo fallido no publica nada: se arregla hacia delante.
+- Railway (ADR-011) y Netlify ya no se usan para este proyecto; si existe `CLAUDE.local.md`, sus reglas de cuenta siguen vigentes para no tocar otros proyectos.
 - **El repo es público:** no versionar datos de la cuenta del autor (IDs de otros proyectos, correos, nombres de cuentas). Van en archivos `*.local.md`, ignorados por Git.
 
 ## Reglas técnicas (no negociables sin ADR)

@@ -15,7 +15,7 @@ El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto c
 | ![Antes](docs/capturas/jornada-11b-antes-general.jpg) | ![Después](docs/capturas/jornada-11b-general.jpg) |
 | ![Antes, el árbol](docs/capturas/jornada-11b-antes-arbol.jpg) | ![Después, el árbol](docs/capturas/jornada-11b-arbol.jpg) |
 
-**Pruébalo:** la [versión publicada](https://web-production-04f0b.up.railway.app) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva; un toque corto en **Lluvia** trae un chaparrón. Añade [`?noche`](https://web-production-04f0b.up.railway.app/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo y la **I** (o la etiqueta de arriba a la derecha) la cartela "Cómo se construyó".
+**Pruébalo:** la [versión publicada](https://jonasjavier.github.io/Microverse) abre de mañana con la semilla dormida: tócala para despertar el mundo y mantén pulsado (o la tecla R) para que llueva; un toque corto en **Lluvia** trae un chaparrón. Añade [`?noche`](https://jonasjavier.github.io/Microverse/?noche) a la URL para verla de noche. La tecla **O** abre el modo observador con el estado del mundo y la **I** (o la etiqueta de arriba a la derecha) la cartela "Cómo se construyó".
 
 | Mañana | Noche |
 |---|---|
@@ -37,7 +37,8 @@ npm run dev        # servidor de desarrollo (FPS, draw calls y panel Leva de loo
 npm run dev:poll   # igual, con polling: si los cambios no se recargan (Windows)
 npm run test       # tests en modo watch
 npm run lint
-npm run build      # typecheck + build de producción
+npm run build      # typecheck + build de producción (lo mismo que ejecuta GitHub Actions)
+npm run preview    # sirve dist/ en local
 ```
 
 ## Documentación

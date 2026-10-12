@@ -15,8 +15,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "lint": "eslint .",
-    "format": "prettier --write .",
-    "start": "serve dist --single --no-clipboard"
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@fontsource/geist-mono": "5.3.0",
@@ -28,7 +27,6 @@
     "postprocessing": "6.39.5",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "serve": "14.2.6",
     "simplex-noise": "4.0.3",
     "three": "0.186.1",
     "zustand": "5.0.15"
@@ -50,8 +48,5 @@
     "typescript-eslint": "8.71.1",
     "vite": "8.3.3",
     "vitest": "5.0.3"
-  },
-  "overrides": {
-    "compression": "1.8.2"
   }
 }

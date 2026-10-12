@@ -4,15 +4,24 @@
     {
       "name": "microverse-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev:poll"],
+      "runtimeArgs": [
+        "run",
+        "dev:poll"
+      ],
       "port": 5173,
       "autoPort": true
     },
     {
       "name": "microverse-prod",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["start"],
-      "port": 3000,
+      "runtimeArgs": [
+        "run",
+        "preview",
+        "--",
+        "--port",
+        "4173"
+      ],
+      "port": 4173,
       "autoPort": true
     }
   ]

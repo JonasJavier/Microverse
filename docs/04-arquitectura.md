@@ -17,7 +17,8 @@ microverse/
 ├── CLAUDE.md
 ├── README.md
 ├── docs/                         # visión, arte, stack, arquitectura, motor, roadmap, ADR, capturas
-├── public/serve.json             # cabeceras de caché para Railway (ADR-011)
+├── .github/workflows/pages.yml   # build y publicación en GitHub Pages (ADR-016)
+├── public/og.jpg                 # tarjeta al compartir
 └── src/
     ├── main.tsx · App.tsx · styles.css
     ├── config/
