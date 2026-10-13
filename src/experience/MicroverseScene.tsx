@@ -1,6 +1,7 @@
 import { AudioDriver } from './AudioDriver.tsx'
 import { CameraRig } from './camera/CameraRig.tsx'
 import { ContextGuard } from './ContextGuard.tsx'
+import { Butterflies } from './effects/Butterflies.tsx'
 import { Dust } from './effects/Dust.tsx'
 import { Fireflies } from './effects/Fireflies.tsx'
 import { PostFX } from './effects/PostFX.tsx'
@@ -10,6 +11,7 @@ import { SunHandle } from './interaction/SunHandle.tsx'
 import { SimulationDriver } from './SimulationDriver.tsx'
 import { Studio } from './lighting/Studio.tsx'
 import { Backdrop } from './world/Backdrop.tsx'
+import { Ferns } from './world/Ferns.tsx'
 import { FloatingIsland } from './world/FloatingIsland.tsx'
 import { GlassSphere } from './world/GlassSphere.tsx'
 import { GroundCover } from './world/GroundCover.tsx'
@@ -38,11 +40,13 @@ export function MicroverseScene() {
       <GroundCover />
       <LifeTree />
       <Vegetation />
+      <Ferns />
       <Mushrooms />
       <HiddenOrganisms />
       <Seed />
       <RainSystem />
       <Fireflies />
+      <Butterflies />
       <Dust />
       <Pedestal />
       <GlassSphere />

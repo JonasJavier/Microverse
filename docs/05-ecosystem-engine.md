@@ -107,6 +107,8 @@ Objetivo de calibración: un visitante atento que no conoce las reglas llega a l
 | `luciernagas` | `noche · vitalidad · (0.5 + 0.5·min(1, humedad / 0.5))` | Proporción activa de `Fireflies` |
 | `floracion` | `smoothstep(0.7, 0.95, vitalidad)`; 1 durante la Sincronía | Flores de `LifeTree` y `Vegetation` |
 | `estacion` | Fracción del año desde el despertar (jornada 15): 0 primavera, 0,5 otoño |
+| `helechos` | smoothstep(0,45, 0,75, vitalidad) × smoothstep(0,3, 0,5, humedad) (jornada 16) |
+| `mariposas` | (1 − noche) × floración × smoothstep(0,6, 0,9, vitalidad) (jornada 16) |
 | `sincronia` | 0→1→0 en la duración del evento | Pulso sincronizado, luciérnagas al unísono, brillo global |
 
 donde `noche = smoothstep(0.70, 0.90, ciclo)`. La iluminación (`Lighting`) lee `ciclo` directamente: es control del usuario, no decisión del motor.

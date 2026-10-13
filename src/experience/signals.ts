@@ -87,6 +87,10 @@ export const ecoUniforms = {
   uSpores: { value: 0 },
   /** Estación (jornada 15): 0 primavera · 0,25 verano · 0,5 otoño · 0,75 invierno. */
   uSeason: { value: 0 },
+  /** Helechos (jornada 16): brotan por umbral cuando hay sombra húmeda y vida. */
+  uFerns: { value: 0 },
+  /** Mariposas (jornada 16): de día, con la floración. */
+  uButterflies: { value: 0 },
 }
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -135,6 +139,8 @@ export function updateSignals(delta: number) {
   easing.damp(ecoUniforms.uBloom, 'value', visuals.floracion, 1.5, delta)
   easing.damp(ecoUniforms.uWind, 'value', 0.5 + 0.8 * visuals.lluvia, 2, delta)
   easing.damp(ecoUniforms.uSpores, 'value', state.despertado ? 1 : 0, 4, delta)
+  easing.damp(ecoUniforms.uFerns, 'value', visuals.helechos, 2, delta)
+  easing.damp(ecoUniforms.uButterflies, 'value', visuals.mariposas, 1.5, delta)
   // La estación es cíclica: cerca del salto 1 → 0 se copia en vez de suavizar.
   if (Math.abs(visuals.estacion - ecoUniforms.uSeason.value) > 0.5) {
     ecoUniforms.uSeason.value = visuals.estacion

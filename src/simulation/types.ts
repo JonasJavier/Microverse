@@ -70,6 +70,10 @@ export interface VisualParams {
   noche: number
   /** Estación (jornada 15): 0 primavera · 0,25 verano · 0,5 otoño · 0,75 invierno; cíclica. */
   estacion: number
+  /** Helechos (jornada 16): sombra húmeda, con el mundo vivo. */
+  helechos: number
+  /** Mariposas (jornada 16): de día, con la floración. */
+  mariposas: number
 }
 
 export type EcosystemAction =

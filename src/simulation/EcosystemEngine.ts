@@ -57,6 +57,8 @@ function emptyVisuals(): VisualParams {
     sincronia: 0,
     noche: 0,
     estacion: 0,
+    helechos: 0,
+    mariposas: 0,
   }
 }
 

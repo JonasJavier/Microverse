@@ -35,6 +35,10 @@ export interface QualitySettings {
   dust: number
   /** Microdetalle de los materiales (grano y relieve procedural): 0 = apagado. */
   surfaceDetail: number
+  /** Helechos a la sombra del tronco (jornada 16). */
+  ferns: number
+  /** Mariposas de día con la floración (jornada 16). */
+  butterflies: number
 }
 
 /**
@@ -61,6 +65,8 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     ambientOcclusion: 'completa',
     dust: 56,
     surfaceDetail: 1,
+    ferns: 44,
+    butterflies: 14,
   },
   media: {
     maxDpr: 1.5,
@@ -80,6 +86,8 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     ambientOcclusion: 'media',
     dust: 36,
     surfaceDetail: 1,
+    ferns: 30,
+    butterflies: 10,
   },
   baja: {
     maxDpr: 1,
@@ -100,6 +108,8 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     dust: 20,
     // Sin relieve ni grano: el fragmento del suelo y el musgo queda como antes.
     surfaceDetail: 0,
+    ferns: 18,
+    butterflies: 6,
   },
 }
 

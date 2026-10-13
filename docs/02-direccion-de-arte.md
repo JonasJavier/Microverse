@@ -125,6 +125,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Luciérnagas:** pocas (24–60 según calidad), lentas, con trayectorias de ruido y parpadeo asíncrono. **En la Sincronía parpadean al unísono**, como algunas especies reales.
 - **Polvo en suspensión (jornada 11b):** motas diminutas (20–56) que flotan muy despacio por el aire del cristal, siempre, en color *reflejo* y por debajo del umbral del bloom. Dan escala y hacen visible el aire, como en toda fotografía macro; brillan más con el sol alto. No son partículas de efecto: si se cuentan, sobran.
 - **Organismos ocultos (Discover):** gusanos luminosos en las raíces, esporas flotantes y una criatura dormida bajo la isla.
+- **Nuevas especies (jornada 16, fase 2):** **helechos** de seis frondas anchas en la sombra del tronco, oscuros en la base y claros en la punta, que brotan solo con el mundo vivo y húmedo; **mariposas** de día, blanco frío (`organismos.mariposa`, no es luz: así no se confunden con las flores Sol), que llegan con la floración y revolotean junto a las nubes de la copa con aleteo y pausas de planeo. Ninguna es decoración: las dos son señales de un mundo bien cuidado.
 
 ## Post-proceso: el aspecto macro
 

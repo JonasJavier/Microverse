@@ -50,5 +50,7 @@ export const palette = {
   organismos: {
     hongo: '#CFC3A6',
     hongoPie: '#9A8F78',
+    // Mariposas (jornada 16): blanco frío (reflejo), para distinguirse de las flores Sol. No es luz.
+    mariposa: '#DCEFEA',
   },
 } as const

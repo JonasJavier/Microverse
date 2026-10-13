@@ -113,5 +113,8 @@ export function computeVisuals(
     ? Math.sin(Math.PI * clamp01(state.sincronia.tiempo / config.DURACION_SINCRONIA))
     : 0
   out.floracion = state.sincronia.activa ? 1 : smoothstep(0.7, 0.95, vitalidad)
+  // Nuevas especies (jornada 16): cada una con su condición.
+  out.helechos = smoothstep(0.45, 0.75, vitalidad) * smoothstep(0.3, 0.5, humedad)
+  out.mariposas = (1 - noche) * out.floracion * smoothstep(0.6, 0.9, vitalidad)
   return out
 }

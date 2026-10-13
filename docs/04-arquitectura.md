@@ -42,7 +42,8 @@ microverse/
     │   ├── scatter.ts            # musgo y piedras
     │   ├── vegetation.ts         # brotes y charcos
     │   ├── rain.ts · fireflies.ts · mushrooms.ts
-    │   └── organisms.ts          # esporas, criatura dormida, polvo en suspensión
+    │   ├── organisms.ts          # esporas, criatura dormida, polvo en suspensión
+    │   └── species.ts            # helechos y mariposas (jornada 16)
     ├── audio/                    # TS puro (Web Audio, sin react ni three), jornada 13
     │   ├── mix.ts                # estado del mundo → niveles de cada capa (con tests)
     │   └── AmbientAudio.ts       # grafo de Web Audio: dron, aire, lluvia, noche, Sincronía
@@ -70,20 +71,22 @@ microverse/
     │   │   ├── GlassSphere.tsx · Pedestal.tsx · Backdrop.tsx
     │   │   ├── FloatingIsland.tsx · GroundCover.tsx · Vegetation.tsx
     │   │   ├── Seed.tsx · LifeTree.tsx · RootNetwork.tsx
-    │   │   └── Mushrooms.tsx · HiddenOrganisms.tsx
+    │   │   ├── Mushrooms.tsx · HiddenOrganisms.tsx
+    │   │   └── Ferns.tsx             # helechos (jornada 16)
     │   ├── effects/
     │   │   ├── PostFX.tsx        # N8AO → bloom → tone mapping → viñeta → grano
     │   │   ├── RainSystem.tsx · Fireflies.tsx
-    │   │   └── Dust.tsx          # polvo en suspensión (jornada 11b)
+    │   │   ├── Dust.tsx          # polvo en suspensión (jornada 11b)
+    │   │   └── Butterflies.tsx   # mariposas (jornada 16)
     │   └── interaction/
     │       ├── Gestures.tsx      # pulsación larga, tecla R, pellizco
     │       └── SunHandle.tsx     # orbe solar arrastrable
     ├── shaders/
-    │   ├── glass/ · backdrop/ · rain/ · fireflies/ · roots/ · pedestal/
+    │   ├── glass/ · backdrop/ · rain/ · fireflies/ · butterflies/ · roots/ · pedestal/
     │   └── life/
     │       ├── signals.glsl      # funciones de las señales (compartidas)
     │       ├── surface.glsl      # ruido 3D y relieve procedural (compartidos, jornada 11b)
-    │       ├── bark.* · foliage.* · ground.frag · soil.* · moss.*
+    │       ├── bark.* · foliage.* · ground.frag · soil.* · moss.* · ferns.*
     │       └── sprouts.vert · puddles.* · mushrooms.*
     └── ui/
         ├── IntroOverlay.tsx · ExperienceControls.tsx
