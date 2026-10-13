@@ -1,14 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { AmbientAudio } from '../audio/AmbientAudio.ts'
+import type { AmbientAudio } from '../audio/AmbientAudio.ts'
+import { ambientAudio } from '../audio/instance.ts'
 import { ambientMix, type MixInput } from '../audio/mix.ts'
 import { useMicroverseStore } from '../store/useMicroverseStore.ts'
 
 /** El audio se actualiza a este ritmo (el motor va a 10 Hz; más no aporta). */
 const UPDATE_INTERVAL_S = 0.1
-
-/** Una sola instancia por página (el look-dev la inspecciona desde `__microverse.audio`). */
-export const ambientAudio = new AmbientAudio()
 
 /** Entrada de la mezcla, reutilizada cada actualización (sin asignar memoria). */
 const input: MixInput = {

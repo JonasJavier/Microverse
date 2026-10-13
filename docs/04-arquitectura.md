@@ -49,7 +49,8 @@ microverse/
     ├── store/
     │   ├── useMicroverseStore.ts # motor, acciones, fuentes de lluvia, nivel de calidad, contexto WebGL
     │   ├── useLookdevStore.ts    # tone mapping, bloom, oclusión (props del post-proceso)
-    │   └── persistence.ts        # "el mundo te recuerda" (ADR-007)
+    │   ├── persistence.ts        # "el mundo te recuerda" (ADR-007)
+    │   └── shareWorld.ts         # ?mundo=: compartir tu mundo por URL (jornada 14)
     ├── experience/
     │   ├── MicroverseCanvas.tsx  # <Canvas>, PerformanceMonitor, DPR por nivel
     │   ├── MicroverseScene.tsx   # composición de la escena
@@ -218,6 +219,7 @@ semilla (nodo 0 de las raíces) ── nervio principal ──▶ base del tronc
 - Se guarda cada 10 s y cuando la pestaña pasa a segundo plano (`visibilitychange`); solo mundos despiertos. El store crea el motor con `restoreEngine` (hydrate con la ausencia); `?nuevo` borra el guardado. Un mundo recuperado no repite las pistas de lluvia y sol si ya brotó.
 - Al volver, se simula el tiempo de ausencia (con tope) sin lluvia. El mundo nunca baja del mínimo de vitalidad.
 - Todo el acceso va dentro de `try/catch`: la experiencia funciona igual sin almacenamiento (test con un almacenamiento que lanza en cada acceso, como Safari en modo privado).
+- **Compartir (jornada 14):** `?mundo=` lleva el mismo `SavedWorld` en base64 para URL. Al arrancar, un mundo compartido sustituye al guardado (se hidrata con su propia marca de tiempo, sin ausencia) y el parámetro se retira con `history.replaceState`; a partir de ahí se guarda como cualquier otro. El motor valida la forma del estado: basura → mundo nuevo.
 
 ## Testing
 

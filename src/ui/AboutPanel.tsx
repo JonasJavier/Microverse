@@ -1,6 +1,59 @@
 import { useEffect, useRef, useState } from 'react'
+import { useMicroverseStore } from '../store/useMicroverseStore.ts'
+import { shareUrl } from '../store/shareWorld.ts'
 
 const REPO_URL = 'https://github.com/JonasJavier/Microverse'
+
+/**
+ * Compartir tu mundo (jornada 14): copia al portapapeles una URL con el estado
+ * del motor. Si el portapapeles no está disponible, muestra el enlace para
+ * copiarlo a mano. Solo tiene sentido con el mundo despierto.
+ */
+function ShareWorld() {
+  const awake = useMicroverseStore((s) => s.etapa !== 'dormido')
+  const [status, setStatus] = useState<'idle' | 'copied' | 'manual'>('idle')
+  const [link, setLink] = useState('')
+
+  if (!awake) return null
+
+  const share = async () => {
+    const { engine } = useMicroverseStore.getState()
+    const url = shareUrl(
+      window.location.origin,
+      window.location.pathname,
+      engine.serialize(Date.now()),
+    )
+    setLink(url)
+    try {
+      await navigator.clipboard.writeText(url)
+      setStatus('copied')
+    } catch {
+      setStatus('manual')
+    }
+  }
+
+  return (
+    <section className="about__section">
+      <h3 className="about__label">Tu mundo</h3>
+      <p>
+        Puedes enviar a alguien exactamente el mundo que ves: el enlace lleva su estado. Quien lo
+        abra lo recibe tal cual y, desde ese momento, es el suyo.
+      </p>
+      <p className="about__share">
+        <button type="button" className="about__button" onClick={share}>
+          Copiar enlace de tu mundo
+        </button>
+        <span className="about__status" aria-live="polite">
+          {status === 'copied' && 'Enlace copiado'}
+          {status === 'manual' && 'Copia el enlace de abajo'}
+        </span>
+      </p>
+      {status === 'manual' && (
+        <input className="about__link" type="text" readOnly value={link} aria-label="Enlace de tu mundo" />
+      )}
+    </section>
+  )
+}
 
 /**
  * "Cómo se construyó" (jornada 12, H3 · Publicado): una cartela de museo que se
@@ -113,6 +166,8 @@ export function AboutPanel() {
                 .
               </p>
             </section>
+
+            <ShareWorld />
 
             <footer className="about__footer">
               <p>

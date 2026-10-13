@@ -9,7 +9,7 @@ import type { WebGLRenderer } from 'three'
 import type { EcosystemConfig } from '../../simulation/ecosystemConfig.ts'
 import { ecoUniforms, GROWTH, signalUniforms } from '../signals.ts'
 import { setCaptureMode, setSilhouette, setView, type ViewName } from './lookdevTools.ts'
-import { ambientAudio } from '../AudioDriver.tsx'
+import { ambientAudio } from '../../audio/instance.ts'
 
 /** Constantes calibrables: [nombre, mínimo, máximo, paso]. */
 type NumericConfigKey = {

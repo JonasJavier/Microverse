@@ -3,6 +3,7 @@ import { detectInitialTier, lowerTier, raiseTier, type QualityTier } from '../co
 import { calidadFromSearch, cicloFromSearch, nuevoMundoFromSearch } from '../config/urlParams.ts'
 import { EcosystemEngine } from '../simulation/EcosystemEngine.ts'
 import { STORAGE_KEY, restoreEngine } from './persistence.ts'
+import { MUNDO_PARAM, mundoFromSearch } from './shareWorld.ts'
 import type { Etapa } from '../simulation/types.ts'
 
 /** `?calidad=` fija el nivel para medir (jornada 11); si no, se detecta y se adapta. */
@@ -61,7 +62,17 @@ function createEngine() {
       // Almacenamiento bloqueado: no hay nada que olvidar.
     }
   }
-  const engine = restoreEngine(storage, Date.now())
+  // `?mundo=` (jornada 14): un mundo compartido llega tal cual (sin ausencia) y
+  // pasa a ser el tuyo. Se quita de la URL para que recargar no lo reimporte.
+  const compartido = mundoFromSearch(search)
+  const engine = compartido
+    ? EcosystemEngine.hydrate(compartido, compartido.guardadoEn)
+    : restoreEngine(storage, Date.now())
+  if (compartido && typeof window !== 'undefined') {
+    const url = new URL(window.location.href)
+    url.searchParams.delete(MUNDO_PARAM)
+    window.history.replaceState(null, '', url)
+  }
   const ciclo = cicloFromSearch(search)
   if (ciclo !== null) engine.dispatch({ type: 'sol', ciclo })
   return engine
