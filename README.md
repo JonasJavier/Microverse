@@ -6,7 +6,7 @@ Experimento 3D interactivo: un ecosistema diminuto dentro de una esfera de crist
 
 El mundo **tiene memoria**: acumula luz y humedad, y ese estado decide cuánto crece la vegetación, cuánto brillan las raíces y cuándo aparecen las luciérnagas.
 
-**Estado: v1 publicada (H3, jornada 12).** Doce jornadas: fundaciones, cristal, isla con corte de diorama, bonsái y red de raíces procedurales, motor del ecosistema, los cinco actos (despertar, regar, mover el sol, explorar, Sincronía), persistencia, rendimiento y robustez, una pasada de realismo (oclusión ambiental, microdetalle, luz y cristal) y la publicación (cartela "Cómo se construyó", imagen OG, vídeo, fuentes alojadas). Quedan las pruebas con personas y en móviles reales (protocolo en [docs/06-roadmap.md](docs/06-roadmap.md)).
+**Estado: v1 publicada (H3, jornada 12).** Doce jornadas: fundaciones, cristal, isla con corte de diorama, bonsái y red de raíces procedurales, motor del ecosistema, los cinco actos (despertar, regar, mover el sol, explorar, Sincronía), persistencia, rendimiento y robustez, una pasada de realismo (oclusión ambiental, microdetalle, luz y cristal) y la publicación (cartela "Cómo se construyó", imagen OG, vídeo, fuentes alojadas). Quedan las pruebas con personas y en móviles reales (protocolo en [docs/06-roadmap.md](docs/06-roadmap.md)). **Fase 2 en marcha:** jornada 13, audio ambiente generativo (Web Audio, sin archivos; tecla M).
 
 [**Vídeo de 15 s de la Sincronía**](docs/capturas/jornada-12-sincronia.webm) · imagen de la tarjeta: [og.jpg](public/og.jpg)
 

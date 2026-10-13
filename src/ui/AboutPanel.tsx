@@ -119,7 +119,7 @@ export function AboutPanel() {
                 Idea y dirección: Jonas Javier Encarnación. Desarrollo y decisiones técnicas: Claude
                 (Anthropic), como responsable del proyecto.
               </p>
-              <p className="about__keys">Teclas: R lluvia · ← → sol · O observador · I esta cartela</p>
+              <p className="about__keys">Teclas: R lluvia · ← → sol · M sonido · O observador · I esta cartela</p>
             </footer>
           </article>
         </div>

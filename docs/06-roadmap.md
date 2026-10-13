@@ -31,6 +31,20 @@
 | 11b | Realismo ✅ | Pasada acotada tras la auditoría de realismo del 2026-10-11 (capturas `jornada-11b-antes-*` y `jornada-11b-*`, misma cámara, nivel Alta): oclusión ambiental N8AO (ADR-014); microdetalle procedural sin texturas (grano, relieve y motas minerales en el suelo; grietas en la corteza; oclusión propia en musgo y mechones; nuevo punto de inserción `normal` en los parches); luz hemisférica, contraluz y niebla interior por ciclo; cristal con halo, limbo y reflejo del anillo del pedestal; pedestal con halo de lámpara y luz hacia la roca; polvo en suspensión. Sin dependencias nuevas |
 | 12 | Publicación ✅ | `AboutPanel` ("Cómo se construyó": cartela-diálogo accesible, etiqueta arriba a la derecha y tecla I), imagen OG y metadatos (`public/og.jpg`, generada desde la escena de noche en Sincronía), vídeo de 15 s de la Sincronía (`docs/capturas/jornada-12-sincronia.webm`, grabado con `MediaRecorder` desde el lienzo con la cámara orbitando), fuentes alojadas (ADR-015), deploy final en Railway. **H3 · Publicado** |
 
+## Fase 2 (v2): después de publicar
+
+La v1 está cerrada (H3). La fase 2 toma la lista de espera de [01-vision.md](01-vision.md) en este orden, una jornada cada una, siempre sin romper la definición de terminado de la v1 ni añadir dependencias sin ADR:
+
+| # | Foco | Entregable |
+|---|---|---|
+| 13 | Audio ambiente ✅ | Generativo con Web Audio, 0 KB descargados (`src/audio/`): dron grave que gana cuerpo con la vitalidad y se oscurece de noche, aire, lluvia que sigue a la lluvia visible, brillo nocturno con las luciérnagas y acorde que crece en la Sincronía. Arranca al tocar la semilla (el gesto que exige el navegador), se actualiza a 10 Hz desde el motor (`AudioDriver`), se calla con la pestaña oculta. Tecla **M** y botón en la cápsula; la preferencia se recuerda (`microverse:sonido`). Mezcla pura con tests (`mix.test.ts`). Pendiente: escuchar en equipos reales y ajustar niveles en `mix.ts` (es look-dev, no ADR) |
+| 14 | Compartir tu mundo | URL con el estado del mundo (`?mundo=`), para enviar a alguien exactamente lo que ves |
+| 15 | Estaciones | El ciclo largo: el mundo cambia de estación con el tiempo acumulado |
+| 16 | Nuevas especies | Organismos nuevos que aparecen con condiciones concretas |
+| — | WebGPU/TSL | Solo cuando R3F 10 y Drei 11 salgan de alpha (ADR-001) |
+
+Las pruebas con personas y en móviles reales (definición de terminado, filas 3 y 4) siguen pendientes del usuario y no bloquean la fase 2.
+
 ## Rúbrica del H1 (jornada 4)
 
 El árbol no está terminado porque el algoritmo funcione: la colonización da estructuras orgánicas, pero no garantiza una buena composición. El H1 se aprueba con capturas de mañana y de noche, **misma cámara**, contra esta tabla:
@@ -88,7 +102,7 @@ Lo que se probó y se retiró en la misma pasada: reflejar el anillo del pedesta
 Si hay retraso, se recorta en este orden (lo primero, lo primero que cae):
 
 1. Organismos ocultos (como mucho se mantiene la criatura bajo la isla).
-2. Audio ambiente.
+2. Audio ambiente (hecho en la jornada 13, ya no se recorta).
 3. Condensación del cristal.
 
 **No se recorta:** lluvia, crecimiento, ciclo día/noche, la red de raíces y la Sincronía. Son el ecosistema principal.

@@ -1,4 +1,4 @@
-import { useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type PointerEvent } from 'react'
 import { useMicroverseStore } from '../store/useMicroverseStore.ts'
 import { SUN_DRAG_PX, SUN_KEY_STEP, momentoDelCiclo } from '../config/sunControl.ts'
 
@@ -26,6 +26,31 @@ function SunIcon() {
         strokeWidth="1.4"
         strokeLinecap="round"
       />
+    </svg>
+  )
+}
+
+function SoundIcon({ on }: { on: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
+      <path
+        d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+      {on ? (
+        <path
+          d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.4"
+          strokeLinecap="round"
+        />
+      ) : (
+        <path d="M15.5 9.5l5 5M20.5 9.5l-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      )}
     </svg>
   )
 }
@@ -71,6 +96,8 @@ export function ExperienceControls() {
   const chaparron = useMicroverseStore((s) => s.chaparron)
   const chaparronActivo = useMicroverseStore((s) => s.chaparronActivo)
   const moverSol = useMicroverseStore((s) => s.moverSol)
+  const sonido = useMicroverseStore((s) => s.sonido)
+  const alternarSonido = useMicroverseStore((s) => s.alternarSonido)
   const [pressed, setPressed] = useState(false)
   const [dragging, setDragging] = useState(false)
   // Solo para la accesibilidad del deslizador: se actualiza al soltar, no por frame.
@@ -136,6 +163,18 @@ export function ExperienceControls() {
     syncCiclo()
   }
 
+  // Tecla M: sonido (jornada 13). Escribiendo en un campo, la M es una letra.
+  useEffect(() => {
+    const onKey = (event: globalThis.KeyboardEvent) => {
+      const { target } = event
+      if (target instanceof Element && target.closest('input, textarea, select, [contenteditable]'))
+        return
+      if (event.key === 'm' || event.key === 'M') alternarSonido()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [alternarSonido])
+
   const hint = hintFor({ encharcado, haLlovido, primerBrote, haMovidoSol })
 
   return (
@@ -189,6 +228,16 @@ export function ExperienceControls() {
         >
           <SunIcon />
           <span>Sol</span>
+        </button>
+        <button
+          type="button"
+          className="controls__button controls__button--sound"
+          aria-pressed={sonido}
+          aria-label={sonido ? 'Sonido activado' : 'Sonido silenciado'}
+          tabIndex={awake ? 0 : -1}
+          onClick={alternarSonido}
+        >
+          <SoundIcon on={sonido} />
         </button>
       </div>
       {/* Debajo de la cápsula: encima se pisaba con el anillo del pedestal a 16:9. */}

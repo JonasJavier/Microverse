@@ -342,6 +342,15 @@ canvas {
   pointer-events: none;
 }
 
+/* Sonido (jornada 13): solo icono; apagado se ve más tenue. */
+.controls__button--sound {
+  padding: 0 12px;
+}
+
+.controls__button--sound[aria-pressed='false'] {
+  opacity: 0.55;
+}
+
 /* Control del sol (jornada 8): aparece con el primer brote; se arrastra en horizontal. */
 .controls__button--sun {
   display: none;

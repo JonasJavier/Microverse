@@ -1,3 +1,4 @@
+import { AudioDriver } from './AudioDriver.tsx'
 import { CameraRig } from './camera/CameraRig.tsx'
 import { ContextGuard } from './ContextGuard.tsx'
 import { Dust } from './effects/Dust.tsx'
@@ -29,6 +30,7 @@ export function MicroverseScene() {
     <>
       <ContextGuard />
       <SimulationDriver />
+      <AudioDriver />
       <Backdrop />
       <Studio />
       <FloatingIsland />

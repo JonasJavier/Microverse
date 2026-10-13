@@ -28,6 +28,16 @@ export const CHAPARRON_MS = 5000
 let chaparronTimer = 0
 
 /** `localStorage` puede no existir o estar bloqueado (modo privado): entonces no se recuerda nada. */
+/** Preferencia de sonido (jornada 13): '0' = silenciado. Por defecto, con sonido. */
+export const SONIDO_KEY = 'microverse:sonido'
+function readSonido(): boolean {
+  try {
+    return safeStorage()?.getItem(SONIDO_KEY) !== '0'
+  } catch {
+    return true
+  }
+}
+
 function safeStorage(): Storage | null {
   try {
     return typeof window === 'undefined' ? null : window.localStorage
@@ -89,6 +99,9 @@ interface MicroverseStore {
   encharcado: boolean
   /** El visitante ya ha movido el sol alguna vez (la pista del sol desaparece). */
   haMovidoSol: boolean
+  /** Audio ambiente (jornada 13): el visitante puede silenciarlo (tecla M); se recuerda. */
+  sonido: boolean
+  alternarSonido(): void
   despertar(): void
   llover(intensidad: number): void
   /**
@@ -157,6 +170,16 @@ export const useMicroverseStore = create<MicroverseStore>()((set, get) => ({
   },
   sol: (ciclo) => engine.dispatch({ type: 'sol', ciclo }),
   haMovidoSol: engine.state.primerBrote,
+  sonido: readSonido(),
+  alternarSonido: () => {
+    const sonido = !get().sonido
+    set({ sonido })
+    try {
+      safeStorage()?.setItem(SONIDO_KEY, sonido ? '1' : '0')
+    } catch {
+      // Sin almacenamiento: el ajuste dura la sesión.
+    }
+  },
   moverSol: (delta) => {
     // El control del sol aparece con el primer brote: antes no hay sol que mover.
     if (!engine.state.primerBrote || delta === 0) return

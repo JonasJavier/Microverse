@@ -9,6 +9,7 @@ import type { WebGLRenderer } from 'three'
 import type { EcosystemConfig } from '../../simulation/ecosystemConfig.ts'
 import { ecoUniforms, GROWTH, signalUniforms } from '../signals.ts'
 import { setCaptureMode, setSilhouette, setView, type ViewName } from './lookdevTools.ts'
+import { ambientAudio } from '../AudioDriver.tsx'
 
 /** Constantes calibrables: [nombre, mínimo, máximo, paso]. */
 type NumericConfigKey = {
@@ -63,6 +64,8 @@ export default function DevTools() {
         capture: setCaptureMode,
         silhouette: (on: boolean) => setSilhouette(getThree(), on),
         signals: { signalUniforms, ecoUniforms },
+        // Audio ambiente (jornada 13): `audio.inspect()` da estado y niveles.
+        audio: ambientAudio,
         // Mutable en consola para el A/B de la silueta seca (`growth.bare = 0.6`).
         growth: GROWTH,
         // Fuerza la Sincronía (solo desarrollo): deja el equilibrio a punto de dispararla.

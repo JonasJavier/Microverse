@@ -116,7 +116,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 - **Floración:** uno de cada diez mechones de la copa se vuelve flor Sol (hash estable por mechón), con un brillo que crece con la vitalidad alta y se dispara en la Sincronía. Sol y Vida conviven por primera vez: el anillo del pedestal mezcla los dos.
 - **Luciérnagas** al unísono (fase común), **halo del fondo** más vivo. Todo con el mismo `uSync`.
 - **Persistencia** (ADR-007): el mundo se guarda cada 10 s y al ocultar la pestaña; al volver, se simula la ausencia (más seco, nunca muerto). `?nuevo` empieza de cero.
-- Pendiente: calibración con tres personas y audio ambiente (opcional, orden de recorte).
+- Pendiente: calibración con tres personas. El audio ambiente llegó en la jornada 13.
 
 ## Vegetación y organismos
 
@@ -137,6 +137,10 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 | Tone mapping | **Khronos PBR Neutral** (ADR-012): respeta tono y saturación de la paleta | Todas |
 
 **Prohibido:** aberración cromática exagerada, destellos de lente, glitch y neón saturado.
+
+## Sonido (jornada 13, fase 2)
+
+El ambiente es un fondo, nunca protagonista: se sintetiza todo con Web Audio (sin archivos) y el nivel general es bajo (`MASTER_GAIN` 0,5 sobre capas de 0,05–0,28). Cinco capas, cada una atada a una variable del mundo (`src/audio/mix.ts`, con tests): un **dron** grave (La1 con quinta y octava desafinada, filtro que respira) que gana cuerpo con la vitalidad y se oscurece de noche (el corte del filtro baja de ~500 a ~200 Hz); **aire**, ruido muy filtrado; **lluvia**, ruido agudo que sigue a la lluvia visible; **noche**, un brillo alto y tenue que llega con las luciérnagas; y la **Sincronía**, una tríada mayor clara que crece y se apaga con `uSync`. Nada salta: todo cambio va con `setTargetAtTime`. Empieza al tocar la semilla, se calla con la pestaña oculta y el visitante puede silenciarlo (tecla M, botón en la cápsula); se recuerda. Prohibido: melodías, loops reconocibles, efectos de sonido por acción.
 
 ## Tipografía e interfaz
 
