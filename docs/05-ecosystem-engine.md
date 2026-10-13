@@ -22,7 +22,6 @@ Todos los valores numéricos de este documento son **puntos de partida** y viven
 | `hongos` | 0..1 | Acumulada | Desarrollo de los hongos (favorecido por el exceso de agua) |
 | `equilibrio` | segundos | Oculta | Tiempo seguido en equilibrio |
 | `etapa` | enum | Derivada | `dormido` · `despertando` · `creciendo` · `floreciendo` |
-| `estacion` | Fracción del año desde el despertar (jornada 15): 0 primavera, 0,5 otoño |
 | `sincronia` | bool + tiempo | Evento | El final está en curso |
 | `tiempo` | segundos | Interna | Tiempo simulado total |
 
