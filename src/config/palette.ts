@@ -20,6 +20,10 @@ export const palette = {
     raiz: '#7A6E60',
     // Hoja seca: hacia donde vira la vegetación marchita (jornada 7).
     musgoSeco: '#7A7448',
+    // Estaciones (jornada 15): otoño ámbar e invierno pálido y frío. Solo tiñen
+    // la vegetación viva; la tierra y el cristal no cambian con la estación.
+    otono: '#B5843C',
+    invierno: '#9CB0A4',
   },
   /**
    * Estratos del corte de diorama (ADR-008), de arriba abajo. Poco saturados, y

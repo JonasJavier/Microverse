@@ -27,6 +27,7 @@ function createGroundCover(mossCount: number, mossShape: QualitySettings['mossSh
     groundMaterial(new MeshStandardMaterial({ roughness: 1 }), 'musgo', {
       wet: 0.8,
       wilt: 0.65,
+      season: 0.55,
       vertex: mossVertex,
       fragment: [mossFragment],
     }),

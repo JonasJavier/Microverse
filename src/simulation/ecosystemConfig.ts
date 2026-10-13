@@ -43,6 +43,13 @@ export interface EcosystemConfig {
   PASO_OFFLINE: number
   /** Evaporación durante la ausencia (un terrario cerrado recicla su agua). */
   FACTOR_EVAP_OFFLINE: number
+  /**
+   * Duración del año del mundo (s de mundo), jornada 15. La estación sale del
+   * tiempo acumulado: quien vuelve tras una ausencia encuentra otra estación.
+   */
+  DURACION_ANO: number
+  /** Cuánto frena el crecimiento el invierno (0 = nada, 0,3 = un 30 %). */
+  FRENO_INVIERNO: number
 }
 
 export const DEFAULT_CONFIG: EcosystemConfig = {
@@ -69,4 +76,6 @@ export const DEFAULT_CONFIG: EcosystemConfig = {
   AUSENCIA_MAX: 7200,
   PASO_OFFLINE: 1,
   FACTOR_EVAP_OFFLINE: 0.2,
+  DURACION_ANO: 2400,
+  FRENO_INVIERNO: 0.3,
 }

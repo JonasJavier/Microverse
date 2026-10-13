@@ -68,6 +68,8 @@ export interface VisualParams {
   sincronia: number
   /** Noche (smoothstep del ciclo): la comparten varios parámetros. */
   noche: number
+  /** Estación (jornada 15): 0 primavera · 0,25 verano · 0,5 otoño · 0,75 invierno; cíclica. */
+  estacion: number
 }
 
 export type EcosystemAction =

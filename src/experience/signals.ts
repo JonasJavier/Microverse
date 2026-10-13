@@ -85,6 +85,8 @@ export const ecoUniforms = {
   uWind: { value: 0.5 },
   /** Esporas del corte: salen al despertar el mundo (0 → 1, despacio). */
   uSpores: { value: 0 },
+  /** Estación (jornada 15): 0 primavera · 0,25 verano · 0,5 otoño · 0,75 invierno. */
+  uSeason: { value: 0 },
 }
 
 const smoothstep = (a: number, b: number, x: number) => {
@@ -133,4 +135,10 @@ export function updateSignals(delta: number) {
   easing.damp(ecoUniforms.uBloom, 'value', visuals.floracion, 1.5, delta)
   easing.damp(ecoUniforms.uWind, 'value', 0.5 + 0.8 * visuals.lluvia, 2, delta)
   easing.damp(ecoUniforms.uSpores, 'value', state.despertado ? 1 : 0, 4, delta)
+  // La estación es cíclica: cerca del salto 1 → 0 se copia en vez de suavizar.
+  if (Math.abs(visuals.estacion - ecoUniforms.uSeason.value) > 0.5) {
+    ecoUniforms.uSeason.value = visuals.estacion
+  } else {
+    easing.damp(ecoUniforms.uSeason, 'value', visuals.estacion, 2, delta)
+  }
 }

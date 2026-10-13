@@ -138,6 +138,10 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 
 **Prohibido:** aberración cromática exagerada, destellos de lente, glitch y neón saturado.
 
+## Estaciones (jornada 15, fase 2)
+
+El ciclo largo. Solo cambia lo vivo: la copa, el musgo y los brotes viran a un ámbar de hoja seca en otoño (`otono`) y a un verde pálido y frío en invierno (`invierno`), con pesos gaussianos alrededor de 0,5 y 0,75 del año para que la transición sea lenta y sin saltos; en invierno cada mechón encoge un quinto y la copa se aclara. La tierra, el cristal, la luz y el ciclo del día no saben de estaciones: el cambio se nota al volver, no mientras se mira. Capturas `jornada-15-*.jpg`, misma cámara (`arbol`).
+
 ## Sonido (jornada 13, fase 2)
 
 El ambiente es un fondo, nunca protagonista: se sintetiza todo con Web Audio (sin archivos) y el nivel general es bajo (`MASTER_GAIN` 0,5 sobre capas de 0,05–0,28). Cinco capas, cada una atada a una variable del mundo (`src/audio/mix.ts`, con tests): un **dron** grave (La1 con quinta y octava desafinada, filtro que respira) que gana cuerpo con la vitalidad y se oscurece de noche (el corte del filtro baja de ~500 a ~200 Hz); **aire**, ruido muy filtrado; **lluvia**, ruido agudo que sigue a la lluvia visible; **noche**, un brillo alto y tenue que llega con las luciérnagas; y la **Sincronía**, una tríada mayor clara que crece y se apaga con `uSync`. Nada salta: todo cambio va con `setTargetAtTime`. Empieza al tocar la semilla, se calla con la pestaña oculta y el visitante puede silenciarlo (tecla M, botón en la cápsula); se recuerda. Prohibido: melodías, loops reconocibles, efectos de sonido por acción.

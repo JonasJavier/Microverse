@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useMicroverseStore } from '../store/useMicroverseStore.ts'
+import { edadDe, estacionDe, nombreEstacion } from '../simulation/rules.ts'
 import type { EcosystemState } from '../simulation/types.ts'
 
 const ROWS: readonly [label: string, read: (s: EcosystemState) => string][] = [
@@ -9,6 +10,13 @@ const ROWS: readonly [label: string, read: (s: EcosystemState) => string][] = [
   ['energía', (s) => s.energiaSolar.toFixed(2)],
   ['hongos', (s) => s.hongos.toFixed(2)],
   ['etapa', (s) => (s.sincronia.activa ? 'sincronía' : s.etapa)],
+  [
+    'estación',
+    (s) =>
+      nombreEstacion(
+        estacionDe(edadDe(s), useMicroverseStore.getState().engine.settings.DURACION_ANO),
+      ),
+  ],
 ]
 
 /** Barra de 10 celdas: se lee de un vistazo sin leer el número. */

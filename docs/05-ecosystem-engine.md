@@ -22,6 +22,7 @@ Todos los valores numéricos de este documento son **puntos de partida** y viven
 | `hongos` | 0..1 | Acumulada | Desarrollo de los hongos (favorecido por el exceso de agua) |
 | `equilibrio` | segundos | Oculta | Tiempo seguido en equilibrio |
 | `etapa` | enum | Derivada | `dormido` · `despertando` · `creciendo` · `floreciendo` |
+| `estacion` | Fracción del año desde el despertar (jornada 15): 0 primavera, 0,5 otoño |
 | `sincronia` | bool + tiempo | Evento | El final está en curso |
 | `tiempo` | segundos | Interna | Tiempo simulado total |
 
@@ -75,6 +76,10 @@ encharcadoAviso  = encharcadoAviso ? humedad > BANDA_HUMEDAD[1] : tiempoEncharca
 - Mediodía permanente → la energía supera la banda (exceso de sol) y la humedad se evapora más rápido. El punto dulce es la mañana o alternar día y noche.
 - Una noche larga baja la vitalidad hacia la mitad, nunca a cero.
 
+## Estaciones (jornada 15, fase 2)
+
+El año del mundo dura `DURACION_ANO` segundos de mundo (2400, 40 min) y empieza al despertar la semilla: `estacion = ((tiempo − despertadoEn) / DURACION_ANO) mod 1` (0 primavera · 0,25 verano · 0,5 otoño · 0,75 invierno). Un mundo dormido no tiene estación. Como sale del tiempo acumulado (que la ausencia también hace avanzar), quien vuelve al cabo de un rato encuentra otra estación. Única regla afectada: el crecimiento se multiplica por `factorEstacional = 1 − FRENO_INVIERNO · (0,5 − 0,5 · cos(2π(estacion − 0,125)))`, pleno entre primavera y verano y frenado un 30 % entre otoño e invierno; el decaer no cambia. La salida `estacion` (0..1) la lee el render para teñir la vegetación.
+
 ## Equilibrio y Sincronía
 
 ```
@@ -102,6 +107,7 @@ Objetivo de calibración: un visitante atento que no conoce las reglas llega a l
 | `brilloHongos` | `hongos · (0.3 + 0.7·noche)` | Emisivo de `Mushrooms` |
 | `luciernagas` | `noche · vitalidad · (0.5 + 0.5·min(1, humedad / 0.5))` | Proporción activa de `Fireflies` |
 | `floracion` | `smoothstep(0.7, 0.95, vitalidad)`; 1 durante la Sincronía | Flores de `LifeTree` y `Vegetation` |
+| `estacion` | Fracción del año desde el despertar (jornada 15): 0 primavera, 0,5 otoño |
 | `sincronia` | 0→1→0 en la duración del evento | Pulso sincronizado, luciérnagas al unísono, brillo global |
 
 donde `noche = smoothstep(0.70, 0.90, ciclo)`. La iluminación (`Lighting`) lee `ciclo` directamente: es control del usuario, no decisión del motor.

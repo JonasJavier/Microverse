@@ -68,6 +68,12 @@ export default function DevTools() {
         audio: ambientAudio,
         // Mutable en consola para el A/B de la silueta seca (`growth.bare = 0.6`).
         growth: GROWTH,
+        // Estación (jornada 15): salta a una fracción del año (0 primavera … 0,75 invierno).
+        estacion: (e: number) => {
+          const { engine } = useMicroverseStore.getState()
+          const s = engine.state as { tiempo: number; despertadoEn: number | null }
+          s.tiempo = (s.despertadoEn ?? 0) + e * engine.settings.DURACION_ANO
+        },
         // Fuerza la Sincronía (solo desarrollo): deja el equilibrio a punto de dispararla.
         sincronia: () => {
           const { engine } = useMicroverseStore.getState()

@@ -17,6 +17,7 @@ import { scatterSprouts } from '../../generators/vegetation.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { ecoUniforms } from '../signals.ts'
 import { disposeMesh, toInstancedMesh } from './geometry.ts'
+import { seasonUniforms } from './groundMaterial.ts'
 import { ISLAND, SEED_POSITION, worldRandom } from './island.ts'
 import { CLEARINGS, PUDDLES } from './life.ts'
 import { patchMaterial } from './materialPatch.ts'
@@ -68,6 +69,8 @@ function createVegetation(sproutCount: number) {
         uDryColor: { value: new Color(palette.materia.musgoSeco) },
         uWetAmount: { value: 0.4 },
         uWiltAmount: { value: 0.7 },
+        ...seasonUniforms,
+        uSeasonAmount: { value: 0.5 },
       },
     }),
     sprouts,

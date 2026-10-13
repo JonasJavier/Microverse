@@ -14,12 +14,15 @@ uniform float uTreeStart;
 uniform float uTreeLength;
 uniform float uTime;
 uniform float uWind;
+uniform float uSeason;
 //#main
 vDistance = pathDistance;
 vTuftHeight = position.y;
 {
   float front = uTreeStart + uTreeLength * uGrowth;
   transformed *= smoothstep(pathDistance - 0.02, pathDistance + 0.1, front);
+  // Invierno (jornada 15): la copa se aclara, cada mechón encoge un quinto.
+  transformed *= 1.0 - 0.2 * exp(-pow((uSeason - 0.75) / 0.12, 2.0));
   // Posición del mechón en el árbol (columna de traslación de la instancia):
   // la fase del viento varía por el espacio, así la copa ondula, no vibra entera.
   #ifdef USE_INSTANCING

@@ -8,6 +8,12 @@ import groundFragment from '../../shaders/life/ground.frag.glsl?raw'
 import surfaceGlsl from '../../shaders/life/surface.glsl?raw'
 
 const dryColor = { value: new Color(palette.materia.musgoSeco) }
+/** Colores de estación (jornada 15), compartidos por todos los materiales del suelo. */
+export const seasonUniforms = {
+  uSeason: ecoUniforms.uSeason,
+  uOtonoColor: { value: new Color(palette.materia.otono) },
+  uInviernoColor: { value: new Color(palette.materia.invierno) },
+}
 
 /**
  * Microdetalle (jornada 11b): 0 lo apaga (calidad baja). Se decide con el nivel
@@ -21,6 +27,8 @@ export const surfaceDetail = {
 export interface GroundOptions {
   wet: number
   wilt: number
+  /** Cuánto tiñe la estación (0 = nada: la tierra no cambia; el musgo, sí). */
+  season?: number
   /** Parche de vértice propio (posición para el grano, altura local…). */
   vertex?: string
   /** Parches de fragmento propios, tras el del agua; pueden usar surface.glsl. */
@@ -36,7 +44,7 @@ export interface GroundOptions {
 export function groundMaterial(
   material: MeshStandardMaterial,
   key: string,
-  { wet, wilt, vertex, fragment = [], uniforms = {} }: GroundOptions,
+  { wet, wilt, season = 0, vertex, fragment = [], uniforms = {} }: GroundOptions,
 ) {
   return patchMaterial(material, {
     key: `suelo-${key}`,
@@ -50,6 +58,8 @@ export function groundMaterial(
       uWetAmount: { value: wet },
       uWiltAmount: { value: wilt },
       uDetail: surfaceDetail,
+      ...seasonUniforms,
+      uSeasonAmount: { value: season },
       ...uniforms,
     },
   })

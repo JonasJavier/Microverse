@@ -15,7 +15,7 @@ import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
 import { ecoUniforms, signalUniforms } from '../signals.ts'
 import { disposeMesh, toInstancedMesh, toTubeGeometry } from './geometry.ts'
-import { surfaceDetail } from './groundMaterial.ts'
+import { seasonUniforms, surfaceDetail } from './groundMaterial.ts'
 import { worldRandom } from './island.ts'
 import { TREE } from './life.ts'
 import { patchMaterial, patchedDepthMaterial } from './materialPatch.ts'
@@ -38,6 +38,8 @@ const growthUniforms = {
   uWind: ecoUniforms.uWind,
   uTreeStart: { value: treeStart },
   uTreeLength: { value: Math.max(...TREE.graph.nodes.map((n) => n.distance)) - treeStart },
+  // Estación (jornada 15): el invierno encoge los mechones (también en la sombra).
+  uSeason: ecoUniforms.uSeason,
 }
 
 /**
@@ -95,6 +97,8 @@ function createLifeTree(tubeSegments: number, tufts: number) {
         uWilt: ecoUniforms.uWilt,
         uBloom: ecoUniforms.uBloom,
         uDryColor: { value: new Color(palette.materia.musgoSeco) },
+        uOtonoColor: seasonUniforms.uOtonoColor,
+        uInviernoColor: seasonUniforms.uInviernoColor,
       },
     }),
     scatter,

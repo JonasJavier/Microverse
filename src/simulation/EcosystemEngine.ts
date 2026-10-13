@@ -1,5 +1,15 @@
 import { DEFAULT_CONFIG, type EcosystemConfig } from './ecosystemConfig.ts'
-import { clamp01, computeVisuals, curvaLuz, etapaDe, salud, smoothstep } from './rules.ts'
+import {
+  clamp01,
+  computeVisuals,
+  curvaLuz,
+  edadDe,
+  estacionDe,
+  etapaDe,
+  factorEstacional,
+  salud,
+  smoothstep,
+} from './rules.ts'
 import type {
   EcosystemAction,
   EcosystemEvent,
@@ -46,6 +56,7 @@ function emptyVisuals(): VisualParams {
     floracion: 0,
     sincronia: 0,
     noche: 0,
+    estacion: 0,
   }
 }
 
@@ -204,7 +215,9 @@ export class EcosystemEngine {
     s.humedad = clamp01(s.humedad)
 
     const ahora = salud(s.humedad, s.energiaSolar, c)
-    const k = ahora > s.vitalidad ? c.K_CRECER : c.K_DECAER
+    // Estación (jornada 15): el invierno frena el crecimiento, no el decaer.
+    const estacion = factorEstacional(estacionDe(edadDe(s), c.DURACION_ANO), c.FRENO_INVIERNO)
+    const k = ahora > s.vitalidad ? c.K_CRECER * estacion : c.K_DECAER
     s.vitalidad = Math.max(c.VITALIDAD_MIN, s.vitalidad + (ahora - s.vitalidad) * k * dt)
 
     const encharcado = smoothstep(0.55, 0.9, s.humedad)
