@@ -205,7 +205,12 @@ class MeshBuilder {
   }
 }
 
-const STRATA = [
+/**
+ * Capas del corte, de arriba abajo (ADR-008). `until` es la profundidad donde
+ * acaba cada una. El render las pinta en el fragmento (jornada 17) con estos
+ * mismos límites y colores, así las bandas son nítidas a cualquier resolución.
+ */
+export const STRATA = [
   { until: 0.014, color: new Color(palette.estratos.cesped) },
   { until: 0.05, color: new Color(palette.estratos.humus) },
   { until: 0.16, color: new Color(palette.estratos.tierra) },
@@ -213,6 +218,21 @@ const STRATA = [
   { until: 0.34, color: new Color(palette.estratos.tierraProfunda) },
   { until: Infinity, color: new Color(palette.estratos.roca) },
 ]
+
+/**
+ * Profundidad bajo la superficie de cada vértice de una parte de la isla
+ * (jornada 17): atributo `strataDepth`, con el que el fragmento pinta las capas.
+ */
+export function strataDepths(data: MeshData, shape: IslandShape): Float32Array {
+  const out = new Float32Array(data.positions.length / 3)
+  for (let i = 0; i < out.length; i++) {
+    const x = data.positions[i * 3]!
+    const y = data.positions[i * 3 + 1]!
+    const z = data.positions[i * 3 + 2]!
+    out[i] = Math.max(0, shape.topY(x, z) - y)
+  }
+  return out
+}
 
 /** Color del estrato a cierta profundidad bajo la superficie (transiciones suaves). */
 export function strataColor(depth: number, out = new Color()) {
@@ -250,8 +270,10 @@ export function buildIslandMesh(
     return scratch.multiplyScalar(0.92 + 0.16 * (strataNoise(x * 25, y * 25, z * 25) * 0.5 + 0.5))
   }
 
+  // Jornada 17: más humus que césped, para que los claros entre las matas de
+  // musgo se lean como tierra y no como un verde azulado.
   const groundColor = ([x, , z]: Vec3) =>
-    scratch.copy(cesped).lerp(humus, 0.5 + 0.5 * groundNoise(x * 9, z * 9))
+    scratch.copy(cesped).lerp(humus, 0.62 + 0.38 * groundNoise(x * 9, z * 9))
 
   const polar = (r: number, theta: number, y: (x: number, z: number) => number): Vec3 => {
     const x = r * Math.sin(theta)

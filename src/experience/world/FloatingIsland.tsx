@@ -1,6 +1,12 @@
 import { useEffect, useMemo } from 'react'
-import { Mesh, MeshStandardMaterial } from 'three'
-import { buildIslandMesh, mergeMeshData } from '../../generators/island.ts'
+import { BufferAttribute, Mesh, MeshStandardMaterial } from 'three'
+import {
+  STRATA,
+  buildIslandMesh,
+  mergeMeshData,
+  strataDepths,
+  type MeshData,
+} from '../../generators/island.ts'
 import { disposeMesh, toGeometry } from './geometry.ts'
 import { groundMaterial } from './groundMaterial.ts'
 import { ISLAND, worldRandom } from './island.ts'
@@ -26,17 +32,27 @@ const SOIL_DETAIL = {
 function createIsland() {
   const parts = buildIslandMesh(ISLAND, worldRandom.fork('malla-isla'))
 
+  // Estratos en el fragmento (jornada 17): límites y colores de `STRATA`, y la
+  // profundidad de cada vértice como atributo. Solo el suelo los pinta (uStrata).
   const soilPatch = (key: keyof typeof SOIL_DETAIL) => ({
     vertex: soilVertex,
     fragment: [soilFragment],
     uniforms: {
       uGrainScale: { value: SOIL_DETAIL[key].grain },
       uBumpHeight: { value: SOIL_DETAIL[key].bump },
+      uStrata: { value: key === 'estratos' ? 1 : 0 },
+      uStrataDepths: { value: STRATA.slice(0, -1).map((s) => s.until) },
+      uStrataColors: { value: STRATA.map((s) => s.color) },
     },
   })
+  const withDepth = (data: MeshData) => {
+    const geometry = toGeometry(data)
+    geometry.setAttribute('strataDepth', new BufferAttribute(strataDepths(data, ISLAND), 1))
+    return geometry
+  }
 
   const top = new Mesh(
-    toGeometry(parts.top),
+    withDepth(parts.top),
     groundMaterial(
       new MeshStandardMaterial({ vertexColors: true, roughness: 0.95 }),
       'superficie',
@@ -44,7 +60,7 @@ function createIsland() {
     ),
   )
   const soil = new Mesh(
-    toGeometry(mergeMeshData(parts.underside, parts.rim, parts.cutLow, parts.cutHigh)),
+    withDepth(mergeMeshData(parts.underside, parts.rim, parts.cutLow, parts.cutHigh)),
     groundMaterial(new MeshStandardMaterial({ vertexColors: true, roughness: 1 }), 'estratos', {
       wet: 0.3,
       wilt: 0,

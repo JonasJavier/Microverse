@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { SPHERE_RADIUS } from '../config/world.ts'
 import {
   ISLAND_PARAMS,
+  STRATA,
   buildIslandMesh,
   createIslandShape,
   mergeMeshData,
   strataColor,
+  strataDepths,
   type MeshData,
 } from './island.ts'
 import { createRandom } from './random.ts'
@@ -120,6 +122,20 @@ describe('buildIslandMesh', () => {
     )
     expect(merged.indices.length).toBe(mesh.underside.indices.length + mesh.rim.indices.length)
     expect(Math.max(...merged.indices)).toBe(merged.positions.length / 3 - 1)
+  })
+})
+
+describe('strataDepths', () => {
+  const shape = createIslandShape(createRandom('the-last-seed/isla'))
+  const parts = buildIslandMesh(shape, createRandom('malla'))
+
+  it('la superficie está a profundidad cero y el cono llega a la roca', () => {
+    const top = strataDepths(parts.top, shape)
+    expect(top.length).toBe(parts.top.positions.length / 3)
+    expect(Math.max(...top)).toBeLessThan(1e-6)
+    const under = strataDepths(parts.underside, shape)
+    expect(Math.min(...under)).toBeGreaterThanOrEqual(0)
+    expect(Math.max(...under)).toBeGreaterThan(STRATA[4]!.until)
   })
 })
 

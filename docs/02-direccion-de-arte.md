@@ -65,7 +65,7 @@ Condensación: opcional, estilizada, solo en la parte superior y solo con humeda
 
 ## Subsuelo (ADR-008)
 
-- **Isla:** disco irregular de tierra con musgo arriba y cono invertido de roca abajo.
+- **Isla:** disco irregular de tierra con musgo arriba y cono invertido de roca abajo. **Jornada 17:** los estratos se pintan en el fragmento desde la profundidad bajo la superficie, no por vértice: bandas nítidas con contacto oscuro, laminación suave en la arcilla, piedras en la tierra, vetas en la roca y rugosidad por capa (la arcilla, más lisa). Siguen separadas por valor y textura, no por tono; la regla de la jornada 3 se mantiene. Si una textura se lee como patrón (pana, rejilla), es demasiada.
 - **Corte de diorama (validado en la jornada 2):** una cuña frontal de 86°, un poco a la derecha, cortada en limpio. Muestra los estratos `palette.estratos` (césped → humus → tierra → arcilla → tierra profunda → roca), con la red de raíces brillando dentro. La semilla queda en el vértice del corte. Es la imagen distintiva del proyecto.
 - **Estratos legibles por valor** (jornada 3): oscuro, medio, claro, oscuro y gris frío. En penumbra el ojo separa luminosidades, no matices; la banda clara de arcilla ordena el corte. Las raíces complementan los estratos, no son lo único que los distingue.
 - **Material de las raíces** (jornada 4, referencia de raíces luminosas en un corte de tierra): las raíces maestras tienen cuerpo oscuro y **borde luminoso** (se leen como volumen, no como cable); los filamentos, un brillo uniforme y más tenue, como si siguieran hacia el interior. El grosor llega como atributo de vértice.
