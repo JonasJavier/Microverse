@@ -259,17 +259,24 @@ export interface FoliageOptions {
   count: number
   scale: readonly [number, number]
   squash: readonly [number, number]
+  /** Estiramiento horizontal independiente en x/z [mín, máx] (jornada 17). */
+  stretch: readonly [number, number]
   maxReach: number
 }
 
 export const FOLIAGE_OPTIONS: Omit<FoliageOptions, 'count'> = {
   scale: [0.011, 0.021],
   squash: [0.4, 0.7],
+  stretch: [0.7, 1.4],
   maxReach: TREE_PARAMS.maxReach,
 }
 
-/** Follaje instanciado; `distances` es la del nodo de rama más cercano a cada mechón. */
-export type TreeFoliage = ScatterResult & { distances: Float32Array }
+/**
+ * Follaje instanciado; `distances` es la del nodo de rama más cercano a cada
+ * mechón y `centers` el centro de su nube (jornada 17: el shader orienta la
+ * normal desde ahí, para que la nube se sombree como un volumen).
+ */
+export type TreeFoliage = ScatterResult & { distances: Float32Array; centers: Float32Array }
 
 /**
  * Follaje: mechones pequeños repartidos por las nubes, más densos en la piel que
@@ -291,6 +298,7 @@ export function scatterTreeFoliage(
   const matrices = new Float32Array(count * 16)
   const colors = new Float32Array(count * 3)
   const distances = new Float32Array(count)
+  const centers = new Float32Array(count * 3)
   const bosque = new Color(palette.materia.bosque)
   const musgo = new Color(palette.materia.musgo)
   const color = new Color()
@@ -328,8 +336,16 @@ export function scatterTreeFoliage(
       if (position.length() > options.maxReach - s) position.setLength(options.maxReach - s)
       euler.set(random.range(-0.5, 0.5), random.range(0, Math.PI * 2), random.range(-0.5, 0.5))
       rotation.setFromEuler(euler)
-      scale.set(s, s * random.range(options.squash[0], options.squash[1]), s)
+      const [tMin, tMax] = options.stretch
+      scale.set(
+        s * random.range(tMin, tMax),
+        s * random.range(options.squash[0], options.squash[1]),
+        s * random.range(tMin, tMax),
+      )
       matrix.compose(position, rotation, scale).toArray(matrices, placed * 16)
+      centers[placed * 3] = pad.center.x
+      centers[placed * 3 + 1] = pad.center.y
+      centers[placed * 3 + 2] = pad.center.z
 
       // Altura dentro de la nube: 0 en la base plana, 1 en la cima.
       const h = (local.y + 0.4) / 1.4
@@ -357,5 +373,6 @@ export function scatterTreeFoliage(
     matrices: placed === count ? matrices : matrices.slice(0, placed * 16),
     colors: placed === count ? colors : colors.slice(0, placed * 3),
     distances: placed === count ? distances : distances.slice(0, placed),
+    centers: placed === count ? centers : centers.slice(0, placed * 3),
   }
 }

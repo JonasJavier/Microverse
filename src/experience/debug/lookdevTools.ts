@@ -16,6 +16,8 @@ export const VIEWS = {
   /** Jornada 8: el cristal tiene que aguantar la exploración, no solo el encuadre frontal. */
   lateral: [4.6, 0.9, 1.6, 0, -0.15, 0],
   superior: [0.6, 4.4, 2.4, 0, -0.15, 0],
+  /** Jornada 17: la copa de cerca, para juzgar la silueta de los mechones. */
+  copa: [0.4, 0.8, 1.15, -0.2, 0.5, -0.1],
 } as const satisfies Record<string, readonly number[]>
 
 export type ViewName = keyof typeof VIEWS

@@ -13,6 +13,12 @@ export interface QualitySettings {
   mossShape: 'icosaedro' | 'octaedro'
   /** Mechones de follaje del árbol (con menos, cada uno es mayor: la silueta no cambia). */
   foliageTufts: number
+  /**
+   * Caras de cada mechón (jornada 17): icosaedro (20 triángulos) u octaedro (8).
+   * Con la silueta por mechón del shader, el icosaedro da un contorno de bultos;
+   * el octaedro, de escamas. En móvil el octaedro mantiene el presupuesto.
+   */
+  foliageShape: 'icosaedro' | 'octaedro'
   /** Brotes que asoman al revivir el mundo. */
   sprouts: number
   /** Lados de los tubos del árbol y las raíces. */
@@ -55,7 +61,10 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     // 6000 uniformes y ahorran 24.000 triángulos.
     mossInstances: 4800,
     mossShape: 'icosaedro',
-    foliageTufts: 4500,
+    // Jornada 17: 3400 icosaedros (68 k triángulos, el doble con la sombra) en vez
+    // de 4500 octaedros (36 k). Con menos mechones cada uno es mayor.
+    foliageTufts: 3400,
+    foliageShape: 'icosaedro',
     sprouts: 260,
     tubeSegments: 8,
     glassSegments: [128, 64],
@@ -77,6 +86,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     mossInstances: 2200,
     mossShape: 'octaedro',
     foliageTufts: 2800,
+    foliageShape: 'octaedro',
     sprouts: 120,
     tubeSegments: 6,
     glassSegments: [64, 32],
@@ -98,6 +108,7 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     mossInstances: 1200,
     mossShape: 'octaedro',
     foliageTufts: 1600,
+    foliageShape: 'octaedro',
     sprouts: 90,
     tubeSegments: 5,
     glassSegments: [56, 28],

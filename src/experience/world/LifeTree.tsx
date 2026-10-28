@@ -2,13 +2,14 @@ import { useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import {
   Color,
+  IcosahedronGeometry,
   InstancedBufferAttribute,
   Mesh,
   MeshStandardMaterial,
   OctahedronGeometry,
 } from 'three'
 import { palette } from '../../config/palette.ts'
-import { QUALITY } from '../../config/quality.ts'
+import { QUALITY, type QualitySettings } from '../../config/quality.ts'
 import { scatterTreeFoliage } from '../../generators/tree.ts'
 import { buildTubes } from '../../generators/tubes.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
@@ -53,8 +54,15 @@ const growthUniforms = {
  *    (`uGrowth`). Las sombras crecen igual: materiales de sombra con el mismo
  *    parche de vértice. Seca, la copa pierde el verde (`uWilt`).
  *  - Jornada 8: la copa se mece con el viento (`uWind`, más con lluvia).
+ *  - Jornada 17: cada mechón tiene silueta propia (desplazamiento por hash en el
+ *    shader) y su normal mira desde el centro de su nube: la nube se sombrea como
+ *    un volumen blando y el contorno lo ponen los mechones. Sin sombreado plano.
  */
-function createLifeTree(tubeSegments: number, tufts: number) {
+function createLifeTree(
+  tubeSegments: number,
+  tufts: number,
+  tuftShape: QualitySettings['foliageShape'],
+) {
   const barkUniforms = {
     ...signalUniforms,
     ...growthUniforms,
@@ -84,15 +92,17 @@ function createLifeTree(tubeSegments: number, tufts: number) {
 
   const scatter = scatterTreeFoliage(TREE, worldRandom.fork('follaje'), tufts)
   const foliage = toInstancedMesh(
-    // Octaedro (8 triángulos): a esta escala, un mechón de agujas.
-    new OctahedronGeometry(1, 0),
-    patchMaterial(new MeshStandardMaterial({ roughness: 0.85, flatShading: true }), {
+    // Icosaedro (20 triángulos) en alta; octaedro (8) en móvil. La forma final la
+    // pone el shader (jornada 17): bultos o escamas según las caras disponibles.
+    tuftShape === 'icosaedro' ? new IcosahedronGeometry(1, 0) : new OctahedronGeometry(1, 0),
+    patchMaterial(new MeshStandardMaterial({ roughness: 0.85 }), {
       key: 'follaje',
       vertex: foliageVertex,
-      fragment: [signalsGlsl, foliageFragment],
+      fragment: [signalsGlsl, surfaceGlsl, foliageFragment],
       uniforms: {
         ...signalUniforms,
         ...growthUniforms,
+        uDetail: surfaceDetail,
         uFoliageFlash: { value: 0.35 },
         uWilt: ecoUniforms.uWilt,
         uBloom: ecoUniforms.uBloom,
@@ -104,6 +114,7 @@ function createLifeTree(tubeSegments: number, tufts: number) {
     scatter,
   )
   foliage.geometry.setAttribute('pathDistance', new InstancedBufferAttribute(scatter.distances, 1))
+  foliage.geometry.setAttribute('cloudCenter', new InstancedBufferAttribute(scatter.centers, 3))
   foliage.customDepthMaterial = patchedDepthMaterial({
     key: 'follaje',
     vertex: foliageVertex,
@@ -132,10 +143,10 @@ function disposeTree({ bark, foliage }: LifeTreeResources) {
 
 export function LifeTree() {
   const tier = useMicroverseStore((s) => s.startupTier)
-  const { tubeSegments, foliageTufts } = QUALITY[tier]
+  const { tubeSegments, foliageTufts, foliageShape } = QUALITY[tier]
   const tree = useMemo(
-    () => createLifeTree(tubeSegments, foliageTufts),
-    [tubeSegments, foliageTufts],
+    () => createLifeTree(tubeSegments, foliageTufts, foliageShape),
+    [tubeSegments, foliageTufts, foliageShape],
   )
   useEffect(() => () => disposeTree(tree), [tree])
   useFrame(() => syncTree(tree))

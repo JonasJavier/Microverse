@@ -131,6 +131,19 @@ describe('scatterTreeFoliage', () => {
     expect(scaleOf(few.matrices)).toBeGreaterThan(scaleOf(foliage.matrices) * 1.2)
   })
 
+  it('cada mechón conoce el centro de su nube', () => {
+    expect(foliage.centers.length).toBe(foliage.count * 3)
+    const padCenters = tree.pads.map((p) => p.center)
+    for (let i = 0; i < foliage.count; i++) {
+      const c = new Vector3(
+        foliage.centers[i * 3],
+        foliage.centers[i * 3 + 1],
+        foliage.centers[i * 3 + 2],
+      )
+      expect(padCenters.some((p) => p.distanceTo(c) < 1e-6)).toBe(true)
+    }
+  })
+
   it('es determinista', () => {
     const again = scatterTreeFoliage(tree, createRandom('follaje'), 3000)
     expect(again.matrices).toEqual(foliage.matrices)
