@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { createIslandShape } from './island.ts'
 import { createRandom } from './random.ts'
-import { scatterMoss, scatterPebbles, type Clearing } from './scatter.ts'
+import { Color } from 'three'
+import { scatterMoss, scatterOnIsland, scatterPebbles, type Clearing } from './scatter.ts'
 
 const shape = createIslandShape(createRandom('the-last-seed/isla'))
 const clearings: Clearing[] = [
@@ -49,6 +50,35 @@ describe('scatterMoss', () => {
 
   it('usa colores válidos', () => {
     expect(moss.colors.every((c) => Number.isFinite(c) && c >= 0 && c <= 1.5)).toBe(true)
+  })
+})
+
+describe('scatterOnIsland', () => {
+  const base = {
+    count: 400,
+    scale: [0.01, 0.02] as const,
+    squash: [0.5, 0.5] as const,
+    sink: 0,
+    rimFalloff: 0,
+    color: () => new Color('#ffffff'),
+  }
+  const scaleOf = (matrices: Float32Array, i: number) =>
+    Math.hypot(matrices[i * 16]!, matrices[i * 16 + 1]!, matrices[i * 16 + 2]!)
+
+  it('respeta la densidad: nada donde vale 0', () => {
+    const result = scatterOnIsland(shape, createRandom('densidad'), {
+      ...base,
+      density: (x) => (x < 0 ? 0 : 1),
+    })
+    expect(result.count).toBe(400)
+    for (const [x] of positionsOf(result.matrices)) expect(x).toBeGreaterThanOrEqual(0)
+  })
+
+  it('escala por posición con sizeAt', () => {
+    const plain = scatterOnIsland(shape, createRandom('tamano'), base)
+    const doubled = scatterOnIsland(shape, createRandom('tamano'), { ...base, sizeAt: () => 2 })
+    for (let i = 0; i < plain.count; i++)
+      expect(scaleOf(doubled.matrices, i)).toBeCloseTo(2 * scaleOf(plain.matrices, i), 6)
   })
 })
 

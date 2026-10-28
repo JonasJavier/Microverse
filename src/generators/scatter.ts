@@ -24,6 +24,13 @@ export interface ScatterOptions {
   /** 0..1: cuánto se aclara la densidad cerca del borde. */
   rimFalloff: number
   clearings?: readonly Clearing[]
+  /**
+   * 0..1: probabilidad de conservar una instancia en (x, z). Modela matas y
+   * claros: la cantidad total no cambia, se concentra donde la densidad es alta.
+   */
+  density?: (x: number, z: number) => number
+  /** Multiplicador de la escala en (x, z) (1 = sin cambio). */
+  sizeAt?: (x: number, z: number) => number
   color: (x: number, z: number, random: Random) => Color
 }
 
@@ -80,9 +87,10 @@ export function scatterOnIsland(
     const t = r / shape.rimRadius(theta)
     const keep = 1 - options.rimFalloff * Math.max(0, (t - 0.7) / 0.3)
     if (random.next() > keep) continue
+    if (options.density && random.next() > options.density(x, z)) continue
 
     const [sMin, sMax] = options.scale
-    const s = sMin + (sMax - sMin) * random.next() ** 2
+    const s = (sMin + (sMax - sMin) * random.next() ** 2) * (options.sizeAt?.(x, z) ?? 1)
     const squash = random.range(options.squash[0], options.squash[1])
     const sx = options.stretch ? random.range(options.stretch[0], options.stretch[1]) : 1
     const sz = options.stretch ? random.range(options.stretch[0], options.stretch[1]) : 1
@@ -109,7 +117,18 @@ export function scatterOnIsland(
   }
 }
 
-/** Musgo: almohadillas pequeñas, en manchas de Bosque a Musgo. */
+const smoothstep = (a: number, b: number, x: number) => {
+  const t = Math.min(1, Math.max(0, (x - a) / (b - a)))
+  return t * t * (3 - 2 * t)
+}
+
+/**
+ * Musgo: almohadillas en manchas de Bosque a Musgo. Jornada 17: en vez de un
+ * manto uniforme, matas densas con claros de tierra entre ellas (misma cantidad
+ * de instancias, concentradas), más aplastadas y estiradas, y mayores en el
+ * corazón de cada mancha. La mancha ancha manda el color y el tamaño; la mata
+ * fina, la densidad.
+ */
 export function scatterMoss(
   shape: IslandShape,
   random: Random,
@@ -117,18 +136,26 @@ export function scatterMoss(
   clearings: readonly Clearing[] = [],
 ): ScatterResult {
   const patches = createNoise2D(random.fork('manchas').next)
+  const clumps = createNoise2D(random.fork('matas').next)
+  const patchAt = (x: number, z: number) => 0.5 + 0.5 * patches(x * 5, z * 5)
   const bosque = new Color(palette.materia.bosque)
   const musgo = new Color(palette.materia.musgo)
   const out = new Color()
   return scatterOnIsland(shape, random, {
     count,
-    scale: [0.011, 0.03],
-    squash: [0.45, 0.8],
+    scale: [0.012, 0.034],
+    squash: [0.3, 0.62],
+    stretch: [0.7, 1.45],
     sink: 0.35,
     rimFalloff: 0.55,
     clearings,
+    density: (x, z) => {
+      const clump = 0.5 + 0.5 * clumps(x * 16, z * 16)
+      return 0.04 + 0.96 * smoothstep(0.38, 0.82, 0.5 * patchAt(x, z) + 0.5 * clump)
+    },
+    sizeAt: (x, z) => 0.75 + 0.5 * patchAt(x, z),
     color: (x, z, r) => {
-      const patch = 0.5 + 0.5 * patches(x * 5, z * 5)
+      const patch = patchAt(x, z)
       return out.copy(bosque).lerp(musgo, Math.min(1, 0.12 + 0.6 * patch + r.range(-0.1, 0.1)))
     },
   })

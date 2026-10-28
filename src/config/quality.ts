@@ -51,7 +51,9 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     maxDpr: 2,
     bloomHalfRes: false,
     multisampling: 4,
-    mossInstances: 6000,
+    // Jornada 17: almohadillas mayores y en matas; con 4800 cubren lo mismo que
+    // 6000 uniformes y ahorran 24.000 triángulos.
+    mossInstances: 4800,
     mossShape: 'icosaedro',
     foliageTufts: 4500,
     sprouts: 260,
