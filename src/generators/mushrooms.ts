@@ -29,6 +29,8 @@ export interface Mushrooms {
   thresholds: Float32Array
   /** Por hongo: fase del brillo (0..1). */
   phases: Float32Array
+  /** Por hongo: tono del sombrero y fuerza del brillo (0 apagado y pardo … 1 claro y vivo). */
+  tones: Float32Array
 }
 
 const UP = new Vector3(0, 1, 0)
@@ -49,6 +51,7 @@ function place(
   const matrices = new Float32Array(placements.length * 16)
   const thresholds = new Float32Array(placements.length)
   const phases = new Float32Array(placements.length)
+  const tones = new Float32Array(placements.length)
   const matrix = new Matrix4()
   const position = new Vector3()
   const normal = new Vector3()
@@ -64,13 +67,18 @@ function place(
     yaw.setFromAxisAngle(UP, random.range(0, Math.PI * 2))
     lean.setFromAxisAngle(new Vector3(1, 0, 0), random.range(-tilt, tilt))
     position.set(p.x, shape.topY(p.x, p.z) - p.scale * 0.04, p.z)
-    scale.setScalar(p.scale)
+    // Jornada 17: ni dos hongos iguales. Pie más o menos alto y sombrero más o
+    // menos ancho, independientes; el tono (claro/pardo, brillo) va aparte.
+    const height = random.range(0.7, 1.35)
+    const width = random.range(0.75, 1.3)
+    scale.set(p.scale * width, p.scale * height, p.scale * width)
     matrix.compose(position, align.multiply(yaw).multiply(lean), scale)
     matrix.toArray(matrices, i * 16)
     thresholds[i] = p.threshold
     phases[i] = random.next()
+    tones[i] = random.next()
   })
-  return { count: placements.length, matrices, thresholds, phases }
+  return { count: placements.length, matrices, thresholds, phases, tones }
 }
 
 const blocked = (x: number, z: number, clearings: readonly Clearing[] = []) =>

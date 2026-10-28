@@ -33,6 +33,19 @@ export const FRAMING = {
   elevation: 0.22,
 } as const
 
+/**
+ * Primer plano (jornada 17): al acercar la cámara, lo que enmarca la esfera (arco
+ * del sol, orbe, reflejos del estudio) compite con el ecosistema. Entre estas dos
+ * distancias de cámara se atenúa; el control de la cápsula sigue moviendo el sol.
+ */
+export const CLOSE_UP = { near: 2.2, far: 4 } as const
+
+/** 0 en primer plano (≤ `near`), 1 en el encuadre general (≥ `far`), suave entre medias. */
+export function closeUpFade(distance: number): number {
+  const t = Math.min(1, Math.max(0, (distance - CLOSE_UP.near) / (CLOSE_UP.far - CLOSE_UP.near)))
+  return t * t * (3 - 2 * t)
+}
+
 /** Distancia de cámara para que la esfera llene el encuadre según el aspecto. */
 export function framingDistance(aspect: number): number {
   const tanHalfFov = Math.tan((CAMERA_FOV * Math.PI) / 360)

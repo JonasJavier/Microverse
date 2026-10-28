@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, type RootState } from '@react-three/fiber'
 import {
   BackSide,
   Color,
@@ -11,14 +11,18 @@ import {
   SphereGeometry,
   Vector3,
   Vector4,
-  type Camera,
   type Side,
 } from 'three'
 import { glassTuning } from '../../config/lookdev.ts'
 import { palette } from '../../config/palette.ts'
 import { QUALITY } from '../../config/quality.ts'
 import { SOFTBOXES } from '../../config/studio.ts'
-import { PEDESTAL_RING_RADIUS, PEDESTAL_TOP_Y, SPHERE_RADIUS } from '../../config/world.ts'
+import {
+  PEDESTAL_RING_RADIUS,
+  PEDESTAL_TOP_Y,
+  SPHERE_RADIUS,
+  closeUpFade,
+} from '../../config/world.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { currentLook } from '../lighting/timeOfDay.ts'
 import { noRaycast } from '../utils.ts'
@@ -124,7 +128,8 @@ type Glass = ReturnType<typeof createGlass>
  * Vuelca `glassTuning` y el momento del ciclo en los uniforms (se llama cada
  * frame; no asigna memoria). De noche, el estudio se apaga y los reflejos bajan.
  */
-function syncGlassUniforms({ shared, back }: Glass, camera: Camera) {
+function syncGlassUniforms({ shared, back }: Glass, state: RootState) {
+  const { camera } = state
   // El estudio de reflejos gira con la cámara (solo en azimut): la media luna
   // enmarca el cristal desde cualquier lado, como en una sesión de producto en la
   // que la luz se recoloca con la cámara. La iluminación de la isla (Lightformers
@@ -139,12 +144,16 @@ function syncGlassUniforms({ shared, back }: Glass, camera: Camera) {
       shared.uSoftboxBitangent.value[i]!.copy(bitangents[i]!).applyAxisAngle(UP, azimuth)
     }
   }
+  // Jornada 17: de cerca, los reflejos del estudio (y su halo) se retiran para no
+  // taparle la copa al visitante; el limbo se queda: es lo que dice "vidrio".
+  const controls = state.controls as { distance?: number } | null
+  const presence = 0.4 + 0.6 * closeUpFade(controls?.distance ?? camera.position.length())
   shared.uF0.value = glassTuning.f0
-  shared.uReflection.value = glassTuning.reflection * currentLook().reflection
+  shared.uReflection.value = glassTuning.reflection * currentLook().reflection * presence
   shared.uRimStrength.value = glassTuning.rimStrength
   shared.uRimPower.value = glassTuning.rimPower
   shared.uAbsorption.value = glassTuning.absorption
-  shared.uSheen.value = glassTuning.sheen
+  shared.uSheen.value = glassTuning.sheen * presence
   shared.uLimb.value = glassTuning.limb
   back.uFaceFactor.value = glassTuning.backFace
   // Por abajo, el cristal refleja el anillo del pedestal (Sol de día, Vida de
@@ -175,7 +184,7 @@ export function GlassSphere() {
   const glass = useMemo(() => createGlass(), [])
   useEffect(() => () => geometry.dispose(), [geometry])
   useEffect(() => () => disposeGlass(glass), [glass])
-  useFrame(({ camera }) => syncGlassUniforms(glass, camera))
+  useFrame((state) => syncGlassUniforms(glass, state))
 
   return (
     <>

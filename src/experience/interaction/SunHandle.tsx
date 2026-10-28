@@ -4,6 +4,7 @@ import { easing } from 'maath'
 import { Color, Group, Mesh, MeshBasicMaterial, SphereGeometry, TorusGeometry } from 'three'
 import { palette } from '../../config/palette.ts'
 import { SUN_ARC, SUN_DRAG_PX, sunAngle } from '../../config/sunControl.ts'
+import { closeUpFade } from '../../config/world.ts'
 import { useMicroverseStore } from '../../store/useMicroverseStore.ts'
 import { nocheDe } from '../../simulation/rules.ts'
 import { noRaycast } from '../utils.ts'
@@ -67,23 +68,38 @@ function disposeSun({ orb, arc, hit }: SunParts) {
   hit.material.dispose()
 }
 
+/** Distancia de la cámara a su objetivo (camera-controls la expone; si no, al origen). */
+function cameraDistance(state: RootState) {
+  const controls = state.controls as { distance?: number } | null
+  return controls?.distance ?? state.camera.position.length()
+}
+
 /**
  * Coloca el orbe sobre el arco según el ciclo y lo tiñe: Sol de día, Vida (luna)
  * de noche. El orbe es un emisivo HDR: el bloom le da halo. Aparece con el
- * primer brote (escala 0 → 1 amortiguada).
+ * primer brote (escala 0 → 1 amortiguada). Jornada 17: al acercar la cámara, el
+ * arco casi desaparece y el orbe encoge y pierde halo (no compiten con la copa);
+ * mientras se arrastra, vuelven del todo.
  */
-function syncSun({ group, orb, arc, hit }: SunParts, dragging: boolean, delta: number) {
+function syncSun(
+  { group, orb, arc, hit }: SunParts,
+  dragging: boolean,
+  delta: number,
+  state: RootState,
+) {
   const { engine } = useMicroverseStore.getState()
   const { ciclo, primerBrote } = engine.state
   const angle = sunAngle(ciclo) * DEG
   orb.position.set(Math.cos(angle) * ARC_RADIUS, Math.sin(angle) * ARC_RADIUS, ARC_Z)
   hit.position.copy(orb.position)
   const noche = nocheDe(ciclo)
+  const presence = dragging ? 1 : closeUpFade(cameraDistance(state))
   tmpColor.copy(SOL).lerp(VIDA, noche)
   // Por encima de 1, el bloom lo recoge: sol intenso de día, luna más contenida.
-  orb.material.color.copy(tmpColor).multiplyScalar(2.4 - 1.5 * noche)
+  orb.material.color.copy(tmpColor).multiplyScalar((2.4 - 1.5 * noche) * (0.55 + 0.45 * presence))
   arc.material.color.copy(tmpColor)
-  easing.damp(arc.material, 'opacity', dragging ? 0.35 : 0.12, 0.25, delta)
+  easing.damp(arc.material, 'opacity', (dragging ? 0.35 : 0.12) * (0.2 + 0.8 * presence), 0.25, delta)
+  easing.damp3(orb.scale, 0.6 + 0.4 * presence, 0.25, delta)
   easing.damp3(group.scale, primerBrote ? 1 : 0, 0.6, delta)
 }
 
@@ -111,7 +127,7 @@ export function SunHandle() {
   const drag = useRef({ active: false, lastX: 0 })
 
   useEffect(() => () => disposeSun(parts), [parts])
-  useFrame((_, delta) => syncSun(parts, drag.current.active, delta))
+  useFrame((state, delta) => syncSun(parts, drag.current.active, delta, state))
 
   const onDown = (event: ThreeEvent<PointerEvent>) => {
     if (!primerBrote) return

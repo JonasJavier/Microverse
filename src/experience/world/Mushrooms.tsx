@@ -67,6 +67,7 @@ function createMushroomMesh(
   mesh.instanceMatrix.needsUpdate = true
   mesh.geometry.setAttribute('aThreshold', new InstancedBufferAttribute(set.thresholds, 1))
   mesh.geometry.setAttribute('aPhase', new InstancedBufferAttribute(set.phases, 1))
+  mesh.geometry.setAttribute('aTone', new InstancedBufferAttribute(set.tones, 1))
   // La sombra crece con el hongo: material de sombra con el mismo parche de vértice.
   mesh.customDepthMaterial = patchedDepthMaterial({
     key: `hongos-${key}`,

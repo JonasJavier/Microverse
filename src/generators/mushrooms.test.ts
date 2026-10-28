@@ -18,6 +18,22 @@ describe('hongos', () => {
     const b = scatterLampMushrooms(shape, createRandom('hongos'), options)
     expect(a.matrices).toEqual(b.matrices)
     expect(a.thresholds).toEqual(b.thresholds)
+    expect(a.tones).toEqual(b.tones)
+  })
+
+  it('ni dos hongos iguales: altura y anchura varían, y el tono es por hongo', () => {
+    const lamps = scatterLampMushrooms(shape, createRandom('hongos'), options)
+    const heights = new Set<number>()
+    const widths = new Set<number>()
+    for (let i = 0; i < lamps.count; i++) {
+      const m = lamps.matrices
+      widths.add(Math.round(Math.hypot(m[i * 16]!, m[i * 16 + 1]!, m[i * 16 + 2]!) * 1e4))
+      heights.add(Math.round(Math.hypot(m[i * 16 + 4]!, m[i * 16 + 5]!, m[i * 16 + 6]!) * 1e4))
+    }
+    expect(heights.size).toBeGreaterThan(1)
+    expect(widths.size).toBeGreaterThan(1)
+    expect(lamps.tones.length).toBe(lamps.count)
+    expect([...lamps.tones].every((t) => t >= 0 && t < 1)).toBe(true)
   })
 
   it('los de lámpara rodean el tronco sin pisar el claro y casi siempre asoman', () => {

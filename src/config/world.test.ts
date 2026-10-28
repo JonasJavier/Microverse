@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { CAMERA_FOV, FRAMING, SPHERE_RADIUS, framingDistance } from './world.ts'
+import {
+  CAMERA_FOV,
+  CLOSE_UP,
+  FRAMING,
+  SPHERE_RADIUS,
+  closeUpFade,
+  framingDistance,
+} from './world.ts'
 
 const tanHalfFov = Math.tan((CAMERA_FOV * Math.PI) / 360)
 
@@ -25,6 +32,21 @@ describe('framingDistance', () => {
     const minimum = framingDistance(100)
     for (const aspect of [0.4, 0.75, 1, 1.5, 2.4]) {
       expect(framingDistance(aspect)).toBeGreaterThanOrEqual(minimum)
+    }
+  })
+})
+
+describe('closeUpFade', () => {
+  it('apaga en primer plano, enciende en el encuadre general y no baja nunca', () => {
+    expect(closeUpFade(CLOSE_UP.near - 1)).toBe(0)
+    expect(closeUpFade(CLOSE_UP.near)).toBe(0)
+    expect(closeUpFade(CLOSE_UP.far)).toBe(1)
+    expect(closeUpFade(framingDistance(16 / 9))).toBe(1)
+    let last = 0
+    for (let d = CLOSE_UP.near; d <= CLOSE_UP.far; d += 0.05) {
+      const f = closeUpFade(d)
+      expect(f).toBeGreaterThanOrEqual(last)
+      last = f
     }
   })
 })
